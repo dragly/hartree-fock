@@ -21,6 +21,8 @@ public:
     void advance();
 
     inline void setBasisFunction(BasisFunction *basisFunction);
+
+    inline double energy();
 private:
     mat h;
     mat S;
@@ -45,10 +47,17 @@ private:
     double *QData;
 
     bool isQAllocated = false;
+
+    double m_energy = 0;
 };
 
 inline void HartreeSolver::setBasisFunction(BasisFunction *basisFunction) {
     m_basisFunction = basisFunction;
+}
+
+inline double HartreeSolver::energy()
+{
+    return m_energy;
 }
 
 #endif // HARTREESOLVER_H

@@ -1,6 +1,6 @@
 #include "hydrogenmolecule.h"
 
-HydrogenMolecule::HydrogenMolecule()
+HydrogenMolecule::HydrogenMolecule(double distance)
 {
     alpha = zeros(4);
     alpha(0) = 13.00773;
@@ -10,19 +10,22 @@ HydrogenMolecule::HydrogenMolecule()
 
     R = zeros(2,3);
 
-    R(1,0) = 1.0;
+    R(1,0) = distance;
 }
 
 double HydrogenMolecule::electronInteractionIntegral(int p, int r, int q, int s) {
-    double A = alpha[p] + alpha[q];
-    double B = alpha[r] + alpha[s];
+    int pIndex = p % nOrbitalsPerNuclei;
+    int qIndex = q % nOrbitalsPerNuclei;
+    int rIndex = r % nOrbitalsPerNuclei;
+    int sIndex = s % nOrbitalsPerNuclei;
 
+    double A = alpha[pIndex] + alpha[qIndex];
+    double B = alpha[rIndex] + alpha[sIndex];
 
-    // TODO: FIX THESE!
-    int Rp = 0;
-    int Rr = 0;
-    int Rq = 0;
-    int Rs = 0;
+    int Rp = p / nOrbitalsPerNuclei;
+    int Rq = q / nOrbitalsPerNuclei;
+    int Rr = r / nOrbitalsPerNuclei;
+    int Rs = p / nOrbitalsPerNuclei;
 
     rowvec Ra = (alpha[p]*R.row(Rp) + alpha[q]*R.row(Rq))/A;
     rowvec Rb = (alpha[r]*R.row(Rr) + alpha[s]*R.row(Rs))/B;
@@ -30,9 +33,13 @@ double HydrogenMolecule::electronInteractionIntegral(int p, int r, int q, int s)
 
     double t = (A*B/(A + B))*dot(Ra-Rb,Ra-Rb);
 
-    double arg = 2*sqrt(A*B/(acos(-1)*(A+B)))*errorFunction(t)*overlapIntegral(p+Rp*4,q+Rq*4)*overlapIntegral(s+Rs*4,r+Rr*4);
+    double arg = 2*sqrt(A*B/(acos(-1)*(A+B)))*errorFunction(t)*overlapIntegral(p,q)*overlapIntegral(s,r);
 
     return arg;
+}
+
+double HydrogenMolecule::nuclearRepulsion() {
+    return 1/sqrt(dot(R.row(0) - R.row(1),R.row(0)- R.row(1)));
 }
 
 double HydrogenMolecule::errorFunction(double arg){
@@ -57,15 +64,23 @@ double HydrogenMolecule::errorFunction(double arg){
  * \return
  */
 double HydrogenMolecule::kineticIntegral(int p, int q) {
-    double factor = p*q/(p+q);
+    int pIndex = p % nOrbitalsPerNuclei;
+    int qIndex = q % nOrbitalsPerNuclei;
 
-    // TODO: FIX THESE!
-    rowvec Rp = zeros(3);
-    rowvec Rq = zeros(3);
+    double ap = alpha(pIndex);
+    double aq = alpha(qIndex);
+
+    double factor = ap*aq/(ap+aq);
+
+    int RpIndex = p / nOrbitalsPerNuclei;
+    int RqIndex = q / nOrbitalsPerNuclei;
+
+    rowvec Rp = R.row(RpIndex);
+    rowvec Rq = R.row(RqIndex);
 
     double Rpq = dot(Rp-Rq,Rp-Rq);
     double expTerm = exp(-factor*Rpq);
-    double kin = 0.5*factor*(6-4*factor*Rpq)*pow(acos(-1)/(p+q),3.0/2.0)*expTerm;
+    double kin = 0.5*factor*(6-4*factor*Rpq)*pow(acos(-1)/(ap+aq),3.0/2.0)*expTerm;
 
     return kin;
 }
@@ -78,19 +93,22 @@ double HydrogenMolecule::kineticIntegral(int p, int q) {
  * \return
  */
 double HydrogenMolecule::nuclearAttractionIntegral(int p, int q) {
-    double factor = 1.0/(p+q);
+    int pIndex = p % nOrbitalsPerNuclei;
+    int qIndex = q % nOrbitalsPerNuclei;
 
-    // TODO: FIX THESE!
-    int Rp = 0;
-    int Rr = 0;
-    int Rq = 0;
-    int Rs = 0;
+    double ap = alpha(pIndex);
+    double aq = alpha(qIndex);
+
+    double factor = 1.0/(ap+aq);
+
+    int Rp = p / nOrbitalsPerNuclei;
+    int Rq = q / nOrbitalsPerNuclei;
     int Z = 1;
 
     double Rpq =dot(R.row(Rp)-R.row(Rq),R.row(Rp)-R.row(Rq));
-    double expTerm = exp(-p*q*factor*Rpq);
+    double expTerm = exp(-ap*aq*factor*Rpq);
 
-    rowvec Rmc = (p*R.row(Rp) + q*R.row(Rq))*factor;
+    rowvec Rmc = (ap*R.row(Rp) + aq*R.row(Rq))*factor;
 
 
     double F0p = errorFunction(1.0/factor*dot(Rmc-R.row(0),Rmc-R.row(0)));
@@ -102,14 +120,22 @@ double HydrogenMolecule::nuclearAttractionIntegral(int p, int q) {
 }
 
 double HydrogenMolecule::overlapIntegral(int p, int q) {
-    double factor = 1.0/(p+q);
+    int pIndex = p % nOrbitalsPerNuclei;
+    int qIndex = q % nOrbitalsPerNuclei;
 
-    // TODO: FIX THESE!
-    rowvec Rp = zeros(3);
-    rowvec Rq = zeros(3);
+    double ap = alpha(pIndex);
+    double aq = alpha(qIndex);
+
+    double factor = 1.0/(ap+aq);
+
+    int RpIndex = p / nOrbitalsPerNuclei;
+    int RqIndex = q / nOrbitalsPerNuclei;
+
+    rowvec Rp = R.row(RpIndex);
+    rowvec Rq = R.row(RqIndex);
 
     double Rpq = dot(Rp-Rq,Rp-Rq);
-    double expTerm = exp(-p*q*factor*Rpq);
+    double expTerm = exp(-ap*aq*factor*Rpq);
     double overlap = pow(acos(-1)*factor,3.0/2.0)*expTerm;
 
     return overlap;
@@ -117,5 +143,5 @@ double HydrogenMolecule::overlapIntegral(int p, int q) {
 
 uint HydrogenMolecule::nOrbitals()
 {
-    return 8;
+    return nNuclei * nOrbitalsPerNuclei;
 }

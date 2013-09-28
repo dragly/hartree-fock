@@ -149,7 +149,7 @@ void HartreeSolver::advance() {
             }
         }
     }
-    cout << energy << endl;
+    m_energy = energy;
 }
 
 void HartreeSolver::normalizeCwithRegardsToS(){

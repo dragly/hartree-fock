@@ -10,7 +10,7 @@ using namespace arma;
 class HydrogenMolecule : public BasisFunction
 {
 public:
-    HydrogenMolecule();
+    HydrogenMolecule(double distance = 1.4);
 
     virtual double electronInteractionIntegral(int p, int r, int q, int s);
     virtual double kineticIntegral(int p, int q);
@@ -26,6 +26,11 @@ public:
     // Constants to be precalculated
     const double powPi5over2 = pow(M_PI, 5./2.);
     double errorFunction(double arg);
+
+    double nuclearRepulsion();
+private:
+    int nNuclei = 2;
+    int nOrbitalsPerNuclei = 4;
 };
 
 #endif // HYDROGENMOLECULE_H
