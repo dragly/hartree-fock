@@ -5,24 +5,22 @@
 
 using namespace arma;
 
+// Forward declarations
+class BasisFunction;
+
 class HartreeSolver
 {
 public:
-    explicit HartreeSolver();
+    explicit HartreeSolver(BasisFunction *basisFunction);
 
     virtual ~HartreeSolver();
 
     double alpha[4];
-    double basisFunction(int index, vec position);
-    double matrixElement(int p, int r, int q, int s);
-
-    const double powPi5over2 = pow(M_PI, 5./2.);
-    double kineticIntegral(int p, int q);
-    double nuclearAttractionIntegral(int p, int q);
-    double overlapIntegral(int p, int q);
 
     void reset();
     void advance();
+
+    inline void setBasisFunction(BasisFunction *basisFunction);
 private:
     mat h;
     mat S;
@@ -30,6 +28,8 @@ private:
     vec C;
 
     double ****Q;
+
+    BasisFunction *m_basisFunction;
 
     void resetC();
     void setupF();
@@ -46,5 +46,9 @@ private:
 
     bool isQAllocated = false;
 };
+
+inline void HartreeSolver::setBasisFunction(BasisFunction *basisFunction) {
+    m_basisFunction = basisFunction;
+}
 
 #endif // HARTREESOLVER_H

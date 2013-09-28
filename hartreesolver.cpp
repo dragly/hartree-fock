@@ -1,12 +1,15 @@
 #include "hartreesolver.h"
 
+#include <src/basisfunctions/basisfunction.h>
+
 #include <armadillo>
 #include <iomanip>
 
 using namespace arma;
 using namespace std;
 
-HartreeSolver::HartreeSolver()
+HartreeSolver::HartreeSolver(BasisFunction *basisFunction) :
+    m_basisFunction(basisFunction)
 {
     cout << setprecision(20);
     allocateQMemory();
@@ -18,94 +21,50 @@ HartreeSolver::~HartreeSolver()
     cleanUpQMemory();
 }
 
-double HartreeSolver::basisFunction(int index, vec position) {
-    double r2 = dot(position, position);
-    return exp(-alpha[index] * r2);
-}
-
-double HartreeSolver::matrixElement(int p, int r, int q, int s) {
-    double denominator = (alpha[p] + alpha[q])*(alpha[r] + alpha[s])*sqrt(alpha[p] + alpha[q] + alpha[r] + alpha[s]);
-    return 2 * powPi5over2 / denominator;
-}
-
-/*!
- * \brief HartreeSolver::kineticIntegral is the solution of the the integral
- * $$\langle \chi_p | -\frac{1}{2} \nabla^2 | \chi_q \rangle$$
- * \param p
- * \param q
- * \return
- */
-double HartreeSolver::kineticIntegral(int p, int q) {
-    double alpha_p = alpha[p];
-    double alpha_q = alpha[q];
-    return 3*pow(M_PI, 3.0/2.0)*alpha_q/(pow(alpha_p, 3.0/2.0)*pow(1 + alpha_q/alpha_p, 5.0/2.0));
-}
-
-/*!
- * \brief HartreeSolver::kineticIntegral is the solution of the the integral
- * $$\langle \chi_p | -\frac{1}{2} \nabla^2 | \chi_q \rangle$$
- * \param p
- * \param q
- * \return
- */
-double HartreeSolver::nuclearAttractionIntegral(int p, int q) {
-    double alpha_p = alpha[p];
-    double alpha_q = alpha[q];
-    return -4*M_PI/(alpha_p*(1 + alpha_q/alpha_p));
-}
-
-double HartreeSolver::overlapIntegral(int p, int q) {
-    double alpha_p = alpha[p];
-    double alpha_q = alpha[q];
-    return pow(M_PI, 3.0/2.0)/(pow(alpha_p, 3.0/2.0)*pow(1 + alpha_q/alpha_p, 3.0/2.0));
-}
-
 void HartreeSolver::reset() {
-    setupAlpha();
     setuph();
     setupS();
     setupQ();
     resetC();
 }
 
-void HartreeSolver::setupAlpha() {
-    alpha[0] = 0.298073;
-    alpha[1] = 1.242567;
-    alpha[2] = 5.782948;
-    alpha[3] = 38.474970;
-}
-
 void HartreeSolver::setuph() {
+    BasisFunction* f = m_basisFunction;
+    uint n = f->nOrbitals();
     h.reset();
-    h = zeros(4,4);
-    for(int p = 0; p < 4; p++) {
-        for(int q = 0; q < 4; q++) {
-            h(p,q) = kineticIntegral(p,q) + nuclearAttractionIntegral(p,q);
+    h = zeros(n,n);
+    for(uint p = 0; p < n; p++) {
+        for(uint q = 0; q < n; q++) {
+            h(p,q) = f->kineticIntegral(p,q) + f->nuclearAttractionIntegral(p,q);
         }
     }
 }
 
 void HartreeSolver::setupS() {
+    BasisFunction* f = m_basisFunction;
+    uint n = f->nOrbitals();
     S.reset();
-    S = zeros(4,4);
-    for(int p = 0; p < 4; p++) {
-        for(int q = 0; q < 4; q++) {
-            S(p,q) = overlapIntegral(p, q);
+    S = zeros(n,n);
+    for(uint p = 0; p < n; p++) {
+        for(uint q = 0; q < n; q++) {
+            S(p,q) = f->overlapIntegral(p, q);
         }
     }
 }
 
 void HartreeSolver::allocateQMemory() {
     if(!isQAllocated) {
-        QData = new double[4*4*4*4];
-        Q = new double***[4];
-        for(int p = 0; p < 4; p++) {
-            Q[p] = new double**[4];
-            for(int r = 0; r < 4; r++) {
-                Q[p][r] = new double *[4];
-                for(int q = 0; q < 4; q++) {
-                    Q[p][r][q] = &QData[4*4*4*p + 4*4*r + 4*q];
-                    for(int s = 0; s < 4; s++) {
+        BasisFunction* f = m_basisFunction;
+        uint n = f->nOrbitals();
+        QData = new double[n*n*n*n];
+        Q = new double***[n];
+        for(int p = 0; p < n; p++) {
+            Q[p] = new double**[n];
+            for(int r = 0; r < n; r++) {
+                Q[p][r] = new double *[n];
+                for(int q = 0; q < n; q++) {
+                    Q[p][r][q] = &QData[n*n*n*p + n*n*r + n*q];
+                    for(int s = 0; s < n; s++) {
                         Q[p][r][q][s] = 0;
                     }
                 }
@@ -117,8 +76,10 @@ void HartreeSolver::allocateQMemory() {
 
 void HartreeSolver::cleanUpQMemory() {
     if(isQAllocated) {
-        for (uint i = 0; i < 4; ++i) {
-            for (uint j = 0; j < 4; ++j){
+        BasisFunction* f = m_basisFunction;
+        uint n = f->nOrbitals();
+        for (uint i = 0; i < n; ++i) {
+            for (uint j = 0; j < n; ++j){
                 delete [] Q[i][j];
             }
             delete [] Q[i];
@@ -129,11 +90,13 @@ void HartreeSolver::cleanUpQMemory() {
 }
 
 void HartreeSolver::setupQ() {
-    for(int p = 0; p < 4; p++) {
-        for(int r = 0; r < 4; r++) {
-            for(int q = 0; q < 4; q++) {
-                for(int s = 0; s < 4; s++) {
-                    Q[p][r][q][s] = matrixElement(p, r, q, s);
+    BasisFunction* f = m_basisFunction;
+    uint n = f->nOrbitals();
+    for(int p = 0; p < n; p++) {
+        for(int r = 0; r < n; r++) {
+            for(int q = 0; q < n; q++) {
+                for(int s = 0; s < n; s++) {
+                    Q[p][r][q][s] = f->electronInteractionIntegral(p, r, q, s);
                 }
             }
         }
@@ -141,8 +104,10 @@ void HartreeSolver::setupQ() {
 }
 
 void HartreeSolver::resetC() {
+    BasisFunction* f = m_basisFunction;
+    uint n = f->nOrbitals();
     C.reset();
-    C = ones(4);
+    C = ones(n);
 }
 
 void HartreeSolver::advance() {
@@ -166,16 +131,19 @@ void HartreeSolver::advance() {
 
     double energy = 0;
 
-    for(int p = 0; p < 4; p++) {
-        for(int q = 0; q < 4; q++) {
+    BasisFunction* f = m_basisFunction;
+    uint n = f->nOrbitals();
+
+    for(int p = 0; p < n; p++) {
+        for(int q = 0; q < n; q++) {
             energy += 2 * C(p) * C(q) * h(p,q);
         }
     }
 
-    for(int p = 0; p < 4; p++) {
-        for(int q = 0; q < 4; q++) {
-            for(int r = 0; r < 4; r++) {
-                for(int s = 0; s < 4; s++) {
+    for(int p = 0; p < n; p++) {
+        for(int q = 0; q < n; q++) {
+            for(int r = 0; r < n; r++) {
+                for(int s = 0; s < n; s++) {
                     energy += Q[p][r][s][q] * C(p) * C(q) * C(r) * C(s);
                 }
             }
@@ -197,12 +165,14 @@ void HartreeSolver::normalizeCwithRegardsToS(){
 }
 
 void HartreeSolver::setupF() {
-    F = zeros(4,4);
-    for(int p = 0; p < 4; p++) {
-        for(int q = 0; q < 4; q++) {
+    BasisFunction* f = m_basisFunction;
+    uint n = f->nOrbitals();
+    F = zeros(n,n);
+    for(int p = 0; p < n; p++) {
+        for(int q = 0; q < n; q++) {
             F(p,q) = h(p,q);
-            for(int r = 0; r < 4; r++) {
-                for(int s = 0; s < 4; s++) {
+            for(int r = 0; r < n; r++) {
+                for(int s = 0; s < n; s++) {
                     F(p,q) += Q[p][r][q][s] * C(r) * C(s);
                 }
             }
