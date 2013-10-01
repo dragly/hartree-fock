@@ -113,8 +113,6 @@ void HartreeSolver::resetC() {
 void HartreeSolver::advance() {
     normalizeCwithRegardsToS();
     setupF();
-    cout << "FFFFFF" << endl;
-    cout << F << endl;
 
     vec s;
     mat U;
@@ -152,11 +150,6 @@ void HartreeSolver::advance() {
         }
     }
     m_energy = energy;
-
-    cout << C << endl;
-    cout << F << endl;
-    cout << h << endl;
-    cout << S << endl;
 }
 
 void HartreeSolver::normalizeCwithRegardsToS(){

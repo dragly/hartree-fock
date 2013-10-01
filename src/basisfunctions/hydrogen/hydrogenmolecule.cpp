@@ -1,7 +1,10 @@
 #include "hydrogenmolecule.h"
 
+#include <fstream>
+
 HydrogenMolecule::HydrogenMolecule(double distance)
 {
+
     alpha = zeros(4);
     alpha(0) = 13.00773;
     alpha(1) = 1.962079;
@@ -13,28 +16,31 @@ HydrogenMolecule::HydrogenMolecule(double distance)
     R(1,0) = distance;
 }
 
+HydrogenMolecule::~HydrogenMolecule()
+{
+}
+
 double HydrogenMolecule::electronInteractionIntegral(int p, int r, int q, int s) {
     int pIndex = p % nOrbitalsPerNuclei;
     int qIndex = q % nOrbitalsPerNuclei;
     int rIndex = r % nOrbitalsPerNuclei;
     int sIndex = s % nOrbitalsPerNuclei;
 
-    double A = alpha[pIndex] + alpha[qIndex];
-    double B = alpha[rIndex] + alpha[sIndex];
-
     int Rp = p / nOrbitalsPerNuclei;
     int Rq = q / nOrbitalsPerNuclei;
     int Rr = r / nOrbitalsPerNuclei;
-    int Rs = p / nOrbitalsPerNuclei;
+    int Rs = s / nOrbitalsPerNuclei;
 
-    rowvec Ra = (alpha[p]*R.row(Rp) + alpha[q]*R.row(Rq))/A;
-    rowvec Rb = (alpha[r]*R.row(Rr) + alpha[s]*R.row(Rs))/B;
+    double A = alpha[pIndex] + alpha[qIndex];
+    double B = alpha[rIndex] + alpha[sIndex];
+
+    rowvec Ra = (alpha[pIndex]*R.row(Rp) + alpha[qIndex]*R.row(Rq))/A;
+    rowvec Rb = (alpha[rIndex]*R.row(Rr) + alpha[sIndex]*R.row(Rs))/B;
 
 
     double t = (A*B/(A + B))*dot(Ra-Rb,Ra-Rb);
 
     double arg = 2*sqrt(A*B/(acos(-1)*(A+B)))*errorFunction(t)*overlapIntegral(p,q)*overlapIntegral(s,r);
-    cout << arg << endl;
     return arg;
 }
 

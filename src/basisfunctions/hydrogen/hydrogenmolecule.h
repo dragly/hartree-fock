@@ -4,6 +4,7 @@
 #include <src/basisfunctions/basisfunction.h>
 
 #include <armadillo>
+#include <fstream>
 
 using namespace arma;
 
@@ -11,6 +12,7 @@ class HydrogenMolecule : public BasisFunction
 {
 public:
     HydrogenMolecule(double distance = 1.4);
+    virtual ~HydrogenMolecule();
 
     virtual double electronInteractionIntegral(int p, int r, int q, int s);
     virtual double kineticIntegral(int p, int q);
