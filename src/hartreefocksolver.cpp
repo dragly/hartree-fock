@@ -169,8 +169,7 @@ void HartreeFockSolver::advance() {
         for(uint q = 0; q < no; q++) {
             for(uint r = 0; r < no; r++) {
                 for(uint s = 0; s < no; s++) {
-                    energy += Qtilde(p, q, r, s) * C(p,0) * C(q,0) * C(r,0) * C(s,0);
-//                    energy += Q[p][r][q][s] * C(p) * C(q) * C(r) * C(s);
+                    energy += 0.25 * Qtilde(p, q, r, s) * P(p,q) * P(r,s);
                 }
             }
         }
@@ -209,9 +208,7 @@ void HartreeFockSolver::setupF() {
             F(p,q) = h(p,q);
             for(uint r = 0; r < n; r++) {
                 for(uint s = 0; s < n; s++) {
-//                    F(p,q) += P(r,s) * (2 * Q[p][r][q][s] - Q[p][r][s][q]);
-//                    F(p,q) += Q[p][r][q][s] * C(r,0) * C(s,0);
-                    F(p,q) += Qtilde(p, q, r, s) * C(r,0) * C(s,0);
+                    F(p,q) += 0.5 * Qtilde(p, q, r, s) * P(r,s);
                 }
             }
         }
