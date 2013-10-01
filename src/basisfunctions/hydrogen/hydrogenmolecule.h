@@ -18,6 +18,7 @@ public:
     virtual double overlapIntegral(int p, int q);
 
     virtual uint nOrbitals();
+    virtual uint nParticles();
 
     mat R;
 
@@ -32,5 +33,14 @@ private:
     int nNuclei = 2;
     int nOrbitalsPerNuclei = 4;
 };
+
+inline uint HydrogenMolecule::nParticles() {
+    return 2;
+}
+
+inline uint HydrogenMolecule::nOrbitals()
+{
+    return nNuclei * nOrbitalsPerNuclei;
+}
 
 #endif // HYDROGENMOLECULE_H

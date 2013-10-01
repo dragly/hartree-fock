@@ -1,6 +1,7 @@
 #include <iostream>
 #include <unittest++/UnitTest++.h>
 #include <src/hartreesolver.h>
+#include <src/hartreefocksolver.h>
 #include <src/basisfunctions/helium/heliumhartree.h>
 #include <src/basisfunctions/hydrogen/hydrogenmolecule.h>
 
@@ -9,7 +10,7 @@
 using namespace std;
 
 TEST(MatrixElement) {
-    HeliumHartree basisFunction;
+    Helium basisFunction;
     int p = 0;
     int q = 1;
     int r = 2;
@@ -21,7 +22,7 @@ TEST(MatrixElement) {
 }
 
 TEST(KineticIntegral) {
-    HeliumHartree basisFunction;
+    Helium basisFunction;
     int p = 0;
     int q = 3;
 
@@ -31,7 +32,7 @@ TEST(KineticIntegral) {
 }
 
 TEST(NuclearAttractionIntegral) {
-    HeliumHartree basisFunction;
+    Helium basisFunction;
     int p = 1;
     int q = 2;
 
@@ -41,7 +42,7 @@ TEST(NuclearAttractionIntegral) {
 }
 
 TEST(OverlapIntegral) {
-    HeliumHartree basisFunction;
+    Helium basisFunction;
     int p = 3;
     int q = 2;
 
@@ -51,7 +52,7 @@ TEST(OverlapIntegral) {
 }
 
 TEST(HeliumAdvanceMany) {
-    HeliumHartree basisFunction;
+    Helium basisFunction;
     HartreeSolver solver(&basisFunction);
     solver.reset();
     for(int i = 0; i < 500; i++) {
@@ -80,40 +81,45 @@ TEST(HydrogenNuclearAttractionIntegral)  {
 }
 
 TEST(HydrogenAdvanceMany) {
-    HydrogenMolecule basisFunction;
+    HydrogenMolecule basisFunction(1.0);
     HartreeSolver solver(&basisFunction);
     solver.reset();
-    for(int i = 0; i < 500; i++) {
+    for(int i = 0; i < 1; i++) {
         solver.advance();
     }
     cout << "Energy: " << solver.energy() << endl;
     cout << "Energy with repulsion: " << solver.energy() + basisFunction.nuclearRepulsion() << endl;
 }
 
-TEST(HydrogenPlot) {
-    vec distances = linspace(1.0, 4.0, 100);
-    std::ofstream energyFile;
-    energyFile.open("energies.dat");
-    for(double distance : distances) {
-        cout << distance << endl;
-        HydrogenMolecule basisFunction(distance);
-        HartreeSolver solver(&basisFunction);
-        solver.reset();
-        for(int i = 0; i < 100; i++) {
-            solver.advance();
-        }
-        double energy = solver.energy() + basisFunction.nuclearRepulsion();
-        energyFile << distance << " " << energy << "\n";
-    }
-    energyFile.close();
-}
+//TEST(HydrogenAdvanceManyHF) {
+//    cout << "Hydrogen with HF:" << endl;
+//    HydrogenMolecule basisFunction(1.0);
+//    HartreeFockSolver solver(&basisFunction);
+//    solver.reset();
+//    for(int i = 0; i < 500; i++) {
+//        solver.advance();
+//    }
+//    cout << "Energy: " << solver.energy() << endl;
+//    cout << "Energy with repulsion: " << solver.energy() + basisFunction.nuclearRepulsion() << endl;
+//}
 
-TEST(DiagMat) {
-//    mat A = randu(5,5);
-//    cout << A << endl;
-//    mat B = diagmat(A);
-//    cout << B << endl;
-}
+//TEST(HydrogenPlot) {
+//    vec distances = linspace(1.0, 4.0, 100);
+//    std::ofstream energyFile;
+//    energyFile.open("energies.dat");
+//    for(double distance : distances) {
+//        cout << distance << endl;
+//        HydrogenMolecule basisFunction(distance);
+//        HartreeSolver solver(&basisFunction);
+//        solver.reset();
+//        for(int i = 0; i < 100; i++) {
+//            solver.advance();
+//        }
+//        double energy = solver.energy() + basisFunction.nuclearRepulsion();
+//        energyFile << distance << " " << energy << "\n";
+//    }
+//    energyFile.close();
+//}
 
 int main()
 {

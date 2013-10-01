@@ -1,6 +1,6 @@
 #include "heliumhartree.h"
 
-HeliumHartree::HeliumHartree()
+Helium::Helium()
 {
     alpha = zeros(4);
     alpha(0) = 0.298073;
@@ -9,7 +9,7 @@ HeliumHartree::HeliumHartree()
     alpha(3) = 38.474970;
 }
 
-double HeliumHartree::electronInteractionIntegral(int p, int r, int q, int s) {
+double Helium::electronInteractionIntegral(int p, int r, int q, int s) {
     double denominator = (alpha(p) + alpha(q))*(alpha(r) + alpha(s))*sqrt(alpha(p) + alpha(q) + alpha(r) + alpha(s));
     return 2 * powPi5over2 / denominator;
 }
@@ -21,7 +21,7 @@ double HeliumHartree::electronInteractionIntegral(int p, int r, int q, int s) {
  * \param q
  * \return
  */
-double HeliumHartree::kineticIntegral(int p, int q) {
+double Helium::kineticIntegral(int p, int q) {
     double alpha_p = alpha(p);
     double alpha_q = alpha(q);
     return 3*pow(M_PI, 3.0/2.0)*alpha_q/(pow(alpha_p, 3.0/2.0)*pow(1 + alpha_q/alpha_p, 5.0/2.0));
@@ -34,19 +34,19 @@ double HeliumHartree::kineticIntegral(int p, int q) {
  * \param q
  * \return
  */
-double HeliumHartree::nuclearAttractionIntegral(int p, int q) {
+double Helium::nuclearAttractionIntegral(int p, int q) {
     double alpha_p = alpha(p);
     double alpha_q = alpha(q);
     return -4*M_PI/(alpha_p*(1 + alpha_q/alpha_p));
 }
 
-double HeliumHartree::overlapIntegral(int p, int q) {
+double Helium::overlapIntegral(int p, int q) {
     double alpha_p = alpha(p);
     double alpha_q = alpha(q);
     return pow(M_PI, 3.0/2.0)/(pow(alpha_p, 3.0/2.0)*pow(1 + alpha_q/alpha_p, 3.0/2.0));
 }
 
-uint HeliumHartree::nOrbitals()
+uint Helium::nOrbitals()
 {
     return 4;
 }

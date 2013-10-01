@@ -34,7 +34,7 @@ double HydrogenMolecule::electronInteractionIntegral(int p, int r, int q, int s)
     double t = (A*B/(A + B))*dot(Ra-Rb,Ra-Rb);
 
     double arg = 2*sqrt(A*B/(acos(-1)*(A+B)))*errorFunction(t)*overlapIntegral(p,q)*overlapIntegral(s,r);
-
+    cout << arg << endl;
     return arg;
 }
 
@@ -139,9 +139,4 @@ double HydrogenMolecule::overlapIntegral(int p, int q) {
     double overlap = pow(acos(-1)*factor,3.0/2.0)*expTerm;
 
     return overlap;
-}
-
-uint HydrogenMolecule::nOrbitals()
-{
-    return nNuclei * nOrbitalsPerNuclei;
 }

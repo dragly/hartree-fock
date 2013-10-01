@@ -7,10 +7,10 @@
 
 using namespace arma;
 
-class HeliumHartree : public BasisFunction
+class Helium : public BasisFunction
 {
 public:
-    HeliumHartree();
+    Helium();
 
     virtual double electronInteractionIntegral(int p, int r, int q, int s);
     virtual double kineticIntegral(int p, int q);
@@ -18,11 +18,16 @@ public:
     virtual double overlapIntegral(int p, int q);
 
     virtual uint nOrbitals();
+    virtual uint nParticles();
 
     vec alpha;
 
     // Constants to be precalculated
     const double powPi5over2 = pow(M_PI, 5./2.);
 };
+
+inline uint Helium::nParticles() {
+    return 2;
+}
 
 #endif // HELIUMHARTREE_H

@@ -58,13 +58,13 @@ void HartreeSolver::allocateQMemory() {
         uint n = f->nOrbitals();
         QData = new double[n*n*n*n];
         Q = new double***[n];
-        for(int p = 0; p < n; p++) {
+        for(uint p = 0; p < n; p++) {
             Q[p] = new double**[n];
-            for(int r = 0; r < n; r++) {
+            for(uint r = 0; r < n; r++) {
                 Q[p][r] = new double *[n];
-                for(int q = 0; q < n; q++) {
+                for(uint q = 0; q < n; q++) {
                     Q[p][r][q] = &QData[n*n*n*p + n*n*r + n*q];
-                    for(int s = 0; s < n; s++) {
+                    for(uint s = 0; s < n; s++) {
                         Q[p][r][q][s] = 0;
                     }
                 }
@@ -92,10 +92,10 @@ void HartreeSolver::cleanUpQMemory() {
 void HartreeSolver::setupQ() {
     BasisFunction* f = m_basisFunction;
     uint n = f->nOrbitals();
-    for(int p = 0; p < n; p++) {
-        for(int r = 0; r < n; r++) {
-            for(int q = 0; q < n; q++) {
-                for(int s = 0; s < n; s++) {
+    for(uint p = 0; p < n; p++) {
+        for(uint r = 0; r < n; r++) {
+            for(uint q = 0; q < n; q++) {
+                for(uint s = 0; s < n; s++) {
                     Q[p][r][q][s] = f->electronInteractionIntegral(p, r, q, s);
                 }
             }
@@ -113,6 +113,8 @@ void HartreeSolver::resetC() {
 void HartreeSolver::advance() {
     normalizeCwithRegardsToS();
     setupF();
+    cout << "FFFFFF" << endl;
+    cout << F << endl;
 
     vec s;
     mat U;
@@ -144,12 +146,17 @@ void HartreeSolver::advance() {
         for(int q = 0; q < n; q++) {
             for(int r = 0; r < n; r++) {
                 for(int s = 0; s < n; s++) {
-                    energy += Q[p][r][s][q] * C(p) * C(q) * C(r) * C(s);
+                    energy += Q[p][r][q][s] * C(p) * C(q) * C(r) * C(s);
                 }
             }
         }
     }
     m_energy = energy;
+
+    cout << C << endl;
+    cout << F << endl;
+    cout << h << endl;
+    cout << S << endl;
 }
 
 void HartreeSolver::normalizeCwithRegardsToS(){
@@ -170,7 +177,6 @@ void HartreeSolver::setupF() {
     F = zeros(n,n);
     for(int p = 0; p < n; p++) {
         for(int q = 0; q < n; q++) {
-            F(p,q) = h(p,q);
             for(int r = 0; r < n; r++) {
                 for(int s = 0; s < n; s++) {
                     F(p,q) += Q[p][r][q][s] * C(r) * C(s);
@@ -178,4 +184,5 @@ void HartreeSolver::setupF() {
             }
         }
     }
+    F = F + h;
 }

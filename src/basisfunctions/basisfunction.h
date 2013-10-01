@@ -14,6 +14,7 @@ public:
     virtual double overlapIntegral(int p, int q) = 0;
 
     virtual uint nOrbitals() = 0;
+    virtual uint nParticles() = 0;
 };
 
 #endif // BASISFUNCTION_H
