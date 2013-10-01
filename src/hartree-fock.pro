@@ -8,14 +8,16 @@ SOURCES += main.cpp \
     math/vector3.cpp \
     basisfunctions/basisfunction.cpp \
     basisfunctions/helium/heliumhartree.cpp \
-    basisfunctions/hydrogen/hydrogenmolecule.cpp
+    basisfunctions/hydrogen/hydrogenmolecule.cpp \
+    hartreefocksolver.cpp
 
 HEADERS += \
     hartreesolver.h \
     math/vector3.h \
     basisfunctions/basisfunction.h \
     basisfunctions/helium/heliumhartree.h \
-    basisfunctions/hydrogen/hydrogenmolecule.h
+    basisfunctions/hydrogen/hydrogenmolecule.h \
+    hartreefocksolver.h
 
 LIBS += -larmadillo -llapack -lblas
 
