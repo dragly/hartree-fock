@@ -138,30 +138,9 @@ void HartreeFockSolver::advance() {
 
     double energy = 0;
 
-//    for(uint p = 0; p < no; p++) {
-//        for(uint q = 0; q < no; q++) {
-//            energy += P(p,q) * h(p,q);
-//        }
-//    }
-
-//    for(uint k = 0; k < nk; k++) {
-//        energy += eps(k);
-//    }
-
-//    energy *= 0.5;
-
-//    for(int p = 0; p < n; p++) {
-//        for(int q = 0; q < n; q++) {
-//            for(int r = 0; r < n; r++) {
-//                for(int s = 0; s < n; s++) {
-//                    energy += Q[p][r][s][q] * C(p) * C(q) * C(r) * C(s);
-//                }
-//            }
-//        }
-//    }
     for(uint p = 0; p < no; p++) {
         for(uint q = 0; q < no; q++) {
-            energy += 2 * C(p,0) * C(q,0) * h(p,q);
+            energy += P(p,q) * h(p,q);
         }
     }
 
