@@ -131,7 +131,7 @@ void HartreeFockSolver::advance() {
     eig_sym(eps, Cmat, F);
 
 
-    C = V*Cmat.col(0); // submat(0,0,f->nOrbitals() - 1, f->nParticles() / 2 - 1);
+    C = V*Cmat.submat(0, 0, no - 1, nk - 1);
     normalizeCwithRegardsToS();
 
     setupP();
@@ -166,10 +166,9 @@ void HartreeFockSolver::normalizeCwithRegardsToS(){
         double factor = 0.0;
         for(uint p = 0; p < no; p++){
             for(uint q = 0; q < no; q++){
-                factor += C(p,k) * S(p,q) * C(q, k);
+                factor += C(p,k) * S(p,q) * C(q,k);
             }
         }
-
         C.col(k) = C.col(k) / sqrt(factor);
     }
 }

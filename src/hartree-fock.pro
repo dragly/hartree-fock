@@ -9,7 +9,8 @@ SOURCES += main.cpp \
     basisfunctions/basisfunction.cpp \
     basisfunctions/helium/heliumhartree.cpp \
     basisfunctions/hydrogen/hydrogenmolecule.cpp \
-    hartreefocksolver.cpp
+    hartreefocksolver.cpp \
+    basisfunctions/hydrogen/multihydrogen.cpp
 
 HEADERS += \
     hartreesolver.h \
@@ -17,7 +18,8 @@ HEADERS += \
     basisfunctions/basisfunction.h \
     basisfunctions/helium/heliumhartree.h \
     basisfunctions/hydrogen/hydrogenmolecule.h \
-    hartreefocksolver.h
+    hartreefocksolver.h \
+    basisfunctions/hydrogen/multihydrogen.h
 
 LIBS += -larmadillo -llapack -lblas
 
