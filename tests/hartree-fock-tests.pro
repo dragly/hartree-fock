@@ -8,7 +8,8 @@ CONFIG -= qt
 LIBS += -lunittest++
 
 SOURCES += main.cpp \
-    hydrogenplot.cpp
+    hydrogenplot.cpp \
+    helium-tests.cpp
 
 SOURCES += $$system(find $$SRC_DIR -name \'*.cpp\')
 SOURCES = $$replace(SOURCES, $$SRC_DIR/main.cpp, )

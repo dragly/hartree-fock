@@ -21,10 +21,12 @@ public:
     virtual uint nOrbitals();
     virtual uint nParticles();
 
-    vec alpha;
+    rowvec alpha;
 
     // Constants to be precalculated
     const double powPi5over2 = pow(M_PI, 5./2.);
+    double banana() const;
+    void setBanana(double banana);
 };
 
 inline uint Helium::nParticles() {

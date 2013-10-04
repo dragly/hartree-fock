@@ -27,7 +27,7 @@ private:
     mat h;
     mat S;
     mat F;
-    vec C;
+    rowvec C;
 
     double ****Q;
 

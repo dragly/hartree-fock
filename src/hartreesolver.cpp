@@ -134,16 +134,16 @@ void HartreeSolver::advance() {
     ElectronSystem* f = m_basisFunction;
     uint n = f->nOrbitals();
 
-    for(int p = 0; p < n; p++) {
-        for(int q = 0; q < n; q++) {
+    for(uint p = 0; p < n; p++) {
+        for(uint q = 0; q < n; q++) {
             energy += 2 * C(p) * C(q) * h(p,q);
         }
     }
 
-    for(int p = 0; p < n; p++) {
-        for(int q = 0; q < n; q++) {
-            for(int r = 0; r < n; r++) {
-                for(int s = 0; s < n; s++) {
+    for(uint p = 0; p < n; p++) {
+        for(uint q = 0; q < n; q++) {
+            for(uint r = 0; r < n; r++) {
+                for(uint s = 0; s < n; s++) {
                     energy += Q[p][r][q][s] * C(p) * C(q) * C(r) * C(s);
                 }
             }
@@ -168,10 +168,10 @@ void HartreeSolver::setupF() {
     ElectronSystem* f = m_basisFunction;
     uint n = f->nOrbitals();
     F = zeros(n,n);
-    for(int p = 0; p < n; p++) {
-        for(int q = 0; q < n; q++) {
-            for(int r = 0; r < n; r++) {
-                for(int s = 0; s < n; s++) {
+    for(uint p = 0; p < n; p++) {
+        for(uint q = 0; q < n; q++) {
+            for(uint r = 0; r < n; r++) {
+                for(uint s = 0; s < n; s++) {
                     F(p,q) += Q[p][r][q][s] * C(r) * C(s);
                 }
             }

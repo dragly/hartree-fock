@@ -128,7 +128,7 @@ double MultiHydrogen::nuclearAttractionIntegral(int p, int q) {
 
     double errorFunctionSum = 0;
 
-    for(int i = 0; i < m_nNuclei; i++) {
+    for(uint i = 0; i < m_nNuclei; i++) {
         errorFunctionSum += errorFunction(apPlusAq*dot(RP-R.row(i),RP-R.row(i)));
     }
 

@@ -10,7 +10,8 @@ SOURCES += main.cpp \
     electronsystems/hydrogen/hydrogenmolecule.cpp \
     hartreefocksolver.cpp \
     electronsystems/hydrogen/multihydrogen.cpp \
-    electronsystems/electronsystem.cpp
+    electronsystems/electronsystem.cpp \
+    basisfunctions/gaussiantypeorbital.cpp
 
 HEADERS += \
     hartreesolver.h \
@@ -19,7 +20,8 @@ HEADERS += \
     electronsystems/helium/heliumhartree.h \
     electronsystems/hydrogen/hydrogenmolecule.h \
     hartreefocksolver.h \
-    electronsystems/hydrogen/multihydrogen.h
+    electronsystems/hydrogen/multihydrogen.h \
+    basisfunctions/gaussiantypeorbital.h
 
 LIBS += -larmadillo -llapack -lblas
 

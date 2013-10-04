@@ -11,7 +11,7 @@ class ElectronSystem;
 class HartreeFockSolver
 {
 public:
-    explicit HartreeFockSolver(ElectronSystem *basisFunction);
+    explicit HartreeFockSolver(ElectronSystem *electronSystem);
 
     virtual ~HartreeFockSolver();
 
@@ -20,8 +20,8 @@ public:
     void reset();
     void advance();
 
-    inline void setBasisFunction(ElectronSystem *basisFunction);
-    ElectronSystem *basisFunction();
+    inline void setElectronSystem(ElectronSystem *electronSystem);
+    ElectronSystem *electronSystem();
 
     inline double energy();
 private:
@@ -33,7 +33,7 @@ private:
 
     double ****Q;
 
-    ElectronSystem *m_basisFunction;
+    ElectronSystem *m_electronSystem;
 
     void resetC();
     void setupF();
@@ -54,12 +54,12 @@ private:
     double m_energy = 0;
 };
 
-inline void HartreeFockSolver::setBasisFunction(ElectronSystem *basisFunction) {
-    m_basisFunction = basisFunction;
+inline void HartreeFockSolver::setElectronSystem(ElectronSystem *basisFunction) {
+    m_electronSystem = basisFunction;
 }
 
-inline ElectronSystem *HartreeFockSolver::basisFunction() {
-    return m_basisFunction;
+inline ElectronSystem *HartreeFockSolver::electronSystem() {
+    return m_electronSystem;
 }
 
 inline double HartreeFockSolver::energy()
