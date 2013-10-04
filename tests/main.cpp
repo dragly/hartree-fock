@@ -2,9 +2,9 @@
 #include <unittest++/UnitTest++.h>
 #include <src/hartreesolver.h>
 #include <src/hartreefocksolver.h>
-#include <src/basisfunctions/helium/heliumhartree.h>
-#include <src/basisfunctions/hydrogen/hydrogenmolecule.h>
-#include <src/basisfunctions/hydrogen/multihydrogen.h>
+#include <src/electronsystems/helium/heliumhartree.h>
+#include <src/electronsystems/hydrogen/hydrogenmolecule.h>
+#include <src/electronsystems/hydrogen/multihydrogen.h>
 
 #include <fstream>
 
@@ -88,7 +88,7 @@ TEST(HydrogenAdvanceMany) {
         solver.advance();
     }
     cout << "Energy: " << solver.energy() << endl;
-    cout << "Energy with repulsion: " << solver.energy() + basisFunction.nuclearRepulsion() << endl;
+    cout << "Energy with repulsion: " << solver.energy() << endl;
 }
 
 TEST(HydrogenAdvanceManyHF) {
@@ -99,7 +99,7 @@ TEST(HydrogenAdvanceManyHF) {
         solver.advance();
     }
     cout << "Energy: " << solver.energy() << endl;
-    cout << "Energy with repulsion: " << solver.energy() + basisFunction.nuclearRepulsion() << endl;
+    cout << "Energy with repulsion: " << solver.energy() << endl;
 }
 
 TEST(MultiHydrogenAdvanceManyHF) {
@@ -115,14 +115,14 @@ TEST(MultiHydrogenAdvanceManyHF) {
         solver.advance();
     }
     cout << "Energy: " << solver.energy() << endl;
-    cout << "Energy with repulsion: " << solver.energy() + basisFunction.nuclearRepulsion() << endl;
+    cout << "Energy with repulsion: " << solver.energy() << endl;
 }
 
 TEST(MultiHydrogenAdvanceManyHFPlot) {
     cout << "MultiHydrogen with HF:" << endl;
 
-    vec xVec = linspace(-5, 5, 107);
-    vec yVec = linspace(-5, 5, 107);
+    vec xVec = linspace(-4, 4, 207);
+    vec yVec = linspace(-4, 4, 207);
 
     ofstream energyFile;
     ofstream xFile;
@@ -136,18 +136,20 @@ TEST(MultiHydrogenAdvanceManyHFPlot) {
         cout << "x: " << x << endl;
         for(uint j = 0; j < yVec.n_rows; j++) {
             double y = yVec(j);
-            mat nucleiPositions {0,0,0,
-                                0.8,0,0,
-                                 2.5,2.5,0,
-                                x,y,0};
-            nucleiPositions.reshape(3,4);
+            double R = 1.4;
+            double Rx = R / 2;
+            double Ry = sqrt(0.75)*R / 2;
+            mat nucleiPositions {-Rx, -Ry, 0.0,
+                                  Rx, -Ry, 0.0,
+                                  x,   y,   0.0};
+            nucleiPositions.reshape(3,3);
             nucleiPositions = nucleiPositions.t();
 
             bool skipCalculation = false;
             for(uint k = 0; k < nucleiPositions.n_rows; k++) {
                 for(uint l = k + 1; l < nucleiPositions.n_rows; l++) {
                     rowvec rDiff = nucleiPositions.row(k) - nucleiPositions.row(l);
-                    if(dot(rDiff, rDiff) < 1e-2) {
+                    if(dot(rDiff, rDiff) < 1e-4) {
                         skipCalculation = true;
                     }
                 }

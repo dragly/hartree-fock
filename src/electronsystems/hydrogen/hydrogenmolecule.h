@@ -1,18 +1,18 @@
-#ifndef MULTIHYDROGEN_H
-#define MULTIHYDROGEN_H
+#ifndef HYDROGENMOLECULE_H
+#define HYDROGENMOLECULE_H
 
-#include <src/basisfunctions/basisfunction.h>
+#include <src/electronsystems/electronsystem.h>
 
 #include <armadillo>
 #include <fstream>
 
 using namespace arma;
 
-class MultiHydrogen : public BasisFunction
+class HydrogenMolecule : public ElectronSystem
 {
 public:
-    MultiHydrogen(mat nucleiPositions);
-    virtual ~MultiHydrogen();
+    HydrogenMolecule(double distance = 1.4);
+    virtual ~HydrogenMolecule();
 
     virtual double electronInteractionIntegral(int p, int r, int q, int s);
     virtual double kineticIntegral(int p, int q);
@@ -30,19 +30,19 @@ public:
     const double powPi5over2 = pow(M_PI, 5./2.);
     double errorFunction(double arg);
 
-    double nuclearRepulsion();
+    virtual double additionalEnergyTerms();
 private:
-    uint m_nNuclei;
-    uint m_nOrbitalsPerNuclei;
+    int nNuclei = 2;
+    int nOrbitalsPerNuclei = 4;
 };
 
-inline uint MultiHydrogen::nParticles() {
-    return m_nNuclei;
+inline uint HydrogenMolecule::nParticles() {
+    return 2;
 }
 
-inline uint MultiHydrogen::nOrbitals()
+inline uint HydrogenMolecule::nOrbitals()
 {
-    return m_nNuclei * m_nOrbitalsPerNuclei;
+    return nNuclei * nOrbitalsPerNuclei;
 }
 
-#endif // MULTIHYDROGEN_H
+#endif // HYDROGENMOLECULE_H

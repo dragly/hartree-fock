@@ -6,20 +6,20 @@ CONFIG -= qt
 SOURCES += main.cpp \
     hartreesolver.cpp \
     math/vector3.cpp \
-    basisfunctions/basisfunction.cpp \
-    basisfunctions/helium/heliumhartree.cpp \
-    basisfunctions/hydrogen/hydrogenmolecule.cpp \
+    electronsystems/helium/heliumhartree.cpp \
+    electronsystems/hydrogen/hydrogenmolecule.cpp \
     hartreefocksolver.cpp \
-    basisfunctions/hydrogen/multihydrogen.cpp
+    electronsystems/hydrogen/multihydrogen.cpp \
+    electronsystems/electronsystem.cpp
 
 HEADERS += \
     hartreesolver.h \
     math/vector3.h \
-    basisfunctions/basisfunction.h \
-    basisfunctions/helium/heliumhartree.h \
-    basisfunctions/hydrogen/hydrogenmolecule.h \
+    electronsystems/electronsystem.h \
+    electronsystems/helium/heliumhartree.h \
+    electronsystems/hydrogen/hydrogenmolecule.h \
     hartreefocksolver.h \
-    basisfunctions/hydrogen/multihydrogen.h
+    electronsystems/hydrogen/multihydrogen.h
 
 LIBS += -larmadillo -llapack -lblas
 

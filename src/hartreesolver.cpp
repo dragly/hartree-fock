@@ -1,6 +1,6 @@
 #include "hartreesolver.h"
 
-#include <src/basisfunctions/basisfunction.h>
+#include <src/electronsystems/electronsystem.h>
 
 #include <armadillo>
 #include <iomanip>
@@ -8,7 +8,7 @@
 using namespace arma;
 using namespace std;
 
-HartreeSolver::HartreeSolver(BasisFunction *basisFunction) :
+HartreeSolver::HartreeSolver(ElectronSystem *basisFunction) :
     m_basisFunction(basisFunction)
 {
     cout << setprecision(20);
@@ -29,7 +29,7 @@ void HartreeSolver::reset() {
 }
 
 void HartreeSolver::setuph() {
-    BasisFunction* f = m_basisFunction;
+    ElectronSystem* f = m_basisFunction;
     uint n = f->nOrbitals();
     h.reset();
     h = zeros(n,n);
@@ -41,7 +41,7 @@ void HartreeSolver::setuph() {
 }
 
 void HartreeSolver::setupS() {
-    BasisFunction* f = m_basisFunction;
+    ElectronSystem* f = m_basisFunction;
     uint n = f->nOrbitals();
     S.reset();
     S = zeros(n,n);
@@ -54,7 +54,7 @@ void HartreeSolver::setupS() {
 
 void HartreeSolver::allocateQMemory() {
     if(!isQAllocated) {
-        BasisFunction* f = m_basisFunction;
+        ElectronSystem* f = m_basisFunction;
         uint n = f->nOrbitals();
         QData = new double[n*n*n*n];
         Q = new double***[n];
@@ -76,7 +76,7 @@ void HartreeSolver::allocateQMemory() {
 
 void HartreeSolver::cleanUpQMemory() {
     if(isQAllocated) {
-        BasisFunction* f = m_basisFunction;
+        ElectronSystem* f = m_basisFunction;
         uint n = f->nOrbitals();
         for (uint i = 0; i < n; ++i) {
             for (uint j = 0; j < n; ++j){
@@ -90,7 +90,7 @@ void HartreeSolver::cleanUpQMemory() {
 }
 
 void HartreeSolver::setupQ() {
-    BasisFunction* f = m_basisFunction;
+    ElectronSystem* f = m_basisFunction;
     uint n = f->nOrbitals();
     for(uint p = 0; p < n; p++) {
         for(uint r = 0; r < n; r++) {
@@ -104,7 +104,7 @@ void HartreeSolver::setupQ() {
 }
 
 void HartreeSolver::resetC() {
-    BasisFunction* f = m_basisFunction;
+    ElectronSystem* f = m_basisFunction;
     uint n = f->nOrbitals();
     C.reset();
     C = ones(n);
@@ -131,7 +131,7 @@ void HartreeSolver::advance() {
 
     double energy = 0;
 
-    BasisFunction* f = m_basisFunction;
+    ElectronSystem* f = m_basisFunction;
     uint n = f->nOrbitals();
 
     for(int p = 0; p < n; p++) {
@@ -165,7 +165,7 @@ void HartreeSolver::normalizeCwithRegardsToS(){
 }
 
 void HartreeSolver::setupF() {
-    BasisFunction* f = m_basisFunction;
+    ElectronSystem* f = m_basisFunction;
     uint n = f->nOrbitals();
     F = zeros(n,n);
     for(int p = 0; p < n; p++) {

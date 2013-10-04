@@ -6,12 +6,12 @@
 using namespace arma;
 
 // Forward declarations
-class BasisFunction;
+class ElectronSystem;
 
 class HartreeFockSolver
 {
 public:
-    explicit HartreeFockSolver(BasisFunction *basisFunction);
+    explicit HartreeFockSolver(ElectronSystem *basisFunction);
 
     virtual ~HartreeFockSolver();
 
@@ -20,7 +20,8 @@ public:
     void reset();
     void advance();
 
-    inline void setBasisFunction(BasisFunction *basisFunction);
+    inline void setBasisFunction(ElectronSystem *basisFunction);
+    ElectronSystem *basisFunction();
 
     inline double energy();
 private:
@@ -32,7 +33,7 @@ private:
 
     double ****Q;
 
-    BasisFunction *m_basisFunction;
+    ElectronSystem *m_basisFunction;
 
     void resetC();
     void setupF();
@@ -40,7 +41,6 @@ private:
     void setupQ();
     void setupS();
     void setuph();
-    void setupAlpha();
     void normalizeCwithRegardsToS();
     double Qtilde(int p, int q, int r, int s);
 
@@ -54,8 +54,12 @@ private:
     double m_energy = 0;
 };
 
-inline void HartreeFockSolver::setBasisFunction(BasisFunction *basisFunction) {
+inline void HartreeFockSolver::setBasisFunction(ElectronSystem *basisFunction) {
     m_basisFunction = basisFunction;
+}
+
+inline ElectronSystem *HartreeFockSolver::basisFunction() {
+    return m_basisFunction;
 }
 
 inline double HartreeFockSolver::energy()

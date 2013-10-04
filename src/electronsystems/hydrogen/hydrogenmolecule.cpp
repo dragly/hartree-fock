@@ -44,7 +44,7 @@ double HydrogenMolecule::electronInteractionIntegral(int p, int r, int q, int s)
     return arg;
 }
 
-double HydrogenMolecule::nuclearRepulsion() {
+double HydrogenMolecule::additionalEnergyTerms() {
     return 1/sqrt(dot(R.row(0) - R.row(1),R.row(0)- R.row(1)));
 }
 

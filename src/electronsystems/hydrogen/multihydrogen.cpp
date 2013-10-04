@@ -42,7 +42,7 @@ double MultiHydrogen::electronInteractionIntegral(int p, int r, int q, int s) {
     return arg;
 }
 
-double MultiHydrogen::nuclearRepulsion() {
+double MultiHydrogen::additionalEnergyTerms() {
     double repulsionEnergy = 0;
     for(uint i = 0; i < m_nNuclei; i++) {
         for(uint j = i + 1; j < m_nNuclei; j++) {

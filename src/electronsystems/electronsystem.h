@@ -1,12 +1,12 @@
-#ifndef BASISFUNCTION_H
-#define BASISFUNCTION_H
+#ifndef ELECTRONSYSTEM_H
+#define ELECTRONSYSTEM_H
 
 #include <sys/types.h>
 
-class BasisFunction
+class ElectronSystem
 {
 public:
-    BasisFunction();
+    ElectronSystem();
 
     virtual double electronInteractionIntegral(int p, int r, int q, int s) = 0;
     virtual double kineticIntegral(int p, int q) = 0;
@@ -15,6 +15,7 @@ public:
 
     virtual uint nOrbitals() = 0;
     virtual uint nParticles() = 0;
+    virtual double additionalEnergyTerms() = 0;
 };
 
-#endif // BASISFUNCTION_H
+#endif // ELECTRONSYSTEM_H

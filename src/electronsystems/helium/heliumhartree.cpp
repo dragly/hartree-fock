@@ -46,6 +46,11 @@ double Helium::overlapIntegral(int p, int q) {
     return pow(M_PI, 3.0/2.0)/(pow(alpha_p, 3.0/2.0)*pow(1 + alpha_q/alpha_p, 3.0/2.0));
 }
 
+double Helium::additionalEnergyTerms()
+{
+    return 0;
+}
+
 uint Helium::nOrbitals()
 {
     return 4;

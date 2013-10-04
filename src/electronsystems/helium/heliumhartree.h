@@ -1,13 +1,13 @@
 #ifndef HELIUMHARTREE_H
 #define HELIUMHARTREE_H
 
-#include <src/basisfunctions/basisfunction.h>
+#include <src/electronsystems/electronsystem.h>
 
 #include <armadillo>
 
 using namespace arma;
 
-class Helium : public BasisFunction
+class Helium : public ElectronSystem
 {
 public:
     Helium();
@@ -16,6 +16,7 @@ public:
     virtual double kineticIntegral(int p, int q);
     virtual double nuclearAttractionIntegral(int p, int q);
     virtual double overlapIntegral(int p, int q);
+    virtual double additionalEnergyTerms();
 
     virtual uint nOrbitals();
     virtual uint nParticles();
