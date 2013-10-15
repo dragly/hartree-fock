@@ -1,141 +1,58 @@
 #include "gaussiantypeorbital.h"
 
-using namespace std;
-using namespace arma;
-
-GaussianTypeOrbitalIntegrator::GaussianTypeOrbitalIntegrator() :
-    m_orbitalExponentA(0),
-    m_orbitalExponentB(0),
-    m_isDirty(true),
-    m_corePositionA(zeros<rowvec>(3)),
-    m_corePositionB(zeros<rowvec>(3))
+GaussianTypeOrbital::GaussianTypeOrbital(double weight, double exponent) :
+    m_xExponent(0),
+    m_yExponent(0),
+    m_zExponent(0)
 {
-    setMaxAngularMomentumA(0);
-    setMaxAngularMomentumB(0);
 }
 
-void GaussianTypeOrbitalIntegrator::reset() {
-    setupE();
-}
-
-void GaussianTypeOrbitalIntegrator::setupE() {
-    uint maxL = max(maxAngularMomentumA(), maxAngularMomentumB());
-    m_Ex = zeros(maxL + 1, maxL + 1, maxL + 1);
-    double a = m_orbitalExponentA;
-    double b = m_orbitalExponentB;
-    double mu = a * b / (a + b);
-    double xDiff = m_corePositionA(0) - m_corePositionB(0);
-    m_Ex(0,0,0) = exp(-mu * xDiff);
-
-    cout << m_Ex;
-}
-
-rowvec GaussianTypeOrbitalIntegrator::corePositionB() const
+double GaussianTypeOrbital::exponent() const
 {
-    return m_corePositionB;
+    return m_exponent;
 }
 
-void GaussianTypeOrbitalIntegrator::setCorePositionB(const rowvec &corePositionB)
+void GaussianTypeOrbital::setExponent(double exponent)
 {
-    m_corePositionB = corePositionB;
+    m_exponent = exponent;
 }
-rowvec GaussianTypeOrbitalIntegrator::corePositionA() const
+
+double GaussianTypeOrbital::weight() const
 {
-    return m_corePositionA;
+    return m_weight;
 }
 
-void GaussianTypeOrbitalIntegrator::setCorePositionA(const rowvec &corePositionA)
+void GaussianTypeOrbital::setWeight(double weight)
 {
-    m_corePositionA = corePositionA;
+    m_weight = weight;
 }
-
-rowvec GaussianTypeOrbitalIntegrator::overlapIntegrals(int maxAngularMomentum) {
-    int l = maxAngularMomentum;
-    l = 2;
-    return zeros(0);
-}
-
-uint GaussianTypeOrbitalIntegrator::maxAngularMomentumA() const
+int GaussianTypeOrbital::xExponent() const
 {
-    return m_maxAngularMomentumA;
+    return m_xExponent;
 }
 
-void GaussianTypeOrbitalIntegrator::setMaxAngularMomentumA(const uint &maxAngularMomentum)
+void GaussianTypeOrbital::setXExponent(int xExponent)
 {
-    m_maxAngularMomentumA = maxAngularMomentum;
-    if(maxAngularMomentum > 4) {
-        cout << "WARNING: Creating GTO orbitals for angular momentums over 4. Subshells s,p,d,f,g,?" << endl;
-    }
-    regenerateCombinationsA();
+    m_xExponent = xExponent;
 }
-
-void GaussianTypeOrbitalIntegrator::regenerateCombinationsA() {
-    regenerateCombinations(true);
-}
-
-void GaussianTypeOrbitalIntegrator::regenerateCombinationsB()
+int GaussianTypeOrbital::yExponent() const
 {
-    regenerateCombinations(false);
+    return m_yExponent;
 }
-double GaussianTypeOrbitalIntegrator::orbitalExponentB() const
+
+void GaussianTypeOrbital::setYExponent(int yExponent)
 {
-    return m_orbitalExponentB;
+    m_yExponent = yExponent;
 }
-
-void GaussianTypeOrbitalIntegrator::setOrbitalExponentB(double orbitalExponentB)
+int GaussianTypeOrbital::zExponent() const
 {
-    m_orbitalExponentB = orbitalExponentB;
+    return m_zExponent;
 }
 
-double GaussianTypeOrbitalIntegrator::orbitalExponentA() const
+void GaussianTypeOrbital::setZExponent(int zExponent)
 {
-    return m_orbitalExponentA;
-}
-
-void GaussianTypeOrbitalIntegrator::setOrbitalExponentA(double orbitalExponentA)
-{
-    m_orbitalExponentA = orbitalExponentA;
+    m_zExponent = zExponent;
 }
 
 
-vector<urowvec> GaussianTypeOrbitalIntegrator::combinationsB() const
-{
-    return m_combinationsB;
-}
 
-void GaussianTypeOrbitalIntegrator::regenerateCombinations(bool isA = true) {
-    m_isDirty = true;
-    vector<urowvec> combinations;
-    uint l = m_maxAngularMomentumA;
-    for(uint i = 0; i <= l; i++) {
-        for(uint j = 0; j <= l; j++) {
-            for(uint k = 0; k <= l; k++) {
-                if(i + j + k > l) {
-                    continue;
-                }
-                urowvec combination = {i, j, k};
-                combinations.push_back(combination);
-            }
-        }
-    }
-    if(isA) {
-        m_combinationsA = combinations;
-    } else {
-        m_combinationsB = combinations;
-    }
-}
-
-uint GaussianTypeOrbitalIntegrator::maxAngularMomentumB() const
-{
-    return m_maxAngularMomentumB;
-}
-
-void GaussianTypeOrbitalIntegrator::setMaxAngularMomentumB(const uint &maxAngularMomentumB)
-{
-    m_maxAngularMomentumB = maxAngularMomentumB;
-}
-
-vector<urowvec> GaussianTypeOrbitalIntegrator::combinationsA() const
-{
-    return m_combinationsA;
-}

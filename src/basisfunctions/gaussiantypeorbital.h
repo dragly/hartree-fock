@@ -2,65 +2,35 @@
 #define GAUSSIANTYPEORBITAL_H
 
 #include <armadillo>
-#include <vector>
 
 using namespace arma;
-using namespace std;
 
-class GaussianTypeOrbitalIntegrator
+class GaussianTypeOrbital
 {
 public:
-    GaussianTypeOrbitalIntegrator();
+    GaussianTypeOrbital(double weight = 0, double exponent = 0);
 
-    void setElectronPosition(const rowvec &electronPosition);
-    void updateCoreElectronVector();
+    double exponent() const;
+    void setExponent(double exponent);
 
-    rowvec corePositionB() const;
-    void setCorePositionB(const rowvec &corePositionB);
+    double weight() const;
+    void setWeight(double weight);
 
-    rowvec corePositionA() const;
-    void setCorePositionA(const rowvec &corePositionA);
+    int xExponent() const;
+    void setXExponent(int xExponent);
 
-    rowvec overlapIntegrals(int maxAngularMomentum);
+    int yExponent() const;
+    void setYExponent(int yExponent);
 
-    uint maxAngularMomentumA() const;
-    void setMaxAngularMomentumA(const uint &maxAngularMomentumA);
+    int zExponent() const;
+    void setZExponent(int zExponent);
 
-    uint maxAngularMomentumB() const;
-    void setMaxAngularMomentumB(const uint &maxAngularMomentumB);
-
-    vector<urowvec> combinationsA() const;
-    vector<urowvec> combinationsB() const;
-
-
-    double orbitalExponentA() const;
-    void setOrbitalExponentA(double orbitalExponentA);
-
-    double orbitalExponentB() const;
-    void setOrbitalExponentB(double orbitalExponentB);
-
-    void reset();
 private:
-    void regenerateCombinationsA();
-    void regenerateCombinationsB();
-    void regenerateCombinations(bool isA);
-
-    rowvec m_corePositionA;
-    rowvec m_corePositionB;
-    urowvec m_xyzPowers;
-    uint m_maxAngularMomentumA;
-    uint m_maxAngularMomentumB;
-
-    double m_orbitalExponentA;
-    double m_orbitalExponentB;
-
-    bool m_isDirty;
-
-    cube m_Ex; // t, i, j
-
-    vector<urowvec> m_combinationsA;
-    vector<urowvec> m_combinationsB;
-    void setupE();
+    double m_weight;
+    double m_exponent;
+    int m_xExponent;
+    int m_yExponent;
+    int m_zExponent;
 };
 
 #endif // GAUSSIANTYPEORBITAL_H

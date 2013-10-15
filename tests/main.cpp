@@ -10,6 +10,7 @@
 #include <src/electronsystems/helium/heliumhartree.h>
 #include <src/electronsystems/hydrogen/hydrogenmolecule.h>
 #include <src/basisfunctions/gaussiantypeorbital.h>
+#include <src/basisfunctions/gaussiantypeorbitalintegrator.h>
 #include <armadillo>
 #include <iostream>
 
@@ -169,15 +170,19 @@ SUITE(Old) {
 }
 
 SUITE(Development) {
-    TEST(GaussianTypeOrbital) {
+    TEST(GaussianTypeOrbitalIntegration) {
         GaussianTypeOrbitalIntegrator integrator;
-        rowvec posA = {1,2,3};
+        rowvec posA = {1.2,2.3,3.4};
         integrator.setCorePositionA(posA);
-        integrator.setOrbitalExponentA(0.1);
-        integrator.setOrbitalExponentB(0.2);
-        for(const urowvec& combination : integrator.combinationsA()) {
-            cout << combination << endl;
-        }
+//        rowvec posB = {1.2,2.3,3.4};
+//        integrator.setCorePositionB(posB);
+        integrator.setExponentA(0.2);
+        integrator.setExponentB(0.3);
+        integrator.setMaxAngularMomentumA(2);
+        integrator.setMaxAngularMomentumB(2);
+//        for(const urowvec& combination : integrator.combinationsA()) {
+//            cout << combination << endl;
+//        }
         integrator.reset();
     }
 }
