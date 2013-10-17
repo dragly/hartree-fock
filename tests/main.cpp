@@ -178,8 +178,8 @@ SUITE(Development) {
         integrator.setCorePositionB(posB);
         integrator.setExponentA(0.2);
         integrator.setExponentB(0.3);
-        integrator.setMaxAngularMomentumA(3);
-        integrator.setMaxAngularMomentumB(3);
+        integrator.setMaxAngularMomentumA(2);
+        integrator.setMaxAngularMomentumB(2);
 //        for(const urowvec& combination : integrator.combinationsA()) {
 //            cout << combination << endl;
 //        }
