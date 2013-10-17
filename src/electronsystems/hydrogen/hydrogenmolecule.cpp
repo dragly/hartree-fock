@@ -40,7 +40,7 @@ double HydrogenMolecule::electronInteractionIntegral(int p, int r, int q, int s)
 
     double t = (A*B/(A + B))*dot(Ra-Rb,Ra-Rb);
 
-    double arg = 2*sqrt(A*B/(acos(-1)*(A+B)))*errorFunction(t)*overlapIntegral(p,q)*overlapIntegral(s,r);
+    double arg = 2*sqrt(A*B/(acos(-1)*(A+B)))*boysFunction(t)*overlapIntegral(p,q)*overlapIntegral(s,r);
     return arg;
 }
 
@@ -48,7 +48,7 @@ double HydrogenMolecule::additionalEnergyTerms() {
     return 1/sqrt(dot(R.row(0) - R.row(1),R.row(0)- R.row(1)));
 }
 
-double HydrogenMolecule::errorFunction(double arg){
+double HydrogenMolecule::boysFunction(double arg){
 
     if (arg < 1.0E-6){
         return 1.0;
@@ -117,8 +117,8 @@ double HydrogenMolecule::nuclearAttractionIntegral(int p, int q) {
     rowvec Rmc = (ap*R.row(Rp) + aq*R.row(Rq))*factor;
 
 
-    double F0p = errorFunction(1.0/factor*dot(Rmc-R.row(0),Rmc-R.row(0)));
-    double F0q = errorFunction(1.0/factor*dot(Rmc-R.row(1),Rmc-R.row(1)));
+    double F0p = boysFunction(1.0/factor*dot(Rmc-R.row(0),Rmc-R.row(0)));
+    double F0q = boysFunction(1.0/factor*dot(Rmc-R.row(1),Rmc-R.row(1)));
 
     double nucAtt = -2*Z*factor*acos(-1)*expTerm*(F0p+F0q);
 

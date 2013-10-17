@@ -20,15 +20,23 @@ void GaussianTypeOrbitalIntegrator::reset() {
     setupE();
 }
 
+bool GaussianTypeOrbitalIntegrator::checkIndexCombinationForE(int iA, int iB, int t) {
+    if(t < 0 || t > (iA + iB) || iA < 0 || iB < 0) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 void GaussianTypeOrbitalIntegrator::setupE() {
     int maxL = max(maxAngularMomentumA(), maxAngularMomentumB());
     for(int dim = 0; dim < 3; dim++) {
-        int maxi = maxL + 3;
-        int maxj = maxL + 3;
+        int maxiA = maxL + 3;
+        int maxiB = maxL + 3;
         // Since we are only going to need E_i_j_0 for the integrals, we cap t to i and j to only have the
         // needed values available for the algorithm.
         int maxt = maxL + 3;
-        m_E[dim] = zeros(maxi, maxj, maxt);
+        m_E[dim] = zeros(maxiA, maxiB, maxt);
 
         const rowvec &A = m_corePositionA;
         const rowvec &B = m_corePositionB;
@@ -38,9 +46,14 @@ void GaussianTypeOrbitalIntegrator::setupE() {
         double p = a + b;
         double mu = a * b / (a + b);
         double dim_AB = A(dim) - B(dim);
-        double P_dim = (a * A(dim) + b * B(dim)) / p;
-        double dim_PA = P_dim - A(dim);
-        double dim_PB = P_dim - B(dim);
+        double dim_P = (a * A(dim) + b * B(dim)) / p;
+        double dim_PA = dim_P - A(dim);
+        double dim_PB = dim_P - B(dim);
+
+        cout << "p=" << p << endl;
+        cout << "mu=" << mu << endl;
+        cout << "dim_AB=" << dim_AB << endl;
+        cout << "P=" << dim_P << endl;
 
         cout << "dim_PA = " << dim_PA << endl;
         cout << "dim_PB = " << dim_PB << endl;
@@ -49,54 +62,55 @@ void GaussianTypeOrbitalIntegrator::setupE() {
 
         // First row is special
         m_E[dim](0,0,0) = exp(-mu * dim_AB * dim_AB);
+        cout << "KAB=" << m_E[dim](0,0,0) << endl;
         //    performed.push_back("000");
-        for(int j = 0; j < maxj; j++) {
+        for(int iB = 0; iB < maxiB; iB++) {
             for(int t = 0; t < maxt - 1; t++) {
-                int i = 0;
-                if(i == 0 && j == 0 && t == 0) {
+                int iA = 0;
+                if(iA == 0 && iB == 0 && t == 0) {
                     continue;
                 }
                 // p = previous, n = next
                 // E(t,i,j) = 1 / (2*p) * E(t-1,i,j-1) + XPA * E(t,i,j-1) + (t + 1)*E(t+1,i,j-1)
-                int jp = j - 1;
+                int iBp = iB - 1;
                 int tp = t - 1;
                 int tn = t + 1;
-                double E_i_jp_tp = 0;
-                if(!(tp < 0 || tp > (i + jp) || jp < 0)) {
-                    E_i_jp_tp = m_E[dim](i, jp, tp);
+                double E_iA_iBp_tp = 0;
+                if(checkIndexCombinationForE(iA, iBp, tp)) {
+                    E_iA_iBp_tp = m_E[dim](iA, iBp, tp);
                 }
-                double E_i_jp_t = 0;
-                if(!(t > (i + jp) || jp < 0)) {
-                    E_i_jp_t = m_E[dim](i, jp, t);
+                double E_iA_iBp_t = 0;
+                if(checkIndexCombinationForE(iA, iBp, t)) {
+                    E_iA_iBp_t = m_E[dim](iA, iBp, t);
                 }
-                double E_i_jp_tn = 0;
-                if(!(tn > (i + jp) || jp < 0)) {
-                    E_i_jp_tn = m_E[dim](i, jp, tn);
+                double E_iA_iBp_tn = 0;
+                if(checkIndexCombinationForE(iA, iBp, tn)) {
+                    E_iA_iBp_tn = m_E[dim](iA, iBp, tn);
                 }
-                m_E[dim](i,j,t) = 1 / (2*p) * E_i_jp_tp + dim_PB * E_i_jp_t +  (t + 1)*E_i_jp_tn;
+                m_E[dim](iA,iB,t) = 1 / (2*p) * E_iA_iBp_tp + dim_PB * E_iA_iBp_t +  (t + 1)*E_iA_iBp_tn;
             }
         }
-        for(int i = 1; i < maxi; i++) {
-            for(int j = 0; j < maxj; j++) {
+        for(int iA = 1; iA < maxiA; iA++) {
+            for(int iB = 0; iB < maxiB; iB++) {
                 for(int t = 0; t < maxt - 1; t++) {
                     // p = previous, n = next
                     // E(t,i,j) = 1 / (2*p) * E(t-1,i-1,j) + XPA * E(t,i-1,j) + (t + 1)*E(t+1,i-1,j)
-                    int ip = i - 1;
+                    int iAp = iA - 1;
                     int tp = t - 1;
                     int tn = t + 1;
-                    double E_ip_j_tp = 0;
-                    if(!(tp < 0 || tp > (ip + j) || ip < 0)) {
-                        E_ip_j_tp = m_E[dim](ip, j, tp);
+                    double E_iAp_iB_tp = 0;
+                    if(checkIndexCombinationForE(iAp, iB, tp)) {
+                        E_iAp_iB_tp = m_E[dim](iAp, iB, tp);
                     }
-                    double E_ip_j_t = 0;
-                    if(!(t > (ip + j) || ip < 0)) {
-                        E_ip_j_t = m_E[dim](ip, j, t);
+                    double E_iAp_iB_t = 0;
+                    if(checkIndexCombinationForE(iAp, iB, t)) {
+                        E_iAp_iB_t = m_E[dim](iAp, iB, t);
                     }
-                    double E_ip_j_tn = 0;
-                    if(!(tn > (ip + j) || ip < 0)) {
-                        E_ip_j_tn = m_E[dim](ip, j, tn);
+                    double E_iAp_iB_tn = 0;
+                    if(checkIndexCombinationForE(iAp, iB, tn)) {
+                        E_iAp_iB_tn = m_E[dim](iAp, iB, tn);
                     }
-                    m_E[dim](i,j,t) = 1 / (2*p) * E_ip_j_tp + dim_PA * E_ip_j_t +  (t + 1)*E_ip_j_tn;
+                    m_E[dim](iA,iB,t) = 1 / (2*p) * E_iAp_iB_tp + dim_PA * E_iAp_iB_t +  (t + 1)*E_iAp_iB_tn;
                 }
             }
         }

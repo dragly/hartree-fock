@@ -28,7 +28,7 @@ public:
 
     // Constants to be precalculated
     const double powPi5over2 = pow(M_PI, 5./2.);
-    double errorFunction(double arg);
+    double boysFunction(double arg);
 
     virtual double additionalEnergyTerms();
 private:

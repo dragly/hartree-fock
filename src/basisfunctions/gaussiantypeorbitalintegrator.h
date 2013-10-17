@@ -45,6 +45,7 @@ public:
 
     double kineticIntegral(int iA, int jA, int kA, int iB, int jB, int kB);
     double kineticIntegral(int dim, int iA, int iB);
+    bool checkIndexCombinationForE(int iA, int iB, int t);
 private:
     void regenerateCombinationsA();
     void regenerateCombinationsB();
