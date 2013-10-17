@@ -16,21 +16,9 @@ public:
     double weight() const;
     void setWeight(double weight);
 
-    int xExponent() const;
-    void setXExponent(int xExponent);
-
-    int yExponent() const;
-    void setYExponent(int yExponent);
-
-    int zExponent() const;
-    void setZExponent(int zExponent);
-
 private:
     double m_weight;
     double m_exponent;
-    int m_xExponent;
-    int m_yExponent;
-    int m_zExponent;
 };
 
 #endif // GAUSSIANTYPEORBITAL_H

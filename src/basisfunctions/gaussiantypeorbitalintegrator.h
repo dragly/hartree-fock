@@ -40,6 +40,11 @@ public:
     void setExponentB(double exponentB);
 
     void reset();
+    double overlapIntegral(int iA, int jA, int kA, int iB, int jB, int kB);
+    double overlapIntegral(int dim, int i, int j);
+
+    double kineticIntegral(int iA, int jA, int kA, int iB, int jB, int kB);
+    double kineticIntegral(int dim, int iA, int iB);
 private:
     void regenerateCombinationsA();
     void regenerateCombinationsB();
@@ -59,7 +64,7 @@ private:
 
     bool m_isDirty;
 
-    cube m_Ex; // t, i, j
+    cube m_E[3]; // t, i, j
 
     vector<urowvec> m_combinationsA;
     vector<urowvec> m_combinationsB;

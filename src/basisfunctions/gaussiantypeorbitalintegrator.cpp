@@ -22,134 +22,185 @@ void GaussianTypeOrbitalIntegrator::reset() {
 
 void GaussianTypeOrbitalIntegrator::setupE() {
     int maxL = max(maxAngularMomentumA(), maxAngularMomentumB());
-    m_Ex = zeros(maxL + 1, maxL + 1, maxL + 1);
+    for(int dim = 0; dim < 3; dim++) {
+        int maxi = maxL + 3;
+        int maxj = maxL + 3;
+        int maxt = maxL + 3; // TODO: Find the actually needed maximum
+        m_E[dim] = zeros(maxi, maxj, maxt + 1);
 
-    const rowvec &A = m_corePositionA;
-    const rowvec &B = m_corePositionB;
+        const rowvec &A = m_corePositionA;
+        const rowvec &B = m_corePositionB;
 
+        double a = m_exponentA;
+        double b = m_exponentB;
+        double p = a + b;
+        double mu = a * b / (a + b);
+        double dim_AB = A(dim) - B(dim);
+        double P_dim = (a * A(dim) + b * B(dim)) / p;
+        double dim_PA = P_dim - A(dim);
+        double dim_PB = P_dim - B(dim);
+
+        cout << "dim_PA = " << dim_PA << endl;
+        cout << "dim_PB = " << dim_PB << endl;
+
+        //    vector<string> performed;
+
+        // First row is special
+        m_E[dim](0,0,0) = exp(-mu * dim_AB * dim_AB);
+        //    performed.push_back("000");
+        for(int j = 0; j < maxj; j++) {
+            for(int t = 0; t < maxt; t++) {
+                int i = 0;
+                if(i == 0 && j == 0 && t == 0) {
+                    continue;
+                }
+                // p = previous, n = next
+                // E(t,i,j) = 1 / (2*p) * E(t-1,i,j-1) + XPA * E(t,i,j-1) + (t + 1)*E(t+1,i,j-1)
+                int jp = j - 1;
+                int tp = t - 1;
+                int tn = t + 1;
+                double E_i_jp_tp;
+                if(tp < 0 || tp > (i + jp) || jp < 0) {
+                    E_i_jp_tp = 0;
+                } else {
+                    //                stringstream idToFind;
+                    //                idToFind << i << jp << tp;
+                    //                if(find(performed.begin(), performed.end(), idToFind.str()) == performed.end()) {
+                    //                    cout << "Could not find E_i_jp_tp " << idToFind.str() << endl;
+                    //                }
+                    E_i_jp_tp = m_E[dim](i, jp, tp);
+                }
+                double E_i_jp_t;
+                if(t > (i + jp) || jp < 0) {
+                    E_i_jp_t = 0;
+                } else {
+                    //                stringstream idToFind;
+                    //                idToFind << i << jp << t;
+                    //                if(find(performed.begin(), performed.end(), idToFind.str()) == performed.end()) {
+                    //                    cout << "Could not find E_i_jp_t" << idToFind.str() << endl;
+                    //                }
+                    E_i_jp_t = m_E[dim](i, jp, t);
+                }
+                double E_i_jp_tn;
+                if(tn > (i + jp) || jp < 0) {
+                    E_i_jp_tn = 0;
+                } else {
+                    //                stringstream idToFind;
+                    //                idToFind << i << jp << tn;
+                    //                if(find(performed.begin(), performed.end(), idToFind.str()) == performed.end()) {
+                    //                    cout << "Could not find E_i_jp_tn" << idToFind.str() << endl;
+                    //                }
+                    E_i_jp_tn = m_E[dim](i, jp, tn);
+                }
+                m_E[dim](i,j,t) = 1 / (2*p) * E_i_jp_tp + dim_PB * E_i_jp_t +  (t + 1)*E_i_jp_tn;
+
+                //            cout << i << j << t << " = " << m_Ex(i,j,t) << endl;
+
+                //            stringstream id;
+                //            id << i << j << t;
+                //            performed.push_back(id.str());
+            }
+        }
+        for(int i = 1; i < maxi; i++) {
+            for(int j = 0; j < maxj; j++) {
+                for(int t = 0; t < maxt; t++) {
+                    // p = previous, n = next
+                    // E(t,i,j) = 1 / (2*p) * E(t-1,i-1,j) + XPA * E(t,i-1,j) + (t + 1)*E(t+1,i-1,j)
+                    int ip = i - 1;
+                    int tp = t - 1;
+                    int tn = t + 1;
+                    double E_ip_j_tp;
+                    if(tp < 0 || tp > (ip + j) || ip < 0) {
+                        E_ip_j_tp = 0;
+                    } else {
+                        //                    stringstream idToFind;
+                        //                    idToFind << ip << j << tp;
+                        //                    if(find(performed.begin(), performed.end(), idToFind.str()) == performed.end()) {
+                        //                        cout << "Could not find E_ip_j_tp" << idToFind.str() << endl;
+                        //                    }
+                        E_ip_j_tp = m_E[dim](ip, j, tp);
+                    }
+                    double E_ip_j_t;
+                    if(t > (ip + j) || ip < 0) {
+                        E_ip_j_t = 0;
+                    } else {
+                        //                    stringstream idToFind;
+                        //                    idToFind << ip << j << t;
+                        //                    if(find(performed.begin(), performed.end(), idToFind.str()) == performed.end()) {
+                        //                        cout << "Could not find E_ip_j_t" << idToFind.str() << endl;
+                        //                    }
+                        E_ip_j_t = m_E[dim](ip, j, t);
+                    }
+                    double E_ip_j_tn;
+                    if(tn > (ip + j) || ip < 0) {
+                        E_ip_j_tn = 0;
+                    } else {
+                        //                    stringstream idToFind;
+                        //                    idToFind << ip << j << tn;
+                        //                    if(find(performed.begin(), performed.end(), idToFind.str()) == performed.end()) {
+                        //                        cout << "Could not find E_ip_j_tn" << idToFind.str() << endl;
+                        //                    }
+                        E_ip_j_tn = m_E[dim](ip, j, tn);
+                    }
+                    m_E[dim](i,j,t) = 1 / (2*p) * E_ip_j_tp + dim_PA * E_ip_j_t +  (t + 1)*E_ip_j_tn;
+                    //                cout << i << j << t << " = " << m_Ex(i,j,t) << endl;
+                    //                stringstream id;
+                    //                id << i << j << t;
+                    //                performed.push_back(id.str());
+                }
+            }
+        }
+        cout << m_E[dim];
+    }
+}
+
+double GaussianTypeOrbitalIntegrator::overlapIntegral(int dim, int iA, int iB)
+{
     double a = m_exponentA;
     double b = m_exponentB;
     double p = a + b;
-    double mu = a * b / (a + b);
-    double X_AB = A(0) - B(0);
-    double P_x = (a * A(0) + b * B(0)) / p;
-    double X_PA = P_x - A(0);
-    double X_PB = P_x - B(0);
+    const cube &E_dim = m_E[dim];
+    return E_dim(iA,iB,0) * sqrt(M_PI / p);
+}
 
-    cout << "X_PA = " << X_PA << endl;
-    cout << "X_PB = " << X_PB << endl;
 
-    vector<string> performed;
+double GaussianTypeOrbitalIntegrator::overlapIntegral(int iA, int jA, int kA, int iB, int jB, int kB) {
+    cube* E = m_E;
+    double a = m_exponentA;
+    double b = m_exponentB;
+    double p = a + b;
+    return overlapIntegral(0, iA, iB) * overlapIntegral(1, jA, jB) * overlapIntegral(2, kA, kB);
+//    return E[0](iA,iB,0) * E[1](jA,jB,0) * E[2](kA,kB,0) * pow((M_PI / p), 3./2.);
+}
 
-    // First row is special
-    m_Ex(0,0,0) = exp(-mu * X_AB * X_AB);
-    performed.push_back("000");
-    for(int j = 0; j < maxL + 1; j++) {
-        for(int t = 0; t < maxL + 1; t++) {
-            int i = 0;
-            if(i == 0 && j == 0 && t == 0) {
-                continue;
-            }
-            // p = previous, n = next
-            // E(t,i,j) = 1 / (2*p) * E(t-1,i,j-1) + XPA * E(t,i,j-1) + (t + 1)*E(t+1,i,j-1)
-            int jp = j - 1;
-            int tp = t - 1;
-            int tn = t + 1;
-            double E_i_jp_tp;
-            if(tp < 0 || tp > (i + jp) || jp < 0) {
-                E_i_jp_tp = 0;
-            } else {
-                stringstream idToFind;
-                idToFind << i << jp << tp;
-                if(find(performed.begin(), performed.end(), idToFind.str()) == performed.end()) {
-                    cout << "Could not find E_i_jp_tp " << idToFind.str() << endl;
-                }
-                E_i_jp_tp = m_Ex(i, jp, tp);
-            }
-            double E_i_jp_t;
-            if(t > (i + jp) || jp < 0) {
-                E_i_jp_t = 0;
-            } else {
-                stringstream idToFind;
-                idToFind << i << jp << t;
-                if(find(performed.begin(), performed.end(), idToFind.str()) == performed.end()) {
-                    cout << "Could not find E_i_jp_t" << idToFind.str() << endl;
-                }
-                E_i_jp_t = m_Ex(i, jp, t);
-            }
-            double E_i_jp_tn;
-            if(tn > maxL || tn > (i + jp) || jp < 0) {
-                E_i_jp_tn = 0;
-            } else {
-                stringstream idToFind;
-                idToFind << i << jp << tn;
-                if(find(performed.begin(), performed.end(), idToFind.str()) == performed.end()) {
-                    cout << "Could not find E_i_jp_tn" << idToFind.str() << endl;
-                }
-                E_i_jp_tn = m_Ex(i, jp, tn);
-            }
-            m_Ex(i,j,t) = 1 / (2*p) * E_i_jp_tp + X_PB * E_i_jp_t +  (t + 1)*E_i_jp_tn;
-
-            cout << i << j << t << " = " << m_Ex(i,j,t) << endl;
-
-            stringstream id;
-            id << i << j << t;
-            performed.push_back(id.str());
-        }
+double GaussianTypeOrbitalIntegrator::kineticIntegral(int dim, int iA, int iB) {
+    double a = m_exponentA;
+    double b = m_exponentB;
+    double p = a + b;
+    const cube &E_dim = m_E[dim];
+    double S_iA_iBnn = overlapIntegral(dim, iA, iB + 2);
+    double S_iA_iB = overlapIntegral(dim, iA, iB);
+    double S_iA_iBpp;
+    if(iB - 2 >= 0) {
+        S_iA_iBpp= overlapIntegral(dim, iA, iB - 2);
+    } else {
+        S_iA_iBpp = 0;
     }
-    cout << "Done first row" << endl;
-    cout << m_Ex;
-    for(int i = 1; i < maxL + 1; i++) {
-        for(int j = 0; j < maxL + 1; j++) {
-            for(int t = 0; t < maxL + 1; t++) {
-                // p = previous, n = next
-                // E(t,i,j) = 1 / (2*p) * E(t-1,i-1,j) + XPA * E(t,i-1,j) + (t + 1)*E(t+1,i-1,j)
-                int ip = i - 1;
-                int tp = t - 1;
-                int tn = t + 1;
-                double E_ip_j_tp;
-                if(tp < 0 || tp > (ip + j) || ip < 0) {
-                    E_ip_j_tp = 0;
-                } else {
-                    stringstream idToFind;
-                    idToFind << ip << j << tp;
-                    if(find(performed.begin(), performed.end(), idToFind.str()) == performed.end()) {
-                        cout << "Could not find E_ip_j_tp" << idToFind.str() << endl;
-                    }
-                    E_ip_j_tp = m_Ex(ip, j, tp);
-                }
-                double E_ip_j_t;
-                if(t > (ip + j) || ip < 0) {
-                    E_ip_j_t = 0;
-                } else {
-                    stringstream idToFind;
-                    idToFind << ip << j << t;
-                    if(find(performed.begin(), performed.end(), idToFind.str()) == performed.end()) {
-                        cout << "Could not find E_ip_j_t" << idToFind.str() << endl;
-                    }
-                    E_ip_j_t = m_Ex(ip, j, t);
-                }
-                double E_ip_j_tn;
-                if(tn > maxL || tn > (ip + j) || ip < 0) {
-                    E_ip_j_tn = 0;
-                } else {
-                    stringstream idToFind;
-                    idToFind << ip << j << tn;
-                    if(find(performed.begin(), performed.end(), idToFind.str()) == performed.end()) {
-                        cout << "Could not find E_ip_j_tn" << idToFind.str() << endl;
-                    }
-                    E_ip_j_tn = m_Ex(ip, j, tn);
-                }
-                m_Ex(i,j,t) = 1 / (2*p) * E_ip_j_tp + X_PA * E_ip_j_t +  (t + 1)*E_ip_j_tn;
-                cout << i << j << t << " = " << m_Ex(i,j,t) << endl;
-                stringstream id;
-                id << i << j << t;
-                performed.push_back(id.str());
-            }
-        }
-    }
+    return 4 * b * b * S_iA_iBnn - 2*b * (2*iB + 1) * S_iA_iB + iB * (iB + 1) * S_iA_iBpp;
+}
 
-    cout << m_Ex;
+double GaussianTypeOrbitalIntegrator::kineticIntegral(int iA, int jA, int kA, int iB, int jB, int kB) {
+    double T_iA_iB = kineticIntegral(0, iA, iB);
+    double T_jA_jB = kineticIntegral(1, jA, jB);
+    double T_kA_kB = kineticIntegral(2, kA, kB);
+
+    double S_iA_iB = overlapIntegral(0, iA, iB);
+    double S_jA_jB = overlapIntegral(1, jA, jB);
+    double S_kA_kB = overlapIntegral(2, kA, kB);
+
+    double result = T_iA_iB * S_jA_jB * S_kA_kB + S_iA_iB * T_jA_jB * S_kA_kB + S_iA_iB * S_jA_jB * T_kA_kB;
+    result *= -0.5;
+    return result; // TODO: Is there an error in the slides here?
 }
 
 rowvec GaussianTypeOrbitalIntegrator::corePositionB() const
