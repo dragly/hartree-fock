@@ -169,6 +169,20 @@ SUITE(Old) {
     }
 }
 
+class MyException : public exception {
+public:
+    MyException(string errorString) : exception() {
+        m_errorString = errorString;
+    }
+
+    virtual const char* what() const throw() {
+        return m_errorString.c_str();
+    }
+
+private:
+    string m_errorString;
+};
+
 SUITE(Development) {
     TEST(GaussianTypeOrbitalIntegration) {
         GaussianTypeOrbitalIntegrator integrator;
@@ -178,8 +192,8 @@ SUITE(Development) {
         integrator.setCorePositionB(posB);
         integrator.setExponentA(0.2);
         integrator.setExponentB(0.3);
-        integrator.setMaxAngularMomentumA(2);
-        integrator.setMaxAngularMomentumB(2);
+        integrator.setMaxAngularMomentumA(4);
+        integrator.setMaxAngularMomentumB(4);
 //        for(const urowvec& combination : integrator.combinationsA()) {
 //            cout << combination << endl;
 //        }
@@ -214,6 +228,13 @@ SUITE(Development) {
         CHECK_CLOSE(0.0788748150526478, integrator.kineticIntegral(0,1,1,0,1,1), 0.00001);
         CHECK_CLOSE(-0.0206391127118871, integrator.kineticIntegral(0,1,1,1,0,0), 0.00001);
         CHECK_CLOSE(0.0827426773243232, integrator.kineticIntegral(0,1,1,1,0,1), 0.00001);
+
+        cout << "Tall: " << integrator.kineticIntegral(1,0,0,0,0,0) << endl;
+        cout << "Tall: " << integrator.kineticIntegral(0,0,0,1,0,0) << endl;
+        cout << "Tall: " << integrator.kineticIntegral(0,1,0,0,0,0) << endl;
+        cout << "Tall: " << integrator.kineticIntegral(0,0,0,0,1,0) << endl;
+        cout << "Tall: " << integrator.kineticIntegral(0,0,1,0,0,0) << endl;
+        cout << "Tall: " << integrator.kineticIntegral(0,0,0,0,0,1) << endl;
     }
 }
 

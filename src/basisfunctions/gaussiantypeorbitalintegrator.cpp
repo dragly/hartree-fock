@@ -6,6 +6,8 @@ using namespace arma;
 GaussianTypeOrbitalIntegrator::GaussianTypeOrbitalIntegrator() :
     m_exponentA(0),
     m_exponentB(0),
+    m_totalExponent(0),
+    m_reducedExponent(0),
     m_weightA(0),
     m_weightB(0),
     m_corePositionA(zeros<rowvec>(3)),
@@ -17,7 +19,36 @@ GaussianTypeOrbitalIntegrator::GaussianTypeOrbitalIntegrator() :
 }
 
 void GaussianTypeOrbitalIntegrator::reset() {
+    double a = m_exponentA;
+    double b = m_exponentB;
+    double p = a + b;
+    double mu = a * b / (a + b);
+    const rowvec &A = m_corePositionA;
+    const rowvec &B = m_corePositionB;
+
+    rowvec AB = A - B;
+    rowvec P = (a * A + b * B) / p;
+    rowvec PA = P - A;
+    rowvec PB = P - B;
+
+    cout << "p=" << p << endl;
+    cout << "mu=" << mu << endl;
+    cout << "AB=" << AB << endl;
+    cout << "P=" << P << endl;
+
+    cout << "PA = " << PA << endl;
+    cout << "PB = " << PB << endl;
+
+    m_totalExponent = p;
+    m_reducedExponent = mu;
+    m_relativeSeparation = AB;
+    m_centerOfMass = P;
+    m_centerOfMassDiffA = PA;
+    m_centerOfMassDiffB = PB;
+
     setupE();
+    rowvec testPosition = {0,0,0};
+    setupR(testPosition);
 }
 
 bool GaussianTypeOrbitalIntegrator::checkIndexCombinationForE(int iA, int iB, int t) {
@@ -38,25 +69,11 @@ void GaussianTypeOrbitalIntegrator::setupE() {
         int maxt = maxL + 3;
         m_E[dim] = zeros(maxiA, maxiB, maxt);
 
-        const rowvec &A = m_corePositionA;
-        const rowvec &B = m_corePositionB;
-
-        double a = m_exponentA;
-        double b = m_exponentB;
-        double p = a + b;
-        double mu = a * b / (a + b);
-        double dim_AB = A(dim) - B(dim);
-        double dim_P = (a * A(dim) + b * B(dim)) / p;
-        double dim_PA = dim_P - A(dim);
-        double dim_PB = dim_P - B(dim);
-
-        cout << "p=" << p << endl;
-        cout << "mu=" << mu << endl;
-        cout << "dim_AB=" << dim_AB << endl;
-        cout << "P=" << dim_P << endl;
-
-        cout << "dim_PA = " << dim_PA << endl;
-        cout << "dim_PB = " << dim_PB << endl;
+        double p = m_totalExponent;
+        double mu = m_reducedExponent;
+        double dim_AB = m_relativeSeparation(dim);
+        double dim_PA = m_centerOfMassDiffA(dim);
+        double dim_PB = m_centerOfMassDiffB(dim);
 
         //    vector<string> performed;
 
@@ -114,7 +131,7 @@ void GaussianTypeOrbitalIntegrator::setupE() {
                 }
             }
         }
-        cout << m_E[dim];
+//        cout << m_E[dim];
     }
 }
 
@@ -129,19 +146,19 @@ double GaussianTypeOrbitalIntegrator::overlapIntegral(int dim, int iA, int iB)
 
 
 double GaussianTypeOrbitalIntegrator::overlapIntegral(int iA, int jA, int kA, int iB, int jB, int kB) {
-    cube* E = m_E;
-    double a = m_exponentA;
-    double b = m_exponentB;
-    double p = a + b;
+//    cube* E = m_E;
+//    double a = m_exponentA;
+//    double b = m_exponentB;
+//    double p = a + b;
     return overlapIntegral(0, iA, iB) * overlapIntegral(1, jA, jB) * overlapIntegral(2, kA, kB);
-//    return E[0](iA,iB,0) * E[1](jA,jB,0) * E[2](kA,kB,0) * pow((M_PI / p), 3./2.);
+    //    return E[0](iA,iB,0) * E[1](jA,jB,0) * E[2](kA,kB,0) * pow((M_PI / p), 3./2.);
 }
 
 double GaussianTypeOrbitalIntegrator::kineticIntegral(int dim, int iA, int iB) {
-    double a = m_exponentA;
+//    double a = m_exponentA;
     double b = m_exponentB;
-    double p = a + b;
-    const cube &E_dim = m_E[dim];
+//    double p = a + b;
+//    const cube &E_dim = m_E[dim];
     double S_iA_iBnn = overlapIntegral(dim, iA, iB + 2);
     double S_iA_iB = overlapIntegral(dim, iA, iB);
     double S_iA_iBpp;
@@ -167,6 +184,56 @@ double GaussianTypeOrbitalIntegrator::kineticIntegral(int iA, int jA, int kA, in
     return result; // TODO: Is there an error in the slides here?
 }
 
+double GaussianTypeOrbitalIntegrator::boysFunction(double arg) {
+    if (arg < 1.0E-6){
+        return 1.0;
+    } else {
+        arg = sqrt(arg);
+        double f = 1.0/arg * erf(arg) *sqrt(M_PI)/2.0;
+        return f;
+    }
+}
+
+void GaussianTypeOrbitalIntegrator::setupR(const rowvec &corePositionC) {
+//    for(int dim = 0; dim < 3; dim++) {
+//        double p = m_totalExponent;
+//        double mu = m_reducedExponent;
+//        double dim_AB = m_relativeSeparation(dim);
+//        double dim_P = m_centerOfMass(dim);
+//        double dim_PA = m_centerOfMassDiffA(dim);
+//        double dim_PB = m_centerOfMassDiffB(dim);
+//        double R0000 = boysFunction();
+//    }
+//    for(int dim = 0; dim < 3; dim++) {
+//    double a = m_exponentA;
+    double p = m_totalExponent;
+//    double mu = m_reducedExponent;
+//    const rowvec &AB = m_relativeSeparation;
+    const rowvec &C = corePositionC;
+    const rowvec &P = m_centerOfMass;
+    const rowvec &PC = P - C;
+//    const rowvec &PA = m_centerOfMassDiffA;
+//    const rowvec &PB = m_centerOfMassDiffB;
+    cout << "dot = " << dot(PC, PC) << endl;
+    double boysArg = p * dot(PC, PC);
+    double F0 = boysFunction(boysArg);
+    double F1 = ((2 * 0 + 1) * F0 - exp(-boysArg)) / (2 * boysArg);
+    double F2 = ((2 * 1 + 1) * F1 - exp(-boysArg)) / (2 * boysArg);
+    double R0000 = F0;
+    double R1000 = -2 * p * F1;
+    double R2000 = (-2 * p)*(-2*p) * F2;
+    cout << "R0000 = " << R0000 << endl;
+    cout << "R1000 = " << R1000 << endl;
+    cout << "R2000 = " << R2000 << endl;
+    cube *E = m_E;
+    cout << "Result = " << 2 * M_PI / p * R0000 * E[0](0,0,0) * E[1](0,0,0) * E[2](0,0,0) << endl;
+//    }
+}
+
+//double GaussianTypeOrbitalIntegrator::coreIntegral() {
+
+//}
+
 rowvec GaussianTypeOrbitalIntegrator::corePositionB() const
 {
     return m_corePositionB;
@@ -189,6 +256,7 @@ void GaussianTypeOrbitalIntegrator::setCorePositionA(const rowvec &corePositionA
 rowvec GaussianTypeOrbitalIntegrator::overlapIntegrals(int maxAngularMomentum) {
     int l = maxAngularMomentum;
     l = 2;
+    (void)l;
     return zeros(0);
 }
 
@@ -233,7 +301,6 @@ void GaussianTypeOrbitalIntegrator::setExponentA(double exponentA)
 {
     m_exponentA = exponentA;
 }
-
 
 const vector<urowvec> &GaussianTypeOrbitalIntegrator::combinationsB() const
 {
