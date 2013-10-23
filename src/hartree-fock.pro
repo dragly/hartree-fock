@@ -13,7 +13,9 @@ SOURCES += main.cpp \
     electronsystems/electronsystem.cpp \
     basisfunctions/gaussiantypeorbitalintegrator.cpp \
     basisfunctions/gaussiantypeorbital.cpp \
-    basisfunctions/atomicbasisfunction.cpp
+    basisfunctions/atomicbasisfunction.cpp \
+    math/boysfunction.cpp \
+    math/boysfunctionintermediate.cpp
 
 HEADERS += \
     hartreesolver.h \
@@ -25,7 +27,9 @@ HEADERS += \
     electronsystems/hydrogen/multihydrogen.h \
     basisfunctions/gaussiantypeorbitalintegrator.h \
     basisfunctions/gaussiantypeorbital.h \
-    basisfunctions/atomicbasisfunction.h
+    basisfunctions/atomicbasisfunction.h\
+    math/boysfunction.h \
+    math/boysfunctionintermediate.h
 
 LIBS += -larmadillo -llapack -lblas
 

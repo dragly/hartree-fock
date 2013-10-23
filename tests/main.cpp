@@ -11,8 +11,10 @@
 #include <src/electronsystems/hydrogen/hydrogenmolecule.h>
 #include <src/basisfunctions/gaussiantypeorbital.h>
 #include <src/basisfunctions/gaussiantypeorbitalintegrator.h>
+#include <src/math/boysfunction.h>
 #include <armadillo>
 #include <iostream>
+#include <src/math/boysfunctionintermediate.h>
 
 #include <fstream>
 
@@ -229,12 +231,38 @@ SUITE(Development) {
         CHECK_CLOSE(-0.0206391127118871, integrator.kineticIntegral(0,1,1,1,0,0), 0.00001);
         CHECK_CLOSE(0.0827426773243232, integrator.kineticIntegral(0,1,1,1,0,1), 0.00001);
 
-        cout << "Tall: " << integrator.kineticIntegral(1,0,0,0,0,0) << endl;
+        cout << "Tall: " << integrator.kineticIntegral(2,0,0,0,0,0) << endl;
         cout << "Tall: " << integrator.kineticIntegral(0,0,0,1,0,0) << endl;
         cout << "Tall: " << integrator.kineticIntegral(0,1,0,0,0,0) << endl;
         cout << "Tall: " << integrator.kineticIntegral(0,0,0,0,1,0) << endl;
         cout << "Tall: " << integrator.kineticIntegral(0,0,1,0,0,0) << endl;
         cout << "Tall: " << integrator.kineticIntegral(0,0,0,0,0,1) << endl;
+    }
+
+    TEST(BoysTest) {
+        int maxLevel = 21;
+        int testLevel = 10;
+        vec x = linspace(0.001, 35, 1000);
+        BoysFunctionIntermediate intermediate(maxLevel, 1000, 0, 30);
+        for(int n = testLevel; n < maxLevel + 1; n++) {
+            cout << "Building level " << n << endl;
+            stringstream fileName;
+            fileName << "results" << n << ".txt";
+            ofstream results(fileName.str());
+            for(uint i = 0; i < x.n_elem; i++) {
+                BoysFunction boys(x(i), n, &intermediate);
+                results << x(i) << " " << boys.result(testLevel) << endl;
+            }
+            results.close();
+        }
+//        BoysFunction boys(0,0);
+//        cout << "Result = " << boys.calculateAsymptopticForm(12, 11) << endl;
+    }
+
+    TEST(BoysIntermediateTest) {
+        BoysFunctionIntermediate boysIntermediate(20, 1000);
+        boysIntermediate.updateResults();
+        cout << "Boys, boys, boys = " << boysIntermediate.result(6, 10) << endl;
     }
 }
 
