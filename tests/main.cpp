@@ -239,13 +239,12 @@ SUITE(Development) {
         cout << "Tall: " << integrator.kineticIntegral(0,0,0,0,0,1) << endl;
     }
 
-    TEST(BoysTest) {
+    TEST(BoysPlotTest) {
         int maxLevel = 21;
-        int testLevel = 10;
-        vec x = linspace(0.0, 2, 1000);
-        BoysFunctionIntermediate intermediate(maxLevel, 1000, 0, 30, 5e3);
+        int testLevel = 0;
+        vec x = linspace(0.0, 60, 1000);
+        BoysFunctionIntermediate intermediate(maxLevel, 1000, 0, 50, 5e3);
         for(int n = testLevel; n < maxLevel + 1; n++) {
-            cout << "Building level " << n << endl;
             stringstream fileName;
             fileName << "results" << n << ".txt";
             ofstream results(fileName.str());
@@ -255,8 +254,12 @@ SUITE(Development) {
             }
             results.close();
         }
-//        BoysFunction boys(0,0);
-//        cout << "Result = " << boys.calculateAsymptopticForm(12, 11) << endl;
+    }
+
+    TEST(BoysSingleResult) {
+        BoysFunctionIntermediate intermediate(5, 1000, 0, 30, 5e3);
+        BoysFunction boys(3.13137, 5, &intermediate);
+        cout << boys.result(5) << endl;
     }
 
 //    TEST(BoysIntermediateTest) {

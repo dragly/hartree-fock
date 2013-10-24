@@ -1,5 +1,7 @@
 #include "gaussiantypeorbitalintegrator.h"
 
+#include <src/math/boysfunction.h>
+
 using namespace std;
 using namespace arma;
 
@@ -184,15 +186,15 @@ double GaussianTypeOrbitalIntegrator::kineticIntegral(int iA, int jA, int kA, in
     return result; // TODO: Is there an error in the slides here?
 }
 
-double GaussianTypeOrbitalIntegrator::boysFunction(double arg) {
-    if (arg < 1.0E-6){
-        return 1.0;
-    } else {
-        arg = sqrt(arg);
-        double f = 1.0/arg * erf(arg) *sqrt(M_PI)/2.0;
-        return f;
-    }
-}
+//double GaussianTypeOrbitalIntegrator::boysFunction(double arg) {
+//    if (arg < 1.0E-6){
+//        return 1.0;
+//    } else {
+//        arg = sqrt(arg);
+//        double f = 1.0/arg * erf(arg) *sqrt(M_PI)/2.0;
+//        return f;
+//    }
+//}
 
 void GaussianTypeOrbitalIntegrator::setupR(const rowvec &corePositionC) {
 //    for(int dim = 0; dim < 3; dim++) {
@@ -216,9 +218,10 @@ void GaussianTypeOrbitalIntegrator::setupR(const rowvec &corePositionC) {
 //    const rowvec &PB = m_centerOfMassDiffB;
     cout << "dot = " << dot(PC, PC) << endl;
     double boysArg = p * dot(PC, PC);
-    double F0 = boysFunction(boysArg);
-    double F1 = ((2 * 0 + 1) * F0 - exp(-boysArg)) / (2 * boysArg);
-    double F2 = ((2 * 1 + 1) * F1 - exp(-boysArg)) / (2 * boysArg);
+    BoysFunction boysFunction(boysArg, 20);
+    double F0 = boysFunction.result(0);
+    double F1 = boysFunction.result(1);
+    double F2 = boysFunction.result(2);
     double R0000 = F0;
     double R1000 = -2 * p * F1;
     double R2000 = (-2 * p)*(-2*p) * F2;
@@ -227,7 +230,6 @@ void GaussianTypeOrbitalIntegrator::setupR(const rowvec &corePositionC) {
     cout << "R2000 = " << R2000 << endl;
     cube *E = m_E;
     cout << "Result = " << 2 * M_PI / p * R0000 * E[0](0,0,0) * E[1](0,0,0) * E[2](0,0,0) << endl;
-//    }
 }
 
 //double GaussianTypeOrbitalIntegrator::coreIntegral() {

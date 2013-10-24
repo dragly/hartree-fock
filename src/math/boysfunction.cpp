@@ -7,10 +7,10 @@ using namespace std;
 BoysFunction::BoysFunction(double arg, int levelMax, BoysFunctionIntermediate *intermediate)
 {
     cout << setprecision(16);
-    double limitMin = 0.09;
-    double limitMax = 30;
+    double limitMin = 0;
+    double limitMax = 50;
     if(intermediate == 0) {
-        m_intermediate = new BoysFunctionIntermediate(levelMax, 1000, limitMin, limitMax);
+        m_intermediate = new BoysFunctionIntermediate(levelMax, 1000, limitMin, limitMax, 1e3);
     } else {
         m_intermediate = intermediate;
     }

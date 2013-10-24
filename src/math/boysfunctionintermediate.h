@@ -13,14 +13,14 @@ public:
     double result(double arg, int n) const;
     void updateResults();
 protected:
-    double m_limitMin;
-    double m_limitMax;
     const int m_taylorExpansionOrder = 6;
     double m_dx;
 
     uint m_nValues;
-    uint m_nIntegralValues;
     int m_levelMax;
+    double m_limitMin;
+    double m_limitMax;
+    uint m_nIntegralValues;
 
     mat m_results;
     vec m_args;

@@ -12,15 +12,12 @@ BoysFunctionIntermediate::BoysFunctionIntermediate(int levelMax, int nValues, do
     m_limitMax(limitMax),
     m_nIntegralValues(nIntegralValues)
 {
-    cout << levelMax << " " << m_nValues << " " << endl;
-    cout << "Allocating matrix" << endl;
-    m_args = linspace(m_limitMin, m_limitMax, m_nValues);
-    m_dx = m_args(1) - m_args(0);
+    m_dx = (limitMax - limitMin) / (nValues - 1);
     updateResults();
 }
 
 void BoysFunctionIntermediate::updateResults() {
-    cout << "BoysFunctionIntermediate::updateResults(): starting" << endl;
+//    cout << "BoysFunctionIntermediate::updateResults(): starting" << endl;
     //    int nValues = m_nValues;
     //    vec previousResults = zeros(m_levelMax + 1 + (m_taylorExpansionOrder + 1) * nValues);
     //    vec nextResults = zeros(m_levelMax + 1 + (m_taylorExpansionOrder + 1) * nValues);
@@ -50,43 +47,40 @@ void BoysFunctionIntermediate::updateResults() {
     //    }
     // Try to load results from file
     stringstream fileNameStream;
-    fileNameStream << "boys_function_data_"
-                   << "lmax_" << m_levelMax
+    fileNameStream << "boys_function_data"
+                   << "_lmax_" << m_levelMax
                    << "_nx" << m_nValues
-                   << "limmin_" << m_limitMin
-                   << "limmax_" << m_limitMax
+                   << "_limmin_" << m_limitMin
+                   << "_limmax_" << m_limitMax
                    << "_nt" << m_nIntegralValues
                    << ".arma";
-    if(m_results.load(fileNameStream.str())) {
-        cout << "Loaded everything from file" << endl;
-    } else {
-        cout << "Boys function data file not found. Generating now." << endl;
-        m_results = zeros(m_nValues, m_levelMax + 1 + 6); // + 6 for the Taylor expansions
+    if(!m_results.load(fileNameStream.str())) {
+        cout << "BoysFunctionIntermediate::updateResults(): Boys function data file not found. Generating now." << endl;
+        m_results = zeros(m_nValues, m_levelMax + 1 + m_taylorExpansionOrder + 1); // + 6 for the Taylor expansions
         // Could not load results from file. Generate results and write file instead.
         for(uint i = 0; i < m_nValues; i++) {
             double x = i * m_dx;
             cout << "x = " << x << endl;
-            for(uint n = 0; n < m_levelMax + 1; n++) {
+            for(uint n = 0; n < m_levelMax + 1 + m_taylorExpansionOrder + 1; n++) {
                 m_results(i,n) = directIntegral(x, n);
             }
         }
-        cout << "Generating results done. Writing to file " << fileNameStream.str() << endl;
+        cout << "BoysFunctionIntermediate::updateResults(): Generating results done. Writing to file " << fileNameStream.str() << endl;
         m_results.save(fileNameStream.str());
     }
-    cout << "BoysFunctionIntermediate::updateResults(): done" << endl;
 }
 
 double BoysFunctionIntermediate::result(double arg, int n) const {
     // Linear interpolation
     double dx = m_dx;
     int closestIndex = (arg - m_limitMin + dx / 2.0) / dx; // + dx / 2.0 always gives the closest index
-    double closestArg = m_args[closestIndex];
+//    double closestArg = m_args[closestIndex];
+    double closestArg = closestIndex * dx;
     double difference = arg - closestArg;
     double sumResult = 0.0;
     for(int k = 0; k < m_taylorExpansionOrder + 1; k++) {
         double F_n_k_x = m_results(closestIndex, n + k);
         double kFac = BoysFunction::factorial(k);
-
         sumResult += F_n_k_x * fastPow(-difference, k) / kFac;
     }
     return sumResult;
