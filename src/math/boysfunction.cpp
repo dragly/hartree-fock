@@ -16,9 +16,9 @@ BoysFunction::BoysFunction(double arg, int levelMax, BoysFunctionIntermediate *i
     }
     double x = arg;
     m_results = zeros(levelMax + 1);
-    if(levelMax == 0) {
-        m_results(0) = calculateZeroLevel(arg);
-    } else {
+//    if(levelMax == 0) {
+//        m_results(0) = calculateZeroLevel(arg);
+//    } else {
         double expmx = exp(-x);
         if(arg < limitMin || arg > limitMax) {
             if(arg < limitMin) {
@@ -37,7 +37,7 @@ BoysFunction::BoysFunction(double arg, int levelMax, BoysFunctionIntermediate *i
                 m_results(n) = m_intermediate->result(arg, n);
             }
         }
-    }
+//    }
 }
 
 double BoysFunction::calculateAsymptopticForm(double arg, int level) {

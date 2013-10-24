@@ -242,8 +242,8 @@ SUITE(Development) {
     TEST(BoysTest) {
         int maxLevel = 21;
         int testLevel = 10;
-        vec x = linspace(0.001, 35, 1000);
-        BoysFunctionIntermediate intermediate(maxLevel, 1000, 0, 30);
+        vec x = linspace(0.0, 2, 1000);
+        BoysFunctionIntermediate intermediate(maxLevel, 1000, 0, 30, 5e3);
         for(int n = testLevel; n < maxLevel + 1; n++) {
             cout << "Building level " << n << endl;
             stringstream fileName;
@@ -259,11 +259,11 @@ SUITE(Development) {
 //        cout << "Result = " << boys.calculateAsymptopticForm(12, 11) << endl;
     }
 
-    TEST(BoysIntermediateTest) {
-        BoysFunctionIntermediate boysIntermediate(20, 1000);
-        boysIntermediate.updateResults();
-        cout << "Boys, boys, boys = " << boysIntermediate.result(6, 10) << endl;
-    }
+//    TEST(BoysIntermediateTest) {
+//        BoysFunctionIntermediate boysIntermediate(20, 1000);
+//        boysIntermediate.updateResults();
+//        cout << "Boys, boys, boys = " << boysIntermediate.result(6, 10) << endl;
+//    }
 }
 
 int main()
