@@ -9,10 +9,10 @@ HermiteIntegral::HermiteIntegral() :
 
 }
 
-HermiteIntegral::HermiteIntegral(double alpha, const rowvec &A, int angularMomentumMax, bool setupImmediately) :
+HermiteIntegral::HermiteIntegral(double alpha, const rowvec &A, int dimension, bool setupImmediately) :
     m_alpha(alpha),
     m_A(A),
-    m_angularMomentumMax(angularMomentumMax)
+    m_dimension(dimension)
 {
     if(setupImmediately) {
         setupR();
@@ -25,9 +25,9 @@ void HermiteIntegral::setupR() {
     double p = m_alpha;
     double boysArg = p * dot(m_A, m_A);
 //    int lMax = 2;
-    int tMax = 2 * m_angularMomentumMax;
-    int tuvSumMax = 3 * tMax;
-    int nMax = 3 * tMax;
+    int tMax = m_dimension;
+    int tuvSumMax = m_dimension;
+    int nMax = m_dimension;
     BoysFunctionIntermediate boysFunctionIntermediate(nMax, 1000, 0, 50, 1e5);
     BoysFunction boysFunction(boysArg, nMax + 1, &boysFunctionIntermediate);
 //    vector<vector<int>> calculatedIndices;
@@ -35,7 +35,7 @@ void HermiteIntegral::setupR() {
     m_R.set_size(nMax + 1);
     // Initialize and allocate the cubes for R
     for(int n = 0; n < nMax + 1; n++) {
-        m_R(n) = zeros(tMax + 1, tMax + 1, tMax + 1);
+        m_R(n) = zeros(tMax, tMax, tMax);
     }
     // Calculate R0_tuv
     for(int n = 0; n < nMax + 1; n++) {
@@ -47,9 +47,9 @@ void HermiteIntegral::setupR() {
     for(int tuvSum = 1; tuvSum < tuvSumMax + 1; tuvSum++) {
 //        cout << "All elements for which t + u + v = " << tuvSum << endl;
         for(int n = 0; n < nMax - tuvSum; n++) {
-            for(int t = 0; t < tMax + 1; t++) {
-                for(int u = 0; u < tMax + 1; u++) {
-                    for(int v = 0; v < tMax + 1; v++) {
+            for(int t = 0; t < tMax; t++) {
+                for(int u = 0; u < tMax; u++) {
+                    for(int v = 0; v < tMax; v++) {
                         if(t + u + v != tuvSum || t + u + v == 0) {
                             continue;
                         }

@@ -16,6 +16,7 @@ public:
     cube &operator[](const uword row);
     void setupE();
     bool checkIndexCombinationForE(int iA, int iB, int t);
+    double operator ()(int iA, int jA, int kA, int iB, int jB, int kB, const uword t, const uword u, const uword v) const;
 protected:
     double m_a;
     double m_b;
@@ -32,6 +33,10 @@ inline const cube &HermiteExpansionCoefficient::operator[](const uword dimension
 inline cube &HermiteExpansionCoefficient::operator[](const uword row)
 {
     return const_cast<cube&>(static_cast<const HermiteExpansionCoefficient&>(*this)[row]);
+}
+
+inline double HermiteExpansionCoefficient::operator()(int iA, int jA, int kA, int iB, int jB, int kB, const uword t, const uword u, const uword v) const {
+    return m_E[0](iA, iB, t) * m_E[1](jA, jB, u) * m_E[0](kA, kB, v);
 }
 
 #endif // HERMITEEXPANSIONCOEFFICIENT_H

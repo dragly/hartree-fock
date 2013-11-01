@@ -12,7 +12,7 @@ GaussianTypeColoumbAttractionIntegral::GaussianTypeColoumbAttractionIntegral(row
     rowvec P = (exponentA * corePositionA + exponentB * corePositionB) / (exponentA + exponentB);
     rowvec PC = P - corePositionC;
     m_hermiteExpansionCoefficient = new HermiteExpansionCoefficient(exponentA, exponentB, corePositionA, corePositionB, angularMomentumMax);
-    m_hermiteIntegral = new HermiteIntegral(p, PC, angularMomentumMax);
+    m_hermiteIntegral = new HermiteIntegral(p, PC, 2 * angularMomentumMax);
     m_isResponsibleForDeletingHermiteObjects = true;
 }
 
@@ -36,9 +36,10 @@ GaussianTypeColoumbAttractionIntegral::~GaussianTypeColoumbAttractionIntegral()
 
 double GaussianTypeColoumbAttractionIntegral::coloumbAttractionIntegral(int iA, int jA, int kA, int iB, int jB, int kB) {
     double result = 0;
-    const cube &E_x = (*m_hermiteExpansionCoefficient)[0];
-    const cube &E_y = (*m_hermiteExpansionCoefficient)[1];
-    const cube &E_z = (*m_hermiteExpansionCoefficient)[2];
+//    const cube &E_x = (*m_hermiteExpansionCoefficient)[0];
+//    const cube &E_y = (*m_hermiteExpansionCoefficient)[1];
+    //    const cube &E_z = (*m_hermiteExpansionCoefficient)[2];
+    const HermiteExpansionCoefficient &E = (*m_hermiteExpansionCoefficient);
     double p = m_exponentSum;
     const HermiteIntegral &R = (*m_hermiteIntegral);
     int tMax = iA + iB;
@@ -47,7 +48,7 @@ double GaussianTypeColoumbAttractionIntegral::coloumbAttractionIntegral(int iA, 
     for(int t = 0; t < tMax + 1; t++) {
         for(int u = 0; u < uMax + 1; u++) {
             for(int v = 0; v < vMax + 1; v++) {
-                result += E_x(iA, iB, t) * E_y(jA, jB, u) * E_z(kA, kB, v) * R(0,t,u,v);
+                result += E(iA, jA, kA, iB, jB, kB, t, u, v) * R(0,t,u,v);
             }
         }
     }

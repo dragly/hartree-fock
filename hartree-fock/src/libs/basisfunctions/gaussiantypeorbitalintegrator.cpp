@@ -137,7 +137,7 @@ void GaussianTypeOrbitalIntegrator::setupR() {
     const rowvec &C = m_corePositionC;
     const rowvec &P = m_centerOfMass;
     const rowvec &PC = P - C;
-    m_R = HermiteIntegral(p, PC, m_angularMomentumAMax);
+    m_R = HermiteIntegral(p, PC, m_angularMomentumAMax + m_angularMomentumBMax);
 }
 
 rowvec GaussianTypeOrbitalIntegrator::corePositionB() const
