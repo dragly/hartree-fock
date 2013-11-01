@@ -28,7 +28,7 @@ void HermiteIntegral::setupR() {
     int tMax = m_dimension;
     int tuvSumMax = m_dimension;
     int nMax = m_dimension;
-    BoysFunctionIntermediate boysFunctionIntermediate(nMax, 1000, 0, 50, 1e5);
+    BoysFunctionIntermediate boysFunctionIntermediate(nMax, 10000, 0, 70, 1e7);
     BoysFunction boysFunction(boysArg, nMax + 1, &boysFunctionIntermediate);
 //    vector<vector<int>> calculatedIndices;
     m_R.reset();

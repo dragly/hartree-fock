@@ -44,7 +44,7 @@ double GaussianTypeElectronInteractionIntegral::electronInteractionIntegral(int 
                                                                             int iB, int jB, int kB,
                                                                             int iC, int jC, int kC,
                                                                             int iD, int jD, int kD) {
-    double result;
+    double result = 1;
     double p = m_exponentP;
     double q = m_exponentQ;
 

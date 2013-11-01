@@ -374,28 +374,33 @@ SUITE(Development) {
         CHECK_CLOSE(6.422210627967e-02, integrator.coloumbAttractionIntegral(2,0,0,2,0,0), 1e-4);
     }
 
-//    TEST(GaussianTypeElectronInteractionIntegralTest) {
-//        rowvec posA = {1.2,2.3,3.4};
-//        rowvec posB = {-1.3,1.4,-2.4};
-//        rowvec posC = {1.1,0.4,1.4};
-//        rowvec posD = {0.9,2.4,-1.7};
-//        double a = 0.2;
-//        double b = 0.3;
-//        double c = 0.4;
-//        double d = 0.5;
-//        GaussianTypeElectronInteractionIntegral integrator(posA, posB, posC, posD, a, b, c, d, 3);
-//        cout << integrator.electronInteractionIntegral(0,0,0,0,0,0,0,0,0,0,0,0) << endl;
-//    }
+    TEST(GaussianTypeElectronInteractionIntegralTest1) {
+        cout << "Number one!" << endl;
+        rowvec posA = {-0.5, 0, 0};
+        rowvec posB = {-0.5, 0, 0};
+        rowvec posC = {-0.5, 0, 0};
+        rowvec posD = {-0.5, 0, 0};
+        double a = 13.0077;
+        double b = 13.0077;
+        double c = 13.0077;
+        double d = 13.0077;
+        GaussianTypeElectronInteractionIntegral integrator(posA, posB, posC, posD, a, b, c, d, 3);
+        cout << integrator.electronInteractionIntegral(0,0,0,0,0,0,0,0,0,0,0,0) << endl;
+    }
 
-//    TEST(GaussianTypeElectronInteractionIntegralTest2) {
-//        cout << "Number two!" << endl;
-//        rowvec posA = {-0.5, 0, 0};
-//        rowvec posB = {0.5, 0, 0};
-//        double a = 0.2;
-//        double b = 0.3;
-//        GaussianTypeElectronInteractionIntegral integrator(posA, posB, posA, posB, a, b, a, b, 3);
-//        cout << integrator.electronInteractionIntegral(0,0,0,0,0,0,0,0,0,0,0,0) << endl;
-//    }
+    TEST(GaussianTypeElectronInteractionIntegralTest2) {
+        cout << "Number two!" << endl;
+        rowvec posA = {0.5, 0, 0};
+        rowvec posB = {-0.5, 0, 0};
+        rowvec posC = {-0.5, 0, 0};
+        rowvec posD = {0.5, 0, 0};
+        double a = 13.0077;
+        double b = 0.121949;
+        double c = 0.444529;
+        double d = 13.0077;
+        GaussianTypeElectronInteractionIntegral integrator(posA, posB, posC, posD, a, b, c, d, 3);
+        cout << integrator.electronInteractionIntegral(0,0,0,0,0,0,0,0,0,0,0,0) << endl;
+    }
 }
 
 int main()
