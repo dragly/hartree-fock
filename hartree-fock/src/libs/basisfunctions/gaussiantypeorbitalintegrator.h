@@ -2,6 +2,8 @@
 #define GAUSSIANTYPEORBITALINTEGRATOR_H
 
 #include <armadillo>
+#include <hermiteintegral.h>
+#include <math/hermiteexpansioncoefficient.h>
 #include <vector>
 
 using namespace arma;
@@ -45,13 +47,14 @@ public:
 
     double kineticIntegral(int iA, int jA, int kA, int iB, int jB, int kB);
     double kineticIntegral(int dim, int iA, int iB);
-    bool checkIndexCombinationForE(int iA, int iB, int t);
+//    bool checkIndexCombinationForE(int iA, int iB, int t);
     //    double boysFunction(double arg);
     double coreColoumbIntegral(int iA, int jA, int kA, int iB, int jB, int kB);
     rowvec corePositionC() const;
     void setCorePositionC(const rowvec &corePositionC);
+    void setupR();
 
-private:
+protected:
     void regenerateCombinationsA();
     void regenerateCombinationsB();
     void regenerateCombinations(bool isA);
@@ -81,15 +84,13 @@ private:
 
     bool m_isDirty;
 
-    cube m_E[3]; // t, i, j
-
-    vector<cube> m_R;
+    HermiteExpansionCoefficient m_E; // t, i, j
+    HermiteIntegral m_R;
 
     vector<urowvec> m_combinationsA;
     vector<urowvec> m_combinationsB;
     void setupE();
 //    void setupR();
-    void setupR();
 };
 
 #endif // GAUSSIANTYPEORBITALINTEGRATOR_H

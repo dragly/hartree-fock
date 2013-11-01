@@ -18,7 +18,9 @@ SOURCES += hartreesolver.cpp \
     basisfunctions/gaussiantypeorbital.cpp \
     basisfunctions/atomicbasisfunction.cpp \
     math/boysfunction.cpp \
-    math/boysfunctionintermediate.cpp
+    math/boysfunctionintermediate.cpp \
+    hermiteintegral.cpp \
+    math/hermiteexpansioncoefficient.cpp
 
 HEADERS += \
     hartreesolver.h \
@@ -32,7 +34,9 @@ HEADERS += \
     basisfunctions/gaussiantypeorbital.h \
     basisfunctions/atomicbasisfunction.h\
     math/boysfunction.h \
-    math/boysfunctionintermediate.h
+    math/boysfunctionintermediate.h \
+    hermiteintegral.h \
+    math/hermiteexpansioncoefficient.h
 
 OTHER_FILES += \
     defaults.pri

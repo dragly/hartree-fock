@@ -56,7 +56,7 @@ void BoysFunctionIntermediate::updateResults() {
                    << ".arma";
     bool allGood = m_results.load(fileNameStream.str());
     if(allGood) {
-        if(m_results.n_cols < m_levelMax) {
+        if(m_results.n_cols < uint(m_levelMax)) {
             allGood = false;
         }
     }
@@ -68,7 +68,7 @@ void BoysFunctionIntermediate::updateResults() {
         for(uint i = 0; i < m_nValues; i++) {
             double x = i * m_dx;
             cout << "x = " << x << endl;
-            for(uint n = 0; n < m_levelMax + 1 + m_taylorExpansionOrder + 1; n++) {
+            for(uint n = 0; n < uint(m_levelMax + 1) + m_taylorExpansionOrder + 1; n++) {
                 m_results(i,n) = directIntegral(x, n);
             }
         }
