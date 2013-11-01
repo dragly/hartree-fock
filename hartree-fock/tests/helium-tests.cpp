@@ -3,11 +3,11 @@
 #include <unittest++/Test.h>
 #include <unittest++/TestReporterStdout.h>
 #include <unittest++/TestRunner.h>
-#include <src/hartreesolver.h>
-#include <src/hartreefocksolver.h>
-#include <src/electronsystems/helium/heliumhartree.h>
-#include <src/electronsystems/hydrogen/hydrogenmolecule.h>
-#include <src/electronsystems/hydrogen/multihydrogen.h>
+#include <hartreesolver.h>
+#include <hartreefocksolver.h>
+#include <electronsystems/helium/heliumhartree.h>
+#include <electronsystems/hydrogen/hydrogenmolecule.h>
+#include <electronsystems/hydrogen/multihydrogen.h>
 
 #include <fstream>
 

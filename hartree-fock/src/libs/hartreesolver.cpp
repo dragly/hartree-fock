@@ -1,6 +1,6 @@
 #include "hartreesolver.h"
 
-#include <src/electronsystems/electronsystem.h>
+#include <electronsystems/electronsystem.h>
 
 #include <armadillo>
 #include <iomanip>

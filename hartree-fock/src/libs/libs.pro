@@ -1,10 +1,13 @@
-TEMPLATE = app
+include(../../defaults.pri)
+
+TEMPLATE = lib
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-SOURCES += main.cpp \
-    hartreesolver.cpp \
+TARGET = hartree-fock
+
+SOURCES += hartreesolver.cpp \
     math/vector3.cpp \
     electronsystems/helium/heliumhartree.cpp \
     electronsystems/hydrogen/hydrogenmolecule.cpp \
@@ -30,10 +33,6 @@ HEADERS += \
     basisfunctions/atomicbasisfunction.h\
     math/boysfunction.h \
     math/boysfunctionintermediate.h
-
-LIBS += -larmadillo -llapack -lblas
-
-include(defaults.pri)
 
 OTHER_FILES += \
     defaults.pri

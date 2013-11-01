@@ -1,7 +1,7 @@
 #ifndef HELIUMHARTREE_H
 #define HELIUMHARTREE_H
 
-#include <src/electronsystems/electronsystem.h>
+#include <electronsystems/electronsystem.h>
 
 #include <armadillo>
 

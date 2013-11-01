@@ -1,7 +1,7 @@
 #ifndef HYDROGENMOLECULE_H
 #define HYDROGENMOLECULE_H
 
-#include <src/electronsystems/electronsystem.h>
+#include <electronsystems/electronsystem.h>
 
 #include <armadillo>
 #include <fstream>

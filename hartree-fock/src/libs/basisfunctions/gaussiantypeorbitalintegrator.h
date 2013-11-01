@@ -46,7 +46,11 @@ public:
     double kineticIntegral(int iA, int jA, int kA, int iB, int jB, int kB);
     double kineticIntegral(int dim, int iA, int iB);
     bool checkIndexCombinationForE(int iA, int iB, int t);
-//    double boysFunction(double arg);
+    //    double boysFunction(double arg);
+    double coreColoumbIntegral(int iA, int jA, int kA, int iB, int jB, int kB);
+    rowvec corePositionC() const;
+    void setCorePositionC(const rowvec &corePositionC);
+
 private:
     void regenerateCombinationsA();
     void regenerateCombinationsB();
@@ -64,6 +68,7 @@ private:
 
     rowvec m_corePositionA;
     rowvec m_corePositionB;
+    rowvec m_corePositionC;
 
     rowvec m_centerOfMass;
     rowvec m_centerOfMassDiffA;
@@ -71,18 +76,20 @@ private:
 
     rowvec m_relativeSeparation;
 
-    uint m_maxAngularMomentumA;
-    uint m_maxAngularMomentumB;
+    uint m_angularMomentumAMax;
+    uint m_angularMomentumBMax;
 
     bool m_isDirty;
 
     cube m_E[3]; // t, i, j
 
+    vector<cube> m_R;
+
     vector<urowvec> m_combinationsA;
     vector<urowvec> m_combinationsB;
     void setupE();
 //    void setupR();
-    void setupR(const rowvec &corePositionC);
+    void setupR();
 };
 
 #endif // GAUSSIANTYPEORBITALINTEGRATOR_H

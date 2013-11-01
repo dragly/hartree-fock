@@ -1,7 +1,7 @@
 #ifndef MULTIHYDROGEN_H
 #define MULTIHYDROGEN_H
 
-#include <src/electronsystems/electronsystem.h>
+#include <electronsystems/electronsystem.h>
 
 #include <armadillo>
 #include <fstream>

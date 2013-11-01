@@ -1,20 +1,21 @@
-#include <../tests/helium-tests.cpp>
+//#include <../tests/helium-tests.cpp>
 
 #include <iostream>
 #include <unittest++/UnitTest++.h>
 #include <unittest++/Test.h>
 #include <unittest++/TestReporterStdout.h>
 #include <unittest++/TestRunner.h>
-#include <src/hartreesolver.h>
-#include <src/hartreefocksolver.h>
-#include <src/electronsystems/helium/heliumhartree.h>
-#include <src/electronsystems/hydrogen/hydrogenmolecule.h>
-#include <src/basisfunctions/gaussiantypeorbital.h>
-#include <src/basisfunctions/gaussiantypeorbitalintegrator.h>
-#include <src/math/boysfunction.h>
+#include <hartreesolver.h>
+#include <hartreefocksolver.h>
+#include <electronsystems/helium/heliumhartree.h>
+#include <electronsystems/hydrogen/hydrogenmolecule.h>
+#include <electronsystems/hydrogen/multihydrogen.h>
+#include <basisfunctions/gaussiantypeorbital.h>
+#include <basisfunctions/gaussiantypeorbitalintegrator.h>
+#include <math/boysfunction.h>
 #include <armadillo>
 #include <iostream>
-#include <src/math/boysfunctionintermediate.h>
+#include <math/boysfunctionintermediate.h>
 
 #include <fstream>
 
@@ -63,7 +64,6 @@ SUITE(Complete) {
     }
 
     TEST(MultiHydrogenAdvanceManyHF) {
-#include <src/electronsystems/hydrogen/multihydrogen.h>
         cout << "MultiHydrogen with HF:" << endl;
         mat nucleiPositions {0,0,0,
                             1,0,0,
@@ -80,7 +80,6 @@ SUITE(Complete) {
     }
 
     TEST(MultiHydrogenAdvanceManyHFPlot) {
-#include <src/electronsystems/hydrogen/multihydrogen.h>
         cout << "MultiHydrogen with HF:" << endl;
 
         rowvec xVec = linspace(-4, 4, 207);

@@ -1,6 +1,6 @@
 #include "boysfunctionintermediate.h"
 
-#include <src/math/boysfunction.h>
+#include <math/boysfunction.h>
 #include <string>
 
 using namespace std;
@@ -48,14 +48,21 @@ void BoysFunctionIntermediate::updateResults() {
     // Try to load results from file
     stringstream fileNameStream;
     fileNameStream << "boys_function_data"
-                   << "_lmax_" << m_levelMax
+//                   << "_lmax_" << m_levelMax
                    << "_nx" << m_nValues
                    << "_limmin_" << m_limitMin
                    << "_limmax_" << m_limitMax
                    << "_nt" << m_nIntegralValues
                    << ".arma";
-    if(!m_results.load(fileNameStream.str())) {
+    bool allGood = m_results.load(fileNameStream.str());
+    if(allGood) {
+        if(m_results.n_cols < m_levelMax) {
+            allGood = false;
+        }
+    }
+    if(!allGood) {
         cout << "BoysFunctionIntermediate::updateResults(): Boys function data file not found. Generating now." << endl;
+        cout << "BoysFunctionIntermediate::updateResults(): Filename: " << fileNameStream.str() << endl;
         m_results = zeros(m_nValues, m_levelMax + 1 + m_taylorExpansionOrder + 1); // + 6 for the Taylor expansions
         // Could not load results from file. Generate results and write file instead.
         for(uint i = 0; i < m_nValues; i++) {
@@ -94,8 +101,10 @@ double BoysFunctionIntermediate::directIntegral(double x, double n) const {
     double integralResult = 0;
     for(int i = 0; i < nt; i++) {
         double t = t0 + dt * i;
-        integralResult += (integrand(x, t, n) + integrand(x, t + dt, n));
+        integralResult += 2 * integrand(x, t + dt, n);
     }
+    integralResult -= integrand(x, 0, n);
+    integralResult -= integrand(x, (nt - 1)*dt, n);
     integralResult *= dt / 2.0;
     return integralResult;
 }

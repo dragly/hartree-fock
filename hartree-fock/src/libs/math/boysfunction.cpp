@@ -1,6 +1,6 @@
 #include "boysfunction.h"
 #include <iomanip>
-#include <src/math/boysfunctionintermediate.h>
+#include <math/boysfunctionintermediate.h>
 
 using namespace std;
 

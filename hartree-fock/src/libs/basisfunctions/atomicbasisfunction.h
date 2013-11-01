@@ -2,7 +2,7 @@
 #define ATOMICBASISFUNCTION_H
 
 #include <vector>
-#include <src/basisfunctions/gaussiantypeorbital.h>
+#include <basisfunctions/gaussiantypeorbital.h>
 
 using namespace std;
 
