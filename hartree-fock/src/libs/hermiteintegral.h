@@ -10,7 +10,7 @@ class HermiteIntegral
 {
 public:
     HermiteIntegral();
-    HermiteIntegral(double alpha, const rowvec &A, int maxAngularMomentum, bool setupImmediately = true);
+    HermiteIntegral(double alpha, const rowvec &A, int angularMomentumMax, bool setupImmediately = true);
     void setupR();
 
     const cube &operator [](const uword row) const;

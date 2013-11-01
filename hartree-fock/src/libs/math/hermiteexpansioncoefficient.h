@@ -10,7 +10,7 @@ class HermiteExpansionCoefficient
 {
 public:
     HermiteExpansionCoefficient();
-    HermiteExpansionCoefficient(double a, rowvec A, double b, rowvec B, int angularMomentumMax, bool setupImmediately = true);
+    explicit HermiteExpansionCoefficient(double a, double b, rowvec A, rowvec B, int angularMomentumMax, bool setupImmediately = true);
 
     const cube &operator [](const uword row) const;
     cube &operator[](const uword row);

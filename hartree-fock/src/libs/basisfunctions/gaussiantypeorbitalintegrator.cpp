@@ -48,7 +48,7 @@ void GaussianTypeOrbitalIntegrator::reset() {
 }
 
 void GaussianTypeOrbitalIntegrator::setupE() {
-    m_E = HermiteExpansionCoefficient(m_exponentA, m_corePositionA, m_exponentB, m_corePositionB, m_angularMomentumAMax);
+    m_E = HermiteExpansionCoefficient(m_exponentA, m_exponentB, m_corePositionA, m_corePositionB, m_angularMomentumAMax);
 }
 
 double GaussianTypeOrbitalIntegrator::overlapIntegral(int dim, int iA, int iB)
@@ -62,12 +62,7 @@ double GaussianTypeOrbitalIntegrator::overlapIntegral(int dim, int iA, int iB)
 
 
 double GaussianTypeOrbitalIntegrator::overlapIntegral(int iA, int jA, int kA, int iB, int jB, int kB) {
-//    cube* E = m_E;
-//    double a = m_exponentA;
-//    double b = m_exponentB;
-//    double p = a + b;
     return overlapIntegral(0, iA, iB) * overlapIntegral(1, jA, jB) * overlapIntegral(2, kA, kB);
-    //    return E[0](iA,iB,0) * E[1](jA,jB,0) * E[2](kA,kB,0) * pow((M_PI / p), 3./2.);
 }
 
 double GaussianTypeOrbitalIntegrator::coreColoumbIntegral(int iA, int jA, int kA, int iB, int jB, int kB) {

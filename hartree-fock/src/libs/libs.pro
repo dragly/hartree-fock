@@ -20,7 +20,11 @@ SOURCES += hartreesolver.cpp \
     math/boysfunction.cpp \
     math/boysfunctionintermediate.cpp \
     hermiteintegral.cpp \
-    math/hermiteexpansioncoefficient.cpp
+    math/hermiteexpansioncoefficient.cpp \
+    math/gaussiantypeoverlapintegral.cpp \
+    math/gaussiantypekineticintegral.cpp \
+    math/gaussiantypecoloumbattractionintegral.cpp \
+    math/gaussiantypeelectroninteractionintegral.cpp
 
 HEADERS += \
     hartreesolver.h \
@@ -36,7 +40,11 @@ HEADERS += \
     math/boysfunction.h \
     math/boysfunctionintermediate.h \
     hermiteintegral.h \
-    math/hermiteexpansioncoefficient.h
+    math/hermiteexpansioncoefficient.h \
+    math/gaussiantypeoverlapintegral.h \
+    math/gaussiantypekineticintegral.h \
+    math/gaussiantypecoloumbattractionintegral.h \
+    math/gaussiantypeelectroninteractionintegral.h
 
 OTHER_FILES += \
     defaults.pri

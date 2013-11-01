@@ -16,7 +16,6 @@ HermiteIntegral::HermiteIntegral(double alpha, const rowvec &A, int angularMomen
 {
     if(setupImmediately) {
         setupR();
-        cout << m_R(0) << endl;
     }
 }
 
@@ -46,7 +45,7 @@ void HermiteIntegral::setupR() {
 //        calculatedIndices.push_back(indices);
     }
     for(int tuvSum = 1; tuvSum < tuvSumMax + 1; tuvSum++) {
-        cout << "All elements for which t + u + v = " << tuvSum << endl;
+//        cout << "All elements for which t + u + v = " << tuvSum << endl;
         for(int n = 0; n < nMax - tuvSum; n++) {
             for(int t = 0; t < tMax + 1; t++) {
                 for(int u = 0; u < tMax + 1; u++) {

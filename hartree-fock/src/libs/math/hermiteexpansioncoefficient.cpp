@@ -1,11 +1,11 @@
 #include "hermiteexpansioncoefficient.h"
 
 HermiteExpansionCoefficient::HermiteExpansionCoefficient() :
-    HermiteExpansionCoefficient(0,rowvec(3),0,rowvec(3),0,false)
+    HermiteExpansionCoefficient(0,0,rowvec(3),rowvec(3),0,false)
 {
 }
 
-HermiteExpansionCoefficient::HermiteExpansionCoefficient(double a, rowvec A, double b, rowvec B, int angularMomentumMax, bool setupImmediately) :
+HermiteExpansionCoefficient::HermiteExpansionCoefficient(double a, double b, rowvec A, rowvec B, int angularMomentumMax, bool setupImmediately) :
     m_a(a),
     m_b(b),
     m_A(A),
