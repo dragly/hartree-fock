@@ -36,7 +36,7 @@ inline cube &HermiteExpansionCoefficient::operator[](const uword row)
 }
 
 inline double HermiteExpansionCoefficient::operator()(int iA, int jA, int kA, int iB, int jB, int kB, const uword t, const uword u, const uword v) const {
-    return m_E[0](iA, iB, t) * m_E[1](jA, jB, u) * m_E[0](kA, kB, v);
+    return m_E[0](iA, iB, t) * m_E[1](jA, jB, u) * m_E[2](kA, kB, v);
 }
 
 #endif // HERMITEEXPANSIONCOEFFICIENT_H
