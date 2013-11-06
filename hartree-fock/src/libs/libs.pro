@@ -1,4 +1,4 @@
-include(../../defaults.pri)
+include($$TOP_PWD/defaults.pri)
 
 TEMPLATE = lib
 CONFIG += console
@@ -21,10 +21,10 @@ SOURCES += hartreesolver.cpp \
     math/boysfunctionintermediate.cpp \
     hermiteintegral.cpp \
     math/hermiteexpansioncoefficient.cpp \
-    math/gaussiantypeoverlapintegral.cpp \
-    math/gaussiantypekineticintegral.cpp \
-    math/gaussiantypecoloumbattractionintegral.cpp \
-    math/gaussiantypeelectroninteractionintegral.cpp
+    basisfunctions/gaussiantypeorbital/integrals/gaussiantypeelectroninteractionintegral.cpp \
+    basisfunctions/gaussiantypeorbital/integrals/gaussiantypekineticintegral.cpp \
+    basisfunctions/gaussiantypeorbital/integrals/gaussiantypeoverlapintegral.cpp \
+    basisfunctions/gaussiantypeorbital/integrals/gaussiantypecoloumbattractionintegral.cpp
 
 HEADERS += \
     hartreesolver.h \
@@ -41,10 +41,11 @@ HEADERS += \
     math/boysfunctionintermediate.h \
     hermiteintegral.h \
     math/hermiteexpansioncoefficient.h \
-    math/gaussiantypeoverlapintegral.h \
-    math/gaussiantypekineticintegral.h \
-    math/gaussiantypecoloumbattractionintegral.h \
-    math/gaussiantypeelectroninteractionintegral.h
+    basisfunctions/gaussiantypeorbital/integrals/gaussiantypecoloumbattractionintegral.h \
+    basisfunctions/gaussiantypeorbital/integrals/gaussiantypeelectroninteractionintegral.h \
+    basisfunctions/gaussiantypeorbital/integrals/gaussiantypekineticintegral.h \
+    basisfunctions/gaussiantypeorbital/integrals/gaussiantypeoverlapintegral.h
 
 OTHER_FILES += \
-    defaults.pri
+    defaults.pri \
+    ../../.qmake.conf

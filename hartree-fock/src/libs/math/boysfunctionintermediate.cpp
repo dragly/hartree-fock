@@ -10,7 +10,8 @@ BoysFunctionIntermediate::BoysFunctionIntermediate(int levelMax, int nValues, do
     m_levelMax(levelMax),
     m_limitMin(limitMin),
     m_limitMax(limitMax),
-    m_nIntegralValues(nIntegralValues)
+    m_nIntegralValues(nIntegralValues),
+    m_neededLevelMax(m_levelMax + 1 + m_taylorExpansionOrder + 1)
 {
     m_dx = (limitMax - limitMin) / (nValues - 1);
     updateResults();
@@ -56,19 +57,20 @@ void BoysFunctionIntermediate::updateResults() {
                    << ".arma";
     bool allGood = m_results.load(fileNameStream.str());
     if(allGood) {
-        if(m_results.n_cols < uint(m_levelMax)) {
+        if(m_results.n_cols < uint(m_neededLevelMax)) {
             allGood = false;
         }
     }
     if(!allGood) {
         cout << "BoysFunctionIntermediate::updateResults(): Boys function data file not found. Generating now." << endl;
         cout << "BoysFunctionIntermediate::updateResults(): Filename: " << fileNameStream.str() << endl;
-        m_results = zeros(m_nValues, m_levelMax + 1 + m_taylorExpansionOrder + 1); // + 6 for the Taylor expansions
+        cout << "BoysFunctionIntermediate::updateResults(): Max level: " << m_levelMax << endl;
+        m_results = zeros(m_nValues, m_neededLevelMax); // + 6 for the Taylor expansions
         // Could not load results from file. Generate results and write file instead.
         for(uint i = 0; i < m_nValues; i++) {
             double x = i * m_dx;
             cout << "x = " << x << endl;
-            for(uint n = 0; n < uint(m_levelMax + 1) + m_taylorExpansionOrder + 1; n++) {
+            for(uint n = 0; n < uint(m_neededLevelMax); n++) {
                 m_results(i,n) = directIntegral(x, n);
             }
         }

@@ -24,7 +24,7 @@ public:
 
     mat R;
 
-    rowvec alpha;
+    vec alpha;
 
     // Constants to be precalculated
     const double powPi5over2 = pow(M_PI, 5./2.);

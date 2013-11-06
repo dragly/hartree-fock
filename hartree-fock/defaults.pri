@@ -10,3 +10,9 @@ QMAKE_CXX = ccache $$CURRENT_COMPILER
 
 INCLUDEPATH += $$TOP_PWD/src/libs
 SRC_DIR = $$TOP_PWD
+
+copydata.commands = $(COPY_DIR) $$TOP_PWD/utils/* $$OUT_PWD
+first.depends = $(first) copydata
+export(first.depends)
+export(copydata.commands)
+QMAKE_EXTRA_TARGETS += first copydata

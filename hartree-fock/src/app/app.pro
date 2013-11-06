@@ -1,4 +1,4 @@
-include(../../defaults.pri)
+include($$TOP_PWD/defaults.pri)
 
 TEMPLATE = app
 

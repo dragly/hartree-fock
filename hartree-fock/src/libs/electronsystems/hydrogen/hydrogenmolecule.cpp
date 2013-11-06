@@ -5,7 +5,7 @@
 HydrogenMolecule::HydrogenMolecule(double distance)
 {
 
-    alpha = zeros(4);
+    alpha = zeros<rowvec>(4);
     alpha(0) = 13.00773;
     alpha(1) = 1.962079;
     alpha(2) = 0.444529;

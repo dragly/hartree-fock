@@ -9,9 +9,12 @@
 #include <electronsystems/hydrogen/hydrogenmolecule.h>
 #include <electronsystems/hydrogen/multihydrogen.h>
 
+#include <armadillo>
+#include <iostream>
 #include <fstream>
 
 using namespace std;
+using namespace arma;
 
 SUITE(Helium) {
 
