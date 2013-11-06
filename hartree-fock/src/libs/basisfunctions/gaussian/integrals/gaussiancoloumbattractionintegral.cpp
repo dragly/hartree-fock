@@ -3,10 +3,10 @@
 #include <hermiteintegral.h>
 #include <math/hermiteexpansioncoefficient.h>
 
-GaussianTypeColoumbAttractionIntegral::GaussianTypeColoumbAttractionIntegral(rowvec corePositionA, rowvec corePositionB, rowvec corePositionC,
+GaussianColoumbAttractionIntegral::GaussianColoumbAttractionIntegral(rowvec corePositionA, rowvec corePositionB, rowvec corePositionC,
                                                                              double exponentA, double exponentB,
                                                                              int angularMomentumMax) :
-    GaussianTypeColoumbAttractionIntegral(exponentA + exponentB,0,0)
+    GaussianColoumbAttractionIntegral(exponentA + exponentB,0,0)
 {
     double p = exponentA + exponentB;
     rowvec P = (exponentA * corePositionA + exponentB * corePositionB) / (exponentA + exponentB);
@@ -16,7 +16,7 @@ GaussianTypeColoumbAttractionIntegral::GaussianTypeColoumbAttractionIntegral(row
     m_isResponsibleForDeletingHermiteObjects = true;
 }
 
-GaussianTypeColoumbAttractionIntegral::GaussianTypeColoumbAttractionIntegral(double exponentSum,
+GaussianColoumbAttractionIntegral::GaussianColoumbAttractionIntegral(double exponentSum,
                                                                              HermiteExpansionCoefficient* hermiteExpansionCoefficient,
                                                                              HermiteIntegral* hermiteIntegral) :
     m_hermiteExpansionCoefficient(hermiteExpansionCoefficient),
@@ -26,7 +26,7 @@ GaussianTypeColoumbAttractionIntegral::GaussianTypeColoumbAttractionIntegral(dou
 {
 }
 
-GaussianTypeColoumbAttractionIntegral::~GaussianTypeColoumbAttractionIntegral()
+GaussianColoumbAttractionIntegral::~GaussianColoumbAttractionIntegral()
 {
     if(m_isResponsibleForDeletingHermiteObjects) {
         delete m_hermiteExpansionCoefficient;
@@ -34,7 +34,7 @@ GaussianTypeColoumbAttractionIntegral::~GaussianTypeColoumbAttractionIntegral()
     }
 }
 
-double GaussianTypeColoumbAttractionIntegral::coloumbAttractionIntegral(int iA, int jA, int kA, int iB, int jB, int kB) {
+double GaussianColoumbAttractionIntegral::coloumbAttractionIntegral(int iA, int jA, int kA, int iB, int jB, int kB) {
     double result = 0;
 //    const cube &E_x = (*m_hermiteExpansionCoefficient)[0];
 //    const cube &E_y = (*m_hermiteExpansionCoefficient)[1];

@@ -7,16 +7,16 @@ using namespace arma;
 class HermiteIntegral;
 class HermiteExpansionCoefficient;
 
-class GaussianTypeElectronInteractionIntegral
+class GaussianElectronInteractionIntegral
 {
 public:
-    GaussianTypeElectronInteractionIntegral(const rowvec& corePositionA, const rowvec& corePositionB,
+    GaussianElectronInteractionIntegral(const rowvec& corePositionA, const rowvec& corePositionB,
                                             const rowvec& corePositionC, const rowvec& corePositionD,
                                             double exponentA, double exponentB,
                                             double exponentC, double exponentD,
                                             int angularMomentumMax);
 
-    GaussianTypeElectronInteractionIntegral(double exponentA, double exponentB, double exponentC, double exponentD,
+    GaussianElectronInteractionIntegral(double exponentA, double exponentB, double exponentC, double exponentD,
                                             int angularMomentumMax,
                                             HermiteExpansionCoefficient* hermiteExpansionCoefficientAB,
                                             HermiteExpansionCoefficient* hermiteExpansionCoefficientCD,

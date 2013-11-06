@@ -7,12 +7,12 @@ using namespace arma;
 class HermiteIntegral;
 class HermiteExpansionCoefficient;
 
-class GaussianTypeColoumbAttractionIntegral
+class GaussianColoumbAttractionIntegral
 {
 public:
-    GaussianTypeColoumbAttractionIntegral(rowvec corePositionA, rowvec corePositionB, rowvec corePositionC, double exponentA, double exponentB, int angularMomentumMax);
-    GaussianTypeColoumbAttractionIntegral(double exponentSum, HermiteExpansionCoefficient *hermiteExpansionCoefficient, HermiteIntegral *hermiteIntegral);
-    ~GaussianTypeColoumbAttractionIntegral();
+    GaussianColoumbAttractionIntegral(rowvec corePositionA, rowvec corePositionB, rowvec corePositionC, double exponentA, double exponentB, int angularMomentumMax);
+    GaussianColoumbAttractionIntegral(double exponentSum, HermiteExpansionCoefficient *hermiteExpansionCoefficient, HermiteIntegral *hermiteIntegral);
+    ~GaussianColoumbAttractionIntegral();
 
     double coloumbAttractionIntegral(int iA, int jA, int kA, int iB, int jB, int kB);
 

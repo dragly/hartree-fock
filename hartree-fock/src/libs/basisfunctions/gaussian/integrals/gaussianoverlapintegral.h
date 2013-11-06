@@ -7,12 +7,12 @@ using namespace arma;
 
 class HermiteExpansionCoefficient;
 
-class GaussianTypeOverlapIntegral
+class GaussianOverlapIntegral
 {
 public:
-    GaussianTypeOverlapIntegral(double exponentSum, HermiteExpansionCoefficient *hermiteExpansionCoefficient);
-    GaussianTypeOverlapIntegral(rowvec corePositionA, rowvec corePositionB, double exponentA, double exponentB, int angularMomentumMax);
-    virtual ~GaussianTypeOverlapIntegral();
+    GaussianOverlapIntegral(double exponentSum, HermiteExpansionCoefficient *hermiteExpansionCoefficient);
+    GaussianOverlapIntegral(rowvec corePositionA, rowvec corePositionB, double exponentA, double exponentB, int angularMomentumMax);
+    virtual ~GaussianOverlapIntegral();
 
 
     double overlapIntegral(int iA, int jA, int kA, int iB, int jB, int kB);

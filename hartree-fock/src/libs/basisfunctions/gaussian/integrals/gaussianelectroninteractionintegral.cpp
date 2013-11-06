@@ -3,8 +3,8 @@
 #include <math/hermiteexpansioncoefficient.h>
 #include <hermiteintegral.h>
 
-GaussianTypeElectronInteractionIntegral::GaussianTypeElectronInteractionIntegral(const rowvec &corePositionA, const rowvec &corePositionB, const rowvec &corePositionC, const rowvec &corePositionD, double exponentA, double exponentB, double exponentC, double exponentD, int angularMomentumMax) :
-    GaussianTypeElectronInteractionIntegral(exponentA, exponentB, exponentC, exponentD, angularMomentumMax, 0, 0, 0)
+GaussianElectronInteractionIntegral::GaussianElectronInteractionIntegral(const rowvec &corePositionA, const rowvec &corePositionB, const rowvec &corePositionC, const rowvec &corePositionD, double exponentA, double exponentB, double exponentC, double exponentD, int angularMomentumMax) :
+    GaussianElectronInteractionIntegral(exponentA, exponentB, exponentC, exponentD, angularMomentumMax, 0, 0, 0)
 {
     double a = exponentA;
     double b = exponentB;
@@ -21,7 +21,7 @@ GaussianTypeElectronInteractionIntegral::GaussianTypeElectronInteractionIntegral
     m_hermiteExpansionCoefficientCD = new HermiteExpansionCoefficient(c, d, corePositionC, corePositionD, angularMomentumMax);
 }
 
-GaussianTypeElectronInteractionIntegral::GaussianTypeElectronInteractionIntegral(double exponentA, double exponentB,
+GaussianElectronInteractionIntegral::GaussianElectronInteractionIntegral(double exponentA, double exponentB,
                                                                                  double exponentC, double exponentD,
                                                                                  int angularMomentumMax,
                                                                                  HermiteExpansionCoefficient *hermiteExpansionCoefficientAB, HermiteExpansionCoefficient *hermiteExpansionCoefficientCD, HermiteIntegral *hermiteIntegral) :
@@ -40,7 +40,7 @@ GaussianTypeElectronInteractionIntegral::GaussianTypeElectronInteractionIntegral
     m_exponentQ = q;
 }
 
-double GaussianTypeElectronInteractionIntegral::electronInteractionIntegral(int iA, int jA, int kA,
+double GaussianElectronInteractionIntegral::electronInteractionIntegral(int iA, int jA, int kA,
                                                                             int iB, int jB, int kB,
                                                                             int iC, int jC, int kC,
                                                                             int iD, int jD, int kD) {
