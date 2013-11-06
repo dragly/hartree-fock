@@ -1,4 +1,4 @@
-#include "gaussiantypecoloumbattractionintegral.h"
+#include "gaussiancoloumbattractionintegral.h"
 
 #include <hermiteintegral.h>
 #include <math/hermiteexpansioncoefficient.h>

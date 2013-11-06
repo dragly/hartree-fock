@@ -1,4 +1,4 @@
-#include "gaussiantypeelectroninteractionintegral.h"
+#include "gaussianelectroninteractionintegral.h"
 
 #include <math/hermiteexpansioncoefficient.h>
 #include <hermiteintegral.h>

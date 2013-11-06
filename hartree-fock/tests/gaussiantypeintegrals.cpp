@@ -1,10 +1,10 @@
 #include <unittest++/UnitTest++.h>
 
 #include <basisfunctions/gaussiantypeorbitalintegrator.h>
-#include <math/gaussiantypeoverlapintegral.h>
-#include <math/gaussiantypekineticintegral.h>
-#include <math/gaussiantypecoloumbattractionintegral.h>
-#include <math/gaussiantypeelectroninteractionintegral.h>
+#include <basisfunctions/gaussian/integrals/gaussianoverlapintegral.h>
+#include <basisfunctions/gaussian/integrals/gaussiankineticintegral.h>
+#include <basisfunctions/gaussian/integrals/gaussiancoloumbattractionintegral.h>
+#include <basisfunctions/gaussian/integrals/gaussianelectroninteractionintegral.h>
 
 #include <armadillo>
 #include <iostream>

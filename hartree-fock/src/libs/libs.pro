@@ -14,17 +14,16 @@ SOURCES += hartreesolver.cpp \
     hartreefocksolver.cpp \
     electronsystems/hydrogen/multihydrogen.cpp \
     electronsystems/electronsystem.cpp \
-    basisfunctions/gaussiantypeorbitalintegrator.cpp \
     basisfunctions/gaussiantypeorbital.cpp \
     basisfunctions/atomicbasisfunction.cpp \
     math/boysfunction.cpp \
     math/boysfunctionintermediate.cpp \
     hermiteintegral.cpp \
     math/hermiteexpansioncoefficient.cpp \
-    basisfunctions/gaussiantypeorbital/integrals/gaussiantypeelectroninteractionintegral.cpp \
-    basisfunctions/gaussiantypeorbital/integrals/gaussiantypekineticintegral.cpp \
-    basisfunctions/gaussiantypeorbital/integrals/gaussiantypeoverlapintegral.cpp \
-    basisfunctions/gaussiantypeorbital/integrals/gaussiantypecoloumbattractionintegral.cpp
+    basisfunctions/gaussian/integrals/gaussiancoloumbattractionintegral.cpp \
+    basisfunctions/gaussian/integrals/gaussianelectroninteractionintegral.cpp \
+    basisfunctions/gaussian/integrals/gaussiankineticintegral.cpp \
+    basisfunctions/gaussian/integrals/gaussianoverlapintegral.cpp
 
 HEADERS += \
     hartreesolver.h \
@@ -34,17 +33,16 @@ HEADERS += \
     electronsystems/hydrogen/hydrogenmolecule.h \
     hartreefocksolver.h \
     electronsystems/hydrogen/multihydrogen.h \
-    basisfunctions/gaussiantypeorbitalintegrator.h \
     basisfunctions/gaussiantypeorbital.h \
     basisfunctions/atomicbasisfunction.h\
     math/boysfunction.h \
     math/boysfunctionintermediate.h \
     hermiteintegral.h \
     math/hermiteexpansioncoefficient.h \
-    basisfunctions/gaussiantypeorbital/integrals/gaussiantypecoloumbattractionintegral.h \
-    basisfunctions/gaussiantypeorbital/integrals/gaussiantypeelectroninteractionintegral.h \
-    basisfunctions/gaussiantypeorbital/integrals/gaussiantypekineticintegral.h \
-    basisfunctions/gaussiantypeorbital/integrals/gaussiantypeoverlapintegral.h
+    basisfunctions/gaussian/integrals/gaussiancoloumbattractionintegral.h \
+    basisfunctions/gaussian/integrals/gaussianelectroninteractionintegral.h \
+    basisfunctions/gaussian/integrals/gaussiankineticintegral.h \
+    basisfunctions/gaussian/integrals/gaussianoverlapintegral.h
 
 OTHER_FILES += \
     defaults.pri \

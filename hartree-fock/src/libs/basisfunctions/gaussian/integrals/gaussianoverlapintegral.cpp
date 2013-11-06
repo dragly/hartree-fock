@@ -1,4 +1,4 @@
-#include "gaussiantypeoverlapintegral.h"
+#include "gaussianoverlapintegral.h"
 
 #include <math/hermiteexpansioncoefficient.h>
 

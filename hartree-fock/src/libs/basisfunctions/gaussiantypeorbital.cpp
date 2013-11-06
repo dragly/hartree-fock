@@ -2,6 +2,8 @@
 
 GaussianTypeOrbital::GaussianTypeOrbital(double weight, double exponent)
 {
+    (void)weight;
+    (void)exponent;
 }
 
 double GaussianTypeOrbital::exponent() const

@@ -1,7 +1,7 @@
-#include "gaussiantypekineticintegral.h"
+#include "gaussiankineticintegral.h"
 
 #include <math/hermiteexpansioncoefficient.h>
-#include <math/gaussiantypeoverlapintegral.h>
+#include <basisfunctions/gaussian/integrals/gaussianoverlapintegral.h>
 
 GaussianTypeKineticIntegral::GaussianTypeKineticIntegral(rowvec corePositionA, rowvec corePositionB,
                                                          double exponentA, double exponentB,
