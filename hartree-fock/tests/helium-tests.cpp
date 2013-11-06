@@ -25,7 +25,7 @@ SUITE(Helium) {
         int r = 2;
         int s = 3;
 
-        double value = basisFunction.electronInteractionIntegral(p,r,q,s);
+        double value = basisFunction.coupledIntegral(p,r,q,s);
 
         CHECK_CLOSE(0.075820496873881579, value, 1e-9);
     }

@@ -35,7 +35,8 @@ void HartreeSolver::setuph() {
     h = zeros(n,n);
     for(uint p = 0; p < n; p++) {
         for(uint q = 0; q < n; q++) {
-            h(p,q) = f->kineticIntegral(p,q) + f->nuclearAttractionIntegral(p,q);
+//            h(p,q) = f->kineticIntegral(p,q) + f->nuclearAttractionIntegral(p,q);
+            h(p,q) = f->uncoupledIntegral(p,q);
         }
     }
 }
@@ -96,7 +97,7 @@ void HartreeSolver::setupQ() {
         for(uint r = 0; r < n; r++) {
             for(uint q = 0; q < n; q++) {
                 for(uint s = 0; s < n; s++) {
-                    Q[p][r][q][s] = f->electronInteractionIntegral(p, r, q, s);
+                    Q[p][r][q][s] = f->coupledIntegral(p, r, q, s);
                 }
             }
         }

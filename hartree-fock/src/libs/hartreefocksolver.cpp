@@ -37,7 +37,8 @@ void HartreeFockSolver::setuph() {
     h = zeros(nOrbitals,nOrbitals);
     for(uint p = 0; p < nOrbitals; p++) {
         for(uint q = 0; q < nOrbitals; q++) {
-            h(p,q) = f->kineticIntegral(p,q) + f->nuclearAttractionIntegral(p,q);
+            //            h(p,q) = f->kineticIntegral(p,q) + f->nuclearAttractionIntegral(p,q);
+            h(p,q) = f->uncoupledIntegral(p,q);
         }
     }
 }
@@ -58,36 +59,43 @@ void HartreeFockSolver::allocateQMemory() {
     if(!isQAllocated) {
         ElectronSystem* f = m_electronSystem;
         uint n = f->nOrbitals();
-        QData = new double[n*n*n*n];
-        Q = new double***[n];
-        for(uint p = 0; p < n; p++) {
-            Q[p] = new double**[n];
-            for(uint r = 0; r < n; r++) {
-                Q[p][r] = new double *[n];
-                for(uint q = 0; q < n; q++) {
-                    Q[p][r][q] = &QData[n*n*n*p + n*n*r + n*q];
-                    for(uint s = 0; s < n; s++) {
-                        Q[p][r][q][s] = 0;
-                    }
-                }
+        Q.set_size(n,n);
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                Q(i,j) = zeros(n,n);
             }
         }
+        //        QData = new double[n*n*n*n];
+        //        Q = new double***[n];
+        //        for(uint p = 0; p < n; p++) {
+        //            Q[p] = new double**[n];
+        //            for(uint r = 0; r < n; r++) {
+        //                Q[p][r] = new double *[n];
+        //                for(uint q = 0; q < n; q++) {
+        //                    Q[p][r][q] = &QData[n*n*n*p + n*n*r + n*q];
+        //                    for(uint s = 0; s < n; s++) {
+        //                        Q[p][r][q][s] = 0;
+        //                    }
+        //                }
+        //            }
+        //        }
         isQAllocated = true;
     }
 }
 
 void HartreeFockSolver::cleanUpQMemory() {
     if(isQAllocated) {
-        ElectronSystem* f = m_electronSystem;
-        uint n = f->nOrbitals();
-        for (uint i = 0; i < n; ++i) {
-            for (uint j = 0; j < n; ++j){
-                delete [] Q[i][j];
-            }
-            delete [] Q[i];
-        }
-        delete [] Q;
-        delete []QData;
+        Q.reset();
+        //        ElectronSystem* f = m_electronSystem;
+        //        uint n = f->nOrbitals();
+        //        for (uint i = 0; i < n; ++i) {
+        //            for (uint j = 0; j < n; ++j){
+        //                delete [] Q[i][j];
+        //            }
+        //            delete [] Q[i];
+        //        }
+        //        delete [] Q;
+        //        delete []QData;
     }
 }
 
@@ -98,7 +106,8 @@ void HartreeFockSolver::setupQ() {
         for(uint r = 0; r < n; r++) {
             for(uint q = 0; q < n; q++) {
                 for(uint s = 0; s < n; s++) {
-                    Q[p][r][q][s] = f->electronInteractionIntegral(p, r, q, s);
+                    Q(p,r)(q,s) = f->coupledIntegral(p, r, q, s);
+//                    Q[p][r][q][s] = f->electronInteractionIntegral(p, r, q, s);
                 }
             }
         }
@@ -174,7 +183,8 @@ void HartreeFockSolver::normalizeCwithRegardsToS(){
 }
 
 double HartreeFockSolver::Qtilde(int p, int q, int r, int s) {
-    return 2 * Q[p][r][q][s] - Q[p][r][s][q];
+    return 2 * Q(p,r)(q,s) - Q(p,r)(s,q);
+//    return 2 * Q[p][r][q][s] - Q[p][r][s][q];
 }
 
 void HartreeFockSolver::setupF() {

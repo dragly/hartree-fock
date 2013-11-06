@@ -24,7 +24,7 @@ SUITE(Hydrogen) {
 
     TEST(HydrogenElectronInteractionIntegral)  {
         HydrogenMolecule basisFunction;
-        double value = basisFunction.electronInteractionIntegral(1,5,7,2);
+        double value = basisFunction.coupledIntegral(1,5,7,2);
         // Recursion test
         CHECK_CLOSE(0.9066377680574234, value, 1e-9);
     }

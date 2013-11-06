@@ -14,10 +14,10 @@ using namespace std;
 using namespace arma;
 
 SUITE(GaussianIntegral) {
-    TEST(GaussianTypeOverlapIntegralTest) {
+    TEST(GaussianOverlapIntegralTest) {
         rowvec posA = {1.2,2.3,3.4};
         rowvec posB = {-1.3,1.4,-2.4};
-        GaussianTypeOverlapIntegral integrator(posA, posB, 0.2, 0.3, 3);
+        GaussianOverlapIntegral integrator(posA, posB, 0.2, 0.3, 3);
         CHECK_CLOSE(integrator.overlapIntegral(0,0,0,0,0,0), 0.119172363580852, 0.00001);
         CHECK_CLOSE(integrator.overlapIntegral(0,0,0,0,0,1), 0.276479883507577, 0.00001);
         CHECK_CLOSE(integrator.overlapIntegral(0,0,0,0,0,2), 0.760605693318432, 0.00001);
@@ -27,10 +27,10 @@ SUITE(GaussianIntegral) {
     }
 
 
-    TEST(GaussianTypeKineticIntegralTest) {
+    TEST(GaussianKineticIntegralTest) {
         rowvec posA = {1.2,2.3,3.4};
         rowvec posB = {-1.3,1.4,-2.4};
-        GaussianTypeKineticIntegral integrator(posA, posB, 0.2, 0.3, 3);
+        GaussianKineticIntegral integrator(posA, posB, 0.2, 0.3, 3);
 
         CHECK_CLOSE(-0.0967870268058250, integrator.kineticIntegral(0,0,0,0,0,0), 0.00001);
         CHECK_CLOSE(-0.158190730147696, integrator.kineticIntegral(0,0,0,0,0,1), 0.00001);
@@ -58,13 +58,13 @@ SUITE(GaussianIntegral) {
         CHECK_CLOSE(0.0827426773243232, integrator.kineticIntegral(0,1,1,1,0,1), 0.00001);
     }
 
-    TEST(GaussianTypeColoumbAttractionIntegralTest) {
+    TEST(GaussianColoumbAttractionIntegralTest) {
         rowvec posA = {1.2,2.3,3.4};
         rowvec posB = {-1.3,1.4,-2.4};
         rowvec posC = {2.3, 0.9, 3.2};
         double a = 0.2;
         double b = 0.3;
-        GaussianTypeColoumbAttractionIntegral integrator(posA, posB, posC, a, b, 3);
+        GaussianColoumbAttractionIntegral integrator(posA, posB, posC, a, b, 3);
         CHECK_CLOSE(2.788948987251e-02, integrator.coloumbAttractionIntegral(0,0,0,0,0,0), 1e-4);
         CHECK_CLOSE(6.971203468743e-02, integrator.coloumbAttractionIntegral(0,0,0,0,0,1), 1e-4);
         CHECK_CLOSE(2.024071525839e-01, integrator.coloumbAttractionIntegral(0,0,0,0,0,2), 1e-4);
@@ -167,7 +167,7 @@ SUITE(GaussianIntegral) {
         CHECK_CLOSE(6.422210627967e-02, integrator.coloumbAttractionIntegral(2,0,0,2,0,0), 1e-4);
     }
 
-    TEST(GaussianTypeElectronInteractionIntegralTest1) {
+    TEST(GaussianElectronInteractionIntegralTest1) {
         rowvec posA = {-0.5, 0, 0};
         rowvec posB = {-0.5, 0, 0};
         rowvec posC = {-0.5, 0, 0};
@@ -176,12 +176,12 @@ SUITE(GaussianIntegral) {
         double b = 13.0077;
         double c = 13.0077;
         double d = 13.0077;
-        GaussianTypeElectronInteractionIntegral integrator(posA, posB, posC, posD, a, b, c, d, 3);
+        GaussianElectronInteractionIntegral integrator(posA, posB, posC, posD, a, b, c, d, 3);
         // regression test
         CHECK_CLOSE(0.007166596874405562, integrator.electronInteractionIntegral(0,0,0,0,0,0,0,0,0,0,0,0), 1e-9);
     }
 
-    TEST(GaussianTypeElectronInteractionIntegralTest2) {
+    TEST(GaussianElectronInteractionIntegralTest2) {
         rowvec posA = {0.5, 0, 0};
         rowvec posB = {-0.5, 0, 0};
         rowvec posC = {-0.5, 0, 0};
@@ -190,7 +190,7 @@ SUITE(GaussianIntegral) {
         double b = 0.121949;
         double c = 0.444529;
         double d = 13.0077;
-        GaussianTypeElectronInteractionIntegral integrator(posA, posB, posC, posD, a, b, c, d, 3);
+        GaussianElectronInteractionIntegral integrator(posA, posB, posC, posD, a, b, c, d, 3);
         // regression test
         CHECK_CLOSE(0.02212455932059554, integrator.electronInteractionIntegral(0,0,0,0,0,0,0,0,0,0,0,0), 1e-9);
     }

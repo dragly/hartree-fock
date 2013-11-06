@@ -14,7 +14,7 @@ public:
     MultiHydrogen(mat nucleiPositions);
     virtual ~MultiHydrogen();
 
-    virtual double electronInteractionIntegral(int p, int r, int q, int s);
+    virtual double coupledIntegral(int p, int r, int q, int s);
     virtual double kineticIntegral(int p, int q);
     virtual double nuclearAttractionIntegral(int p, int q);
     virtual double overlapIntegral(int p, int q);
@@ -34,6 +34,10 @@ public:
 private:
     uint m_nNuclei;
     uint m_nOrbitalsPerNuclei;
+
+    // ElectronSystem interface
+public:
+    double uncoupledIntegral(int p, int q);
 };
 
 inline uint MultiHydrogen::nParticles() {

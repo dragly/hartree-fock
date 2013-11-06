@@ -7,6 +7,21 @@
 #include <unittest++/TestReporterStdout.h>
 #include <unittest++/TestRunner.h>
 
+#include <memory>
+
+template<typename T, typename ...Args>
+std::unique_ptr<T> make_unique( Args&& ...args )
+{
+    return std::unique_ptr<T>( new T( std::forward<Args>(args)... ) );
+}
+
+class TestMe {
+public:
+    void banana() {
+        std::cout << "Banana!" << std::endl;
+    }
+};
+
 int main()
 {
     int result = 0;
@@ -22,6 +37,7 @@ int main()
     result = runner.RunTestsIf(UnitTest::Test::GetTestList(), "GaussianIntegral", UnitTest::True(), 0);
     result = runner.RunTestsIf(UnitTest::Test::GetTestList(), "Hydrogen", UnitTest::True(), 0);
 #endif
+
     return result;
 }
 

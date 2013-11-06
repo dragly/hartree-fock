@@ -20,7 +20,7 @@ HydrogenMolecule::~HydrogenMolecule()
 {
 }
 
-double HydrogenMolecule::electronInteractionIntegral(int p, int r, int q, int s) {
+double HydrogenMolecule::coupledIntegral(int p, int r, int q, int s) {
     int pIndex = p % nOrbitalsPerNuclei;
     int qIndex = q % nOrbitalsPerNuclei;
     int rIndex = r % nOrbitalsPerNuclei;
@@ -145,4 +145,10 @@ double HydrogenMolecule::overlapIntegral(int p, int q) {
     double overlap = pow(acos(-1)*factor,3.0/2.0)*expTerm;
 
     return overlap;
+}
+
+
+double HydrogenMolecule::uncoupledIntegral(int p, int q)
+{
+    return kineticIntegral(p,q) + nuclearAttractionIntegral(p,q);
 }

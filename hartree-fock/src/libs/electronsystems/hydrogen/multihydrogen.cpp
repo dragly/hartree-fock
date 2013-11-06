@@ -18,7 +18,7 @@ MultiHydrogen::~MultiHydrogen()
 {
 }
 
-double MultiHydrogen::electronInteractionIntegral(int p, int r, int q, int s) {
+double MultiHydrogen::coupledIntegral(int p, int r, int q, int s) {
     int pIndex = p % m_nOrbitalsPerNuclei;
     int qIndex = q % m_nOrbitalsPerNuclei;
     int rIndex = r % m_nOrbitalsPerNuclei;
@@ -157,4 +157,10 @@ double MultiHydrogen::overlapIntegral(int p, int q) {
     double overlap = pow(acos(-1)*factor,3.0/2.0)*expTerm;
 
     return overlap;
+}
+
+
+double MultiHydrogen::uncoupledIntegral(int p, int q)
+{
+    return kineticIntegral(p,q) + nuclearAttractionIntegral(p,q);
 }

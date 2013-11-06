@@ -31,7 +31,8 @@ private:
     mat P;
     mat C;
 
-    double ****Q;
+//    double ****Q;
+    field<mat> Q;
 
     ElectronSystem *m_electronSystem;
 

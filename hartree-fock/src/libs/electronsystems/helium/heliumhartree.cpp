@@ -9,7 +9,7 @@ Helium::Helium()
     alpha(3) = 38.474970;
 }
 
-double Helium::electronInteractionIntegral(int p, int r, int q, int s) {
+double Helium::coupledIntegral(int p, int r, int q, int s) {
     double denominator = (alpha(p) + alpha(q))*(alpha(r) + alpha(s))*sqrt(alpha(p) + alpha(q) + alpha(r) + alpha(s));
     return 2 * powPi5over2 / denominator;
 }
@@ -54,4 +54,10 @@ double Helium::additionalEnergyTerms()
 uint Helium::nOrbitals()
 {
     return 4;
+}
+
+
+double Helium::uncoupledIntegral(int p, int q)
+{
+    return kineticIntegral(p,q) + nuclearAttractionIntegral(p,q);
 }
