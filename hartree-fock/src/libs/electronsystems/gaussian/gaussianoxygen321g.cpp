@@ -57,7 +57,7 @@ GaussianOxygen321G::GaussianOxygen321G() :
 }
 
 
-double GaussianOxygen321G::coupledIntegral(int p, int r, int q, int s)
+double GaussianOxygen321G::coupledIntegral(int p, int q, int r, int s)
 {
     double result = 0;
     const GaussianContractedOrbital& pBF = m_basisFunctions.at(p);

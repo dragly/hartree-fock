@@ -115,10 +115,7 @@ void HartreeFockSolver::setupQ() {
         for(uint r = 0; r < n; r++) {
             for(uint q = 0; q < n; q++) {
                 for(uint s = 0; s < n; s++) {
-                    Q(p,r)(q,s) = f->coupledIntegral(p, q, r, s);
-                    cout << Q(p,r)(q,s) << endl;
-//                    Q(p,r)(q,s) = f->coupledIntegral(p, q, r, s);
-//                    Q[p][r][q][s] = f->electronInteractionIntegral(p, r, q, s);
+                    Q(p,r)(q,s) = f->coupledIntegral(p, r, q, s);
                 }
             }
         }
