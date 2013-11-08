@@ -190,7 +190,7 @@ SUITE(GaussianIntegral) {
         double b = 0.121949;
         double c = 0.444529;
         double d = 13.0077;
-        GaussianElectronInteractionIntegral integrator(posA, posB, posC, posD, a, b, c, d, 3);
+        GaussianElectronInteractionIntegral integrator(posA, posC, posB, posD, a, c, b, d, 3);
         // regression test
         CHECK_CLOSE(0.02212455932059554, integrator.electronInteractionIntegral(0,0,0,0,0,0,0,0,0,0,0,0), 1e-9);
     }

@@ -31,7 +31,7 @@ void HartreeFockSolver::reset() {
 }
 
 void HartreeFockSolver::setuph() {
-    cout << "Setting up h" << endl;
+//    cout << "Setting up h" << endl;
     ElectronSystem* f = m_electronSystem;
     uint nOrbitals = f->nBasisFunctions();
     h.reset();
@@ -42,10 +42,11 @@ void HartreeFockSolver::setuph() {
             h(p,q) = f->uncoupledIntegral(p,q);
         }
     }
+//    cout << h << endl;
 }
 
 void HartreeFockSolver::setupS() {
-    cout << "Setting up S" << endl;
+//    cout << "Setting up S" << endl;
     ElectronSystem* f = m_electronSystem;
     uint nOrbitals = f->nBasisFunctions();
     S.reset();
@@ -55,11 +56,12 @@ void HartreeFockSolver::setupS() {
             S(p,q) = f->overlapIntegral(p, q);
         }
     }
+//    cout << S << endl;
 }
 
 void HartreeFockSolver::allocateQMemory() {
     if(!isQAllocated) {
-        cout << "Allocating memory for Q matrix" << endl;
+//        cout << "Allocating memory for Q matrix" << endl;
         ElectronSystem* f = m_electronSystem;
         uint n = f->nBasisFunctions();
         Q.set_size(n,n);
@@ -83,7 +85,7 @@ void HartreeFockSolver::allocateQMemory() {
         //            }
         //        }
         isQAllocated = true;
-        cout << "Done allocating memory" << endl;
+//        cout << "Done allocating memory" << endl;
     }
 }
 
@@ -104,15 +106,17 @@ void HartreeFockSolver::cleanUpQMemory() {
 }
 
 void HartreeFockSolver::setupQ() {
-    cout << "Setting up Q" << endl;
+//    cout << "Setting up Q" << endl;
     ElectronSystem* f = m_electronSystem;
     uint n = f->nBasisFunctions();
     for(uint p = 0; p < n; p++) {
-        cout << "p" << p << endl;
+//        cout << "p" << p << endl;
         for(uint r = 0; r < n; r++) {
             for(uint q = 0; q < n; q++) {
                 for(uint s = 0; s < n; s++) {
                     Q(p,r)(q,s) = f->coupledIntegral(p, r, q, s);
+//                    cout << Q(p,r)(q,s) << endl;
+//                    Q(p,r)(q,s) = f->coupledIntegral(p, q, r, s);
 //                    Q[p][r][q][s] = f->electronInteractionIntegral(p, r, q, s);
                 }
             }
@@ -121,7 +125,7 @@ void HartreeFockSolver::setupQ() {
 }
 
 void HartreeFockSolver::resetC() {
-    cout << "Resetting C" << endl;
+//    cout << "Resetting C" << endl;
     ElectronSystem* f = m_electronSystem;
     C.reset();
     C = ones(f->nBasisFunctions(), f->nParticles() / 2);

@@ -31,14 +31,14 @@ public:
           const rowvec& corePositionC, const rowvec& corePositionD,
           double exponentA, double exponentB,
           double exponentC, double exponentD);
-    void setCD(const rowvec &corePositionC, const rowvec &corePositionD, double exponentC, double exponentD);
-    void setAB(const rowvec &corePositionA, const rowvec &corePositionB, double exponentA, double exponentB);
+    void setAC(const rowvec &corePositionA, const rowvec &corePositionC, double exponentA, double exponentC);
+    void setBD(const rowvec &corePositionB, const rowvec &corePositionD, double exponentB, double exponentD);
 
     double electronInteractionIntegral(int iA, int jA, int kA, int iB, int jB, int kB, int iC, int jC, int kC, int iD, int jD, int kD);
 protected:
     HermiteIntegral m_hermiteIntegral;
-    HermiteExpansionCoefficient m_hermiteExpansionCoefficientAB;
-    HermiteExpansionCoefficient m_hermiteExpansionCoefficientCD;
+    HermiteExpansionCoefficient m_hermiteExpansionCoefficientAC;
+    HermiteExpansionCoefficient m_hermiteExpansionCoefficientBD;
     int m_angularMomentumMax;
     rowvec m_centerOfMassP;
     rowvec m_centerOfMassQ;
