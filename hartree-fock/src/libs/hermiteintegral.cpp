@@ -19,9 +19,9 @@ HermiteIntegral::HermiteIntegral(double alpha, const rowvec &A, int dimension, b
 
 void HermiteIntegral::reset(int dimension)
 {
+    m_dimension = dimension;
     int tMax = m_dimension;
     int nMax = m_dimension;
-    m_dimension = dimension;
     m_R.reset();
     m_R.set_size(nMax + 1);
     // Initialize and allocate the cubes for R
