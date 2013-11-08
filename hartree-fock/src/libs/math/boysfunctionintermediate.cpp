@@ -55,14 +55,19 @@ void BoysFunctionIntermediate::updateResults() {
                    << "_limmax_" << m_limitMax
                    << "_nt" << m_nIntegralValues
                    << ".arma";
+    cout << "Loading Boys file " << fileNameStream.str() << endl;
     bool allGood = m_results.load(fileNameStream.str());
+    if(!allGood) {
+        cout << "BoysFunctionIntermediate::updateResults(): Boys function data file not found. Generating now." << endl;
+    }
     if(allGood) {
         if(m_results.n_cols < uint(m_neededLevelMax)) {
+            cout << "BoysFunctionIntermediate::updateResults(): Boys function file has " << m_results.n_cols << " cols, "
+                 << "but we need " << m_neededLevelMax << endl;
             allGood = false;
         }
     }
     if(!allGood) {
-        cout << "BoysFunctionIntermediate::updateResults(): Boys function data file not found. Generating now." << endl;
         cout << "BoysFunctionIntermediate::updateResults(): Filename: " << fileNameStream.str() << endl;
         cout << "BoysFunctionIntermediate::updateResults(): Max level: " << m_levelMax << endl;
         m_results = zeros(m_nValues, m_neededLevelMax); // + 6 for the Taylor expansions

@@ -5,13 +5,13 @@
 
 SUITE(GaussianOxygen) {
     TEST(GaussianOxygen) {
-        GaussianOxygen321G system;
+        GaussianOxygen431G system;
         cout << system.overlapIntegral(0,0) << endl;
         cout << system.uncoupledIntegral(0,0) << endl;
         cout << system.coupledIntegral(0,0,0,0) << endl;
     }
     TEST(GaussianOxygenHF) {
-        GaussianOxygen321G system;
+        GaussianOxygen431G system;
         cout << "Setting up solver" << endl;
         HartreeFockSolver solver(&system);
         cout << "Starting loop" << endl;

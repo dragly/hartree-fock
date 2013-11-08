@@ -1,14 +1,14 @@
-#ifndef GAUSSIANOXYGEN321G_H
-#define GAUSSIANOXYGEN321G_H
+#ifndef GAUSSIANNITROGEN431G_H
+#define GAUSSIANNITROGEN431G_H
 
 #include <electronsystems/gaussian/gaussiansystem.h>
 #include <basisfunctions/gaussian/gaussiancontractedorbital.h>
 #include <basisfunctions/gaussian/integrals/gaussianelectroninteractionintegral.h>
 
-class GaussianOxygen431G : public GaussianSystem
+class GaussianNitrogen431G : public GaussianSystem
 {
 public:
-    GaussianOxygen431G();
+    GaussianNitrogen431G();
 };
 
-#endif // GAUSSIANOXYGEN321G_H
+#endif // GAUSSIANNITROGEN431G_H
