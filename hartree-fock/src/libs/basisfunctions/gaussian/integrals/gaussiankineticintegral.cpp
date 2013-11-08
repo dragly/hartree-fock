@@ -7,7 +7,7 @@ GaussianKineticIntegral::GaussianKineticIntegral(rowvec corePositionA, rowvec co
                                                          double exponentA, double exponentB,
                                                          int angularMomentumMax) :
     GaussianKineticIntegral(exponentA, exponentB,
-                                new HermiteExpansionCoefficient(exponentA, exponentB, corePositionA, corePositionB, angularMomentumMax))
+                                new HermiteExpansionCoefficient(exponentA, exponentB, corePositionA, corePositionB, angularMomentumMax + 3))
 {
     m_isResponsibleForDeletingHermiteExpansionObject = true;
 }

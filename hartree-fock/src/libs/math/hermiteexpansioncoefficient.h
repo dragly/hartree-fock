@@ -9,8 +9,11 @@ using namespace std;
 class HermiteExpansionCoefficient
 {
 public:
-    HermiteExpansionCoefficient();
+    HermiteExpansionCoefficient(int dimension);
     explicit HermiteExpansionCoefficient(double a, double b, rowvec A, rowvec B, int angularMomentumMax, bool setupImmediately = true);
+
+    void reset(int dimension);
+    void set(double a, double b, rowvec A, rowvec B, bool setupImmediately = true);
 
     const cube &operator [](const uword row) const;
     cube &operator[](const uword row);
@@ -22,8 +25,12 @@ protected:
     double m_b;
     rowvec m_A;
     rowvec m_B;
-    int m_angularMomentumMax;
+    int m_dimension;
     cube m_E[3]; // t, i, j
+    rowvec m_AB;
+    rowvec m_P;
+    rowvec m_PA;
+    rowvec m_PB;
 };
 
 inline const cube &HermiteExpansionCoefficient::operator[](const uword dimension) const {

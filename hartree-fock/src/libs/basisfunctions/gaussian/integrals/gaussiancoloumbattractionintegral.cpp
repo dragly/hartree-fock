@@ -11,8 +11,8 @@ GaussianColoumbAttractionIntegral::GaussianColoumbAttractionIntegral(rowvec core
     double p = exponentA + exponentB;
     rowvec P = (exponentA * corePositionA + exponentB * corePositionB) / (exponentA + exponentB);
     rowvec PC = P - corePositionC;
-    m_hermiteExpansionCoefficient = new HermiteExpansionCoefficient(exponentA, exponentB, corePositionA, corePositionB, angularMomentumMax);
-    m_hermiteIntegral = new HermiteIntegral(p, PC, 2 * angularMomentumMax);
+    m_hermiteExpansionCoefficient = new HermiteExpansionCoefficient(exponentA, exponentB, corePositionA, corePositionB, angularMomentumMax + 1);
+    m_hermiteIntegral = new HermiteIntegral(p, PC, 2 * angularMomentumMax + 1);
     m_isResponsibleForDeletingHermiteObjects = true;
 }
 

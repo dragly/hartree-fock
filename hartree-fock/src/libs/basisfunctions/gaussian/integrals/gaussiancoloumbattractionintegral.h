@@ -10,7 +10,9 @@ class HermiteExpansionCoefficient;
 class GaussianColoumbAttractionIntegral
 {
 public:
-    GaussianColoumbAttractionIntegral(rowvec corePositionA, rowvec corePositionB, rowvec corePositionC, double exponentA, double exponentB, int angularMomentumMax);
+    GaussianColoumbAttractionIntegral(rowvec corePositionA, rowvec corePositionB, rowvec corePositionC,
+                                      double exponentA, double exponentB,
+                                      int angularMomentumMax);
     GaussianColoumbAttractionIntegral(double exponentSum, HermiteExpansionCoefficient *hermiteExpansionCoefficient, HermiteIntegral *hermiteIntegral);
     ~GaussianColoumbAttractionIntegral();
 

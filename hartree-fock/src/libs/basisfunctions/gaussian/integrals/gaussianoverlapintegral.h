@@ -11,7 +11,9 @@ class GaussianOverlapIntegral
 {
 public:
     GaussianOverlapIntegral(double exponentSum, HermiteExpansionCoefficient *hermiteExpansionCoefficient);
-    GaussianOverlapIntegral(rowvec corePositionA, rowvec corePositionB, double exponentA, double exponentB, int angularMomentumMax);
+    GaussianOverlapIntegral(rowvec corePositionA, rowvec corePositionB,
+                            double exponentA, double exponentB,
+                            int angularMomentumMax);
     virtual ~GaussianOverlapIntegral();
 
 

@@ -19,7 +19,7 @@ public:
     virtual double nuclearAttractionIntegral(int p, int q);
     virtual double overlapIntegral(int p, int q);
 
-    virtual uint nOrbitals();
+    virtual uint nBasisFunctions();
     virtual uint nParticles();
 
     mat R;
@@ -44,7 +44,7 @@ inline uint HydrogenMolecule::nParticles() {
     return 2;
 }
 
-inline uint HydrogenMolecule::nOrbitals()
+inline uint HydrogenMolecule::nBasisFunctions()
 {
     return nNuclei * nOrbitalsPerNuclei;
 }

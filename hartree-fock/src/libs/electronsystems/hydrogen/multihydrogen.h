@@ -19,7 +19,7 @@ public:
     virtual double nuclearAttractionIntegral(int p, int q);
     virtual double overlapIntegral(int p, int q);
 
-    virtual uint nOrbitals();
+    virtual uint nBasisFunctions();
     virtual uint nParticles();
 
     mat R;
@@ -44,7 +44,7 @@ inline uint MultiHydrogen::nParticles() {
     return m_nNuclei;
 }
 
-inline uint MultiHydrogen::nOrbitals()
+inline uint MultiHydrogen::nBasisFunctions()
 {
     return m_nNuclei * m_nOrbitalsPerNuclei;
 }

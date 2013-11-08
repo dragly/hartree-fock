@@ -3,54 +3,106 @@
 #include <math/hermiteexpansioncoefficient.h>
 #include <hermiteintegral.h>
 
-GaussianElectronInteractionIntegral::GaussianElectronInteractionIntegral(const rowvec &corePositionA, const rowvec &corePositionB, const rowvec &corePositionC, const rowvec &corePositionD, double exponentA, double exponentB, double exponentC, double exponentD, int angularMomentumMax) :
-    GaussianElectronInteractionIntegral(exponentA, exponentB, exponentC, exponentD, angularMomentumMax, 0, 0, 0)
+GaussianElectronInteractionIntegral::GaussianElectronInteractionIntegral(int angularMomentumMax) :
+    m_hermiteIntegral(4*angularMomentumMax+1),
+    m_hermiteExpansionCoefficientAB(angularMomentumMax+1),
+    m_hermiteExpansionCoefficientCD(angularMomentumMax+1)
 {
-    double a = exponentA;
-    double b = exponentB;
-    double c = exponentC;
-    double d = exponentD;
-    double p = a + b;
-    double q = c + d;
-    rowvec P = (a * corePositionA + b * corePositionB) / (a + b);
-    rowvec Q = (c * corePositionC + d * corePositionD) / (c + d);
-    rowvec PQ = P - Q;
-    double alpha = p*q/(p+q);
-    m_hermiteIntegral = new HermiteIntegral(alpha, PQ, 4 * angularMomentumMax);
-    m_hermiteExpansionCoefficientAB = new HermiteExpansionCoefficient(a, b, corePositionA, corePositionB, angularMomentumMax);
-    m_hermiteExpansionCoefficientCD = new HermiteExpansionCoefficient(c, d, corePositionC, corePositionD, angularMomentumMax);
+    reset(angularMomentumMax);
 }
 
-GaussianElectronInteractionIntegral::GaussianElectronInteractionIntegral(double exponentA, double exponentB,
-                                                                                 double exponentC, double exponentD,
-                                                                                 int angularMomentumMax,
-                                                                                 HermiteExpansionCoefficient *hermiteExpansionCoefficientAB, HermiteExpansionCoefficient *hermiteExpansionCoefficientCD, HermiteIntegral *hermiteIntegral) :
-    m_hermiteIntegral(hermiteIntegral),
-    m_hermiteExpansionCoefficientAB(hermiteExpansionCoefficientAB),
-    m_hermiteExpansionCoefficientCD(hermiteExpansionCoefficientCD),
-    m_angularMomentumMax(angularMomentumMax)
+GaussianElectronInteractionIntegral::GaussianElectronInteractionIntegral(const rowvec &corePositionA, const rowvec &corePositionB, const rowvec &corePositionC, const rowvec &corePositionD, double exponentA, double exponentB, double exponentC, double exponentD, int angularMomentumMax) :
+    GaussianElectronInteractionIntegral(angularMomentumMax)
+{
+    set(corePositionA, corePositionB, corePositionC, corePositionD, exponentA, exponentB, exponentC, exponentD);
+}
+
+//GaussianElectronInteractionIntegral::GaussianElectronInteractionIntegral(double exponentA, double exponentB,
+//                                                                                 double exponentC, double exponentD,
+//                                                                                 int angularMomentumMax,
+//                                                                                 HermiteExpansionCoefficient *hermiteExpansionCoefficientAB, HermiteExpansionCoefficient *hermiteExpansionCoefficientCD, HermiteIntegral *hermiteIntegral) :
+//    m_hermiteIntegral(hermiteIntegral),
+//    m_hermiteExpansionCoefficientAB(hermiteExpansionCoefficientAB),
+//    m_hermiteExpansionCoefficientCD(hermiteExpansionCoefficientCD),
+//    m_angularMomentumMax(angularMomentumMax),
+//    m_isResponsibleForFreeingIntegralsAndCoefficients(false)
+//{
+//    double a = exponentA;
+//    double b = exponentB;
+//    double c = exponentC;
+//    double d = exponentD;
+//    double p = a + b;
+//    double q = c + d;
+//    m_exponentP = p;
+//    m_exponentQ = q;
+//}
+
+void GaussianElectronInteractionIntegral::reset(int angularMomentumMax)
+{
+    m_hermiteIntegral.reset(4*angularMomentumMax+1);
+    m_hermiteExpansionCoefficientAB.reset(angularMomentumMax+1);
+    m_hermiteExpansionCoefficientCD.reset(angularMomentumMax+1);
+}
+
+void GaussianElectronInteractionIntegral::set(const rowvec &corePositionA, const rowvec &corePositionB, const rowvec &corePositionC, const rowvec &corePositionD, double exponentA, double exponentB, double exponentC, double exponentD)
+{
+    setAB(corePositionA, corePositionB, exponentA, exponentB);
+    setCD(corePositionC, corePositionD, exponentC, exponentD);
+}
+
+void GaussianElectronInteractionIntegral::setAB(const rowvec &corePositionA, const rowvec &corePositionB, double exponentA, double exponentB)
 {
     double a = exponentA;
     double b = exponentB;
+//    double c = exponentC;
+//    double d = exponentD;
+    double p = a + b;
+    m_exponentP = p;
+//    double q = c + d;
+    rowvec P = (a * corePositionA + b * corePositionB) / (a + b);
+    m_centerOfMassP = P;
+//    rowvec Q = (c * corePositionC + d * corePositionD) / (c + d);
+//    rowvec PQ = P - Q;
+//    double alpha = p*q/(p+q);
+//    m_hermiteIntegral.set(alpha, PQ);
+    m_hermiteExpansionCoefficientAB.set(a, b, corePositionA, corePositionB);
+//    m_hermiteExpansionCoefficientCD.set(c, d, corePositionC, corePositionD);
+}
+
+void GaussianElectronInteractionIntegral::setCD(const rowvec &corePositionC, const rowvec &corePositionD, double exponentC, double exponentD)
+{
+//    double a = exponentA;
+//    double b = exponentB;
     double c = exponentC;
     double d = exponentD;
-    double p = a + b;
+    double p = m_exponentP;
     double q = c + d;
-    m_exponentP = p;
     m_exponentQ = q;
+    rowvec P = m_centerOfMassP;
+    rowvec Q = (c * corePositionC + d * corePositionD) / (c + d);
+    m_centerOfMassQ = Q;
+    rowvec PQ = P - Q;
+    double alpha = p*q/(p+q);
+    m_hermiteIntegral.set(alpha, PQ);
+//    m_hermiteExpansionCoefficientAB.set(a, b, corePositionA, corePositionB);
+    m_hermiteExpansionCoefficientCD.set(c, d, corePositionC, corePositionD);
+}
+
+GaussianElectronInteractionIntegral::~GaussianElectronInteractionIntegral()
+{
 }
 
 double GaussianElectronInteractionIntegral::electronInteractionIntegral(int iA, int jA, int kA,
-                                                                            int iB, int jB, int kB,
-                                                                            int iC, int jC, int kC,
-                                                                            int iD, int jD, int kD) {
+                                                                        int iB, int jB, int kB,
+                                                                        int iC, int jC, int kC,
+                                                                        int iD, int jD, int kD) {
     double result = 1;
     double p = m_exponentP;
     double q = m_exponentQ;
 
-    const HermiteIntegral &R = (*m_hermiteIntegral);
-    const HermiteExpansionCoefficient &Eab = (*m_hermiteExpansionCoefficientAB);
-    const HermiteExpansionCoefficient &Ecd = (*m_hermiteExpansionCoefficientCD);
+    const HermiteIntegral &R = m_hermiteIntegral;
+    const HermiteExpansionCoefficient &Eab = m_hermiteExpansionCoefficientAB;
+    const HermiteExpansionCoefficient &Ecd = m_hermiteExpansionCoefficientCD;
     int tMax = iA + iB;
     int uMax = jA + jB;
     int vMax = kA + kB;

@@ -31,8 +31,9 @@ void HartreeFockSolver::reset() {
 }
 
 void HartreeFockSolver::setuph() {
+    cout << "Setting up h" << endl;
     ElectronSystem* f = m_electronSystem;
-    uint nOrbitals = f->nOrbitals();
+    uint nOrbitals = f->nBasisFunctions();
     h.reset();
     h = zeros(nOrbitals,nOrbitals);
     for(uint p = 0; p < nOrbitals; p++) {
@@ -44,8 +45,9 @@ void HartreeFockSolver::setuph() {
 }
 
 void HartreeFockSolver::setupS() {
+    cout << "Setting up S" << endl;
     ElectronSystem* f = m_electronSystem;
-    uint nOrbitals = f->nOrbitals();
+    uint nOrbitals = f->nBasisFunctions();
     S.reset();
     S = zeros(nOrbitals,nOrbitals);
     for(uint p = 0; p < nOrbitals; p++) {
@@ -57,8 +59,9 @@ void HartreeFockSolver::setupS() {
 
 void HartreeFockSolver::allocateQMemory() {
     if(!isQAllocated) {
+        cout << "Allocating memory for Q matrix" << endl;
         ElectronSystem* f = m_electronSystem;
-        uint n = f->nOrbitals();
+        uint n = f->nBasisFunctions();
         Q.set_size(n,n);
         for(int i = 0; i < n; i++) {
             for(int j = 0; j < n; j++) {
@@ -80,6 +83,7 @@ void HartreeFockSolver::allocateQMemory() {
         //            }
         //        }
         isQAllocated = true;
+        cout << "Done allocating memory" << endl;
     }
 }
 
@@ -100,9 +104,11 @@ void HartreeFockSolver::cleanUpQMemory() {
 }
 
 void HartreeFockSolver::setupQ() {
+    cout << "Setting up Q" << endl;
     ElectronSystem* f = m_electronSystem;
-    uint n = f->nOrbitals();
+    uint n = f->nBasisFunctions();
     for(uint p = 0; p < n; p++) {
+        cout << "p" << p << endl;
         for(uint r = 0; r < n; r++) {
             for(uint q = 0; q < n; q++) {
                 for(uint s = 0; s < n; s++) {
@@ -115,14 +121,15 @@ void HartreeFockSolver::setupQ() {
 }
 
 void HartreeFockSolver::resetC() {
+    cout << "Resetting C" << endl;
     ElectronSystem* f = m_electronSystem;
     C.reset();
-    C = ones(f->nOrbitals(), f->nParticles() / 2);
+    C = ones(f->nBasisFunctions(), f->nParticles() / 2);
 }
 
 void HartreeFockSolver::advance() {
     ElectronSystem* f = m_electronSystem;
-    uint no = f->nOrbitals();
+    uint no = f->nBasisFunctions();
     uint nk = f->nParticles() / 2;
 
     setupF();
@@ -166,9 +173,9 @@ void HartreeFockSolver::advance() {
 }
 
 void HartreeFockSolver::normalizeCwithRegardsToS(){
-
+//    cout << "Normalizing C" << endl;
     ElectronSystem* f = m_electronSystem;
-    uint no = f->nOrbitals();
+    uint no = f->nBasisFunctions();
     uint nk = f->nParticles() / 2;
 
     for(uint k = 0; k < nk; k++) {
@@ -189,7 +196,7 @@ double HartreeFockSolver::Qtilde(int p, int q, int r, int s) {
 
 void HartreeFockSolver::setupF() {
     ElectronSystem* f = m_electronSystem;
-    uint n = f->nOrbitals();
+    uint n = f->nBasisFunctions();
     F = zeros(n,n);
     for(uint p = 0; p < n; p++) {
         for(uint q = 0; q < n; q++) {
@@ -204,5 +211,6 @@ void HartreeFockSolver::setupF() {
 }
 
 void HartreeFockSolver::setupP() {
+//    cout << "Setting up P" << endl;
     P = 2 * C * C.t();
 }

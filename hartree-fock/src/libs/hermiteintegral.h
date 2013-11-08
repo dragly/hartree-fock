@@ -9,8 +9,11 @@ using namespace std;
 class HermiteIntegral
 {
 public:
-    HermiteIntegral();
+    HermiteIntegral(int dimension);
     HermiteIntegral(double alpha, const rowvec &A, int dimension, bool setupImmediately = true);
+
+    void reset(int dimension);
+    void set(double alpha, const rowvec &A, bool setupImmediately = true);
     void setupR();
 
     const cube &operator [](const uword row) const;

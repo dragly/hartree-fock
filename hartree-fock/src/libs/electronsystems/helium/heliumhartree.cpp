@@ -51,7 +51,7 @@ double Helium::additionalEnergyTerms()
     return 0;
 }
 
-uint Helium::nOrbitals()
+uint Helium::nBasisFunctions()
 {
     return 4;
 }

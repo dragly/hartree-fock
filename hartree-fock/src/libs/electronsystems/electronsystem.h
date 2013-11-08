@@ -12,7 +12,7 @@ public:
     virtual double uncoupledIntegral(int p, int q) = 0;
     virtual double overlapIntegral(int p, int q) = 0;
 
-    virtual uint nOrbitals() = 0;
+    virtual uint nBasisFunctions() = 0;
     virtual uint nParticles() = 0;
     virtual double additionalEnergyTerms() = 0;
 };

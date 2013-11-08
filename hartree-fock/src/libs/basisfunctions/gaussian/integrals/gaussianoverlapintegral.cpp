@@ -6,7 +6,7 @@ GaussianOverlapIntegral::GaussianOverlapIntegral(rowvec corePositionA, rowvec co
                                                          double exponentA, double exponentB,
                                                          int angularMomentumMax) :
     GaussianOverlapIntegral(exponentA + exponentB,
-                                new HermiteExpansionCoefficient(exponentA, exponentB, corePositionA, corePositionB, angularMomentumMax))
+                                new HermiteExpansionCoefficient(exponentA, exponentB, corePositionA, corePositionB, angularMomentumMax + 1))
 {
     m_isResponsibleForDeletingHermiteExpansionObject = true;
 }

@@ -3,17 +3,37 @@
 #include <math/boysfunction.h>
 #include <math/boysfunctionintermediate.h>
 
-HermiteIntegral::HermiteIntegral() :
-    HermiteIntegral(0,zeros<rowvec>(3),0,false)
+HermiteIntegral::HermiteIntegral(int dimension) :
+    m_alpha(0),
+    m_A(zeros<rowvec>(3)),
+    m_dimension(dimension)
 {
-
+    reset(dimension);
 }
 
 HermiteIntegral::HermiteIntegral(double alpha, const rowvec &A, int dimension, bool setupImmediately) :
-    m_alpha(alpha),
-    m_A(A),
-    m_dimension(dimension)
+    HermiteIntegral(dimension)
 {
+    set(alpha, A, setupImmediately);
+}
+
+void HermiteIntegral::reset(int dimension)
+{
+    int tMax = m_dimension;
+    int nMax = m_dimension;
+    m_dimension = dimension;
+    m_R.reset();
+    m_R.set_size(nMax + 1);
+    // Initialize and allocate the cubes for R
+    for(int n = 0; n < nMax + 1; n++) {
+        m_R(n) = zeros(tMax + 1, tMax + 1, tMax + 1);
+    }
+}
+
+void HermiteIntegral::set(double alpha, const rowvec &A, bool setupImmediately)
+{
+    m_alpha = alpha;
+    m_A = A;
     if(setupImmediately) {
         setupR();
     }
@@ -28,15 +48,9 @@ void HermiteIntegral::setupR() {
     int tMax = m_dimension;
     int tuvSumMax = m_dimension;
     int nMax = m_dimension;
-    BoysFunctionIntermediate boysFunctionIntermediate(nMax, 1000, 0, 50, 1e6);
+    BoysFunctionIntermediate &boysFunctionIntermediate = BoysFunctionIntermediate::getInstance();
     BoysFunction boysFunction(boysArg, nMax + 1, &boysFunctionIntermediate);
 //    vector<vector<int>> calculatedIndices;
-    m_R.reset();
-    m_R.set_size(nMax + 1);
-    // Initialize and allocate the cubes for R
-    for(int n = 0; n < nMax + 1; n++) {
-        m_R(n) = zeros(tMax, tMax, tMax);
-    }
     // Calculate R0_tuv
     for(int n = 0; n < nMax + 1; n++) {
         m_R(n)(0,0,0) = pow(-2*p, n) * boysFunction.result(n);

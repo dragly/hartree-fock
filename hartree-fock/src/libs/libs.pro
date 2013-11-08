@@ -23,7 +23,10 @@ SOURCES += hartreesolver.cpp \
     basisfunctions/gaussian/integrals/gaussiancoloumbattractionintegral.cpp \
     basisfunctions/gaussian/integrals/gaussianelectroninteractionintegral.cpp \
     basisfunctions/gaussian/integrals/gaussiankineticintegral.cpp \
-    basisfunctions/gaussian/integrals/gaussianoverlapintegral.cpp
+    basisfunctions/gaussian/integrals/gaussianoverlapintegral.cpp \
+    electronsystems/gaussian/gaussianoxygen321g.cpp \
+    basisfunctions/gaussian/gaussiancontractedorbital.cpp \
+    basisfunctions/gaussian/gaussianprimitiveorbital.cpp
 
 HEADERS += \
     hartreesolver.h \
@@ -42,7 +45,10 @@ HEADERS += \
     basisfunctions/gaussian/integrals/gaussiancoloumbattractionintegral.h \
     basisfunctions/gaussian/integrals/gaussianelectroninteractionintegral.h \
     basisfunctions/gaussian/integrals/gaussiankineticintegral.h \
-    basisfunctions/gaussian/integrals/gaussianoverlapintegral.h
+    basisfunctions/gaussian/integrals/gaussianoverlapintegral.h \
+    electronsystems/gaussian/gaussianoxygen321g.h \
+    basisfunctions/gaussian/gaussiancontractedorbital.h \
+    basisfunctions/gaussian/gaussianprimitiveorbital.h
 
 OTHER_FILES += \
     defaults.pri \

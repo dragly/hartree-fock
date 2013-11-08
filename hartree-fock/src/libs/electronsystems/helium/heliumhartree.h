@@ -29,7 +29,7 @@ public:
     virtual double overlapIntegral(int p, int q);
     virtual double additionalEnergyTerms();
 
-    virtual uint nOrbitals();
+    virtual uint nBasisFunctions();
     virtual uint nParticles();
 };
 

@@ -8,10 +8,17 @@ using namespace arma;
 class BoysFunctionIntermediate
 {
 public:
-    BoysFunctionIntermediate(int levelMax, int nValues = 1000, double limitMin = 0.0, double limitMax = 50.0, int nIntegralValues=1e6);
+    BoysFunctionIntermediate(int levelMax = 20, int nValues = 1000, double limitMin = 0.0, double limitMax = 50.0, int nIntegralValues=1e6);
 
     double result(double arg, int n) const;
     void updateResults();
+
+    // TODO: Ensure we are using the correct levelMax
+    static BoysFunctionIntermediate& getInstance() {
+        static BoysFunctionIntermediate instance;
+        return instance;
+    }
+
 protected:
     const int m_taylorExpansionOrder = 6;
     double m_dx;
@@ -28,6 +35,11 @@ protected:
     double integrand(double x, double t, double n) const;
     double directIntegral(double x, double n) const;
     double fastPow(double x, int a) const;
+
+private:
+    // Added to protect from copying
+    BoysFunctionIntermediate(const BoysFunctionIntermediate&);
+    void operator=(const BoysFunctionIntermediate&);
 };
 
 #endif // BOYSFUNCTIONINTERMEDIATE_H
