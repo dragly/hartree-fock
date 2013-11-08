@@ -20,7 +20,7 @@ HydrogenMolecule::~HydrogenMolecule()
 {
 }
 
-double HydrogenMolecule::coupledIntegral(int p, int r, int q, int s) {
+double HydrogenMolecule::coupledIntegral(int p, int q, int r, int s) {
     int pIndex = p % nOrbitalsPerNuclei;
     int qIndex = q % nOrbitalsPerNuclei;
     int rIndex = r % nOrbitalsPerNuclei;

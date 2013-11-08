@@ -14,7 +14,7 @@ public:
     HydrogenMolecule(double distance = 1.4);
     virtual ~HydrogenMolecule();
 
-    virtual double coupledIntegral(int p, int r, int q, int s);
+    virtual double coupledIntegral(int p, int q, int r, int s);
     virtual double kineticIntegral(int p, int q);
     virtual double nuclearAttractionIntegral(int p, int q);
     virtual double overlapIntegral(int p, int q);

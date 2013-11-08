@@ -18,7 +18,7 @@ MultiHydrogen::~MultiHydrogen()
 {
 }
 
-double MultiHydrogen::coupledIntegral(int p, int r, int q, int s) {
+double MultiHydrogen::coupledIntegral(int p, int q, int r, int s) {
     int pIndex = p % m_nOrbitalsPerNuclei;
     int qIndex = q % m_nOrbitalsPerNuclei;
     int rIndex = r % m_nOrbitalsPerNuclei;

@@ -176,9 +176,9 @@ SUITE(GaussianIntegral) {
         double b = 13.0077;
         double c = 13.0077;
         double d = 13.0077;
-        GaussianElectronInteractionIntegral integrator(posA, posB, posC, posD, a, b, c, d, 3);
+        GaussianElectronInteractionIntegral integrator(posA, posB, posC, posD, a, b, c, d, 0);
         // regression test
-        CHECK_CLOSE(0.007166596874405562, integrator.electronInteractionIntegral(0,0,0,0,0,0,0,0,0,0,0,0), 1e-9);
+        CHECK_CLOSE(0.0071666040410096028615, integrator.electronInteractionIntegral(0,0,0,0,0,0,0,0,0,0,0,0), 1e-9);
     }
 
     TEST(GaussianElectronInteractionIntegralTest2) {
@@ -190,8 +190,36 @@ SUITE(GaussianIntegral) {
         double b = 0.121949;
         double c = 0.444529;
         double d = 13.0077;
-        GaussianElectronInteractionIntegral integrator(posA, posC, posB, posD, a, c, b, d, 3);
+        GaussianElectronInteractionIntegral integrator(posA, posB, posC, posD, a, b, c, d, 3);
         // regression test
-        CHECK_CLOSE(0.02212455932059554, integrator.electronInteractionIntegral(0,0,0,0,0,0,0,0,0,0,0,0), 1e-9);
+        CHECK_CLOSE(0.022124581472837051566, integrator.electronInteractionIntegral(0,0,0,0,0,0,0,0,0,0,0,0), 1e-9);
+    }
+
+    TEST(GaussianElectronInteractionIntegralTest3) {
+        rowvec posA = {0.5, 0, 0};
+        rowvec posB = {-0.5, 0, 0};
+        rowvec posC = {-0.5, 0, 0};
+        rowvec posD = {0.5, 0, 0};
+        double a = 13.0077;
+        double b = 0.121949;
+        double c = 0.444529;
+        double d = 13.0077;
+        GaussianElectronInteractionIntegral integrator(posA, posB, posC, posD, a, b, c, d, 2);
+        // regression test
+        CHECK_CLOSE(0.0001385810300677682, integrator.electronInteractionIntegral(0,0,0,0,1,0,0,1,0,0,0,0), 1e-9);
+    }
+
+    TEST(GaussianElectronInteractionIntegralTest4) {
+        rowvec posA = {0.55, 1, 3};
+        rowvec posB = {-0.52, 5, 6};
+        rowvec posC = {-0.53, 1, 2};
+        rowvec posD = {0.45, 2, 4};
+        double a = 13.0077;
+        double b = 0.121949;
+        double c = 0.444529;
+        double d = 10.0077;
+        GaussianElectronInteractionIntegral integrator(posA, posB, posC, posD, a, b, c, d, 2);
+        // regression test
+        CHECK_CLOSE(-6.8145328932903484228e-08, integrator.electronInteractionIntegral(1,0,0,0,1,0,0,1,0,0,1,0), 1e-9);
     }
 }

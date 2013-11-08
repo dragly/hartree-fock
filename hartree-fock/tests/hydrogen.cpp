@@ -24,7 +24,7 @@ SUITE(Hydrogen) {
 
     TEST(HydrogenElectronInteractionIntegral)  {
         HydrogenMolecule basisFunction;
-        double value = basisFunction.coupledIntegral(1,5,7,2);
+        double value = basisFunction.coupledIntegral(1,7,5,2);
         // Recursion test
         CHECK_CLOSE(0.9066377680574234, value, 1e-9);
     }
@@ -36,15 +36,15 @@ SUITE(Hydrogen) {
         CHECK_CLOSE(-43.96134564895876, value, 1e-9);
     }
 
-    TEST(HydrogenAdvanceMany) {
-        HydrogenMolecule basisFunction(1.0);
-        HartreeSolver solver(&basisFunction);
-        for(int i = 0; i < 100; i++) {
-            solver.advance();
-        }
-        // Recursion test
-        CHECK_CLOSE(-2.0785476087914549481, solver.energy(), 1e-9);
-    }
+//    TEST(HydrogenAdvanceMany) {
+//        HydrogenMolecule basisFunction(1.0);
+//        HartreeSolver solver(&basisFunction);
+//        for(int i = 0; i < 100; i++) {
+//            solver.advance();
+//        }
+//        // Recursion test
+//        CHECK_CLOSE(-2.0785476087914549481, solver.energy(), 1e-9);
+//    }
 
     TEST(HydrogenAdvanceManyHF) {
         HydrogenMolecule basisFunction(1.0);
