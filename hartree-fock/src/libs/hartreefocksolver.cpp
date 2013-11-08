@@ -171,7 +171,8 @@ void HartreeFockSolver::advance() {
             }
         }
     }
-    m_energy = energy + m_electronSystem->additionalEnergyTerms();
+    energy += m_electronSystem->additionalEnergyTerms();
+    m_energy = energy;
 }
 
 void HartreeFockSolver::normalizeCwithRegardsToS(){

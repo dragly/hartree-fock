@@ -16,7 +16,6 @@ SUITE(GaussianOxygen) {
         HartreeFockSolver solver(&system);
         cout << "Starting loop" << endl;
         for(int i = 0; i < 100; i++) {
-//            cout << i << " " << solver.energy() << endl;
             solver.advance();
         }
         cout << "Result energy: " << solver.energy() << endl;
