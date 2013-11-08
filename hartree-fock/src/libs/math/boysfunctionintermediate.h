@@ -8,7 +8,7 @@ using namespace arma;
 class BoysFunctionIntermediate
 {
 public:
-    BoysFunctionIntermediate(int levelMax = 20, int nValues = 1000, double limitMin = 0.0, double limitMax = 70.0, int nIntegralValues=1e7);
+    BoysFunctionIntermediate(int levelMax = 20, int nValues = 1000, double limitMin = 0.0, double limitMax = 50.0, int nIntegralValues=1e7);
 
     double result(double arg, int n) const;
     void updateResults();

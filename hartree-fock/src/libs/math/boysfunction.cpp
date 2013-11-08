@@ -10,7 +10,7 @@ BoysFunction::BoysFunction(double arg, int levelMax, BoysFunctionIntermediate *i
     double limitMin = 0;
     double limitMax = 50;
     if(intermediate == 0) {
-        m_intermediate = new BoysFunctionIntermediate(levelMax, 1000, limitMin, limitMax, 1e3);
+        m_intermediate = new BoysFunctionIntermediate();
     } else {
         m_intermediate = intermediate;
     }

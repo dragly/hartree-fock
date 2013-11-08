@@ -11,7 +11,7 @@ BoysFunctionIntermediate::BoysFunctionIntermediate(int levelMax, int nValues, do
     m_limitMin(limitMin),
     m_limitMax(limitMax),
     m_nIntegralValues(nIntegralValues),
-    m_neededLevelMax(m_levelMax + 1 + m_taylorExpansionOrder + 1)
+    m_neededLevelMax(m_levelMax + m_taylorExpansionOrder + 1)
 {
     m_dx = (limitMax - limitMin) / (nValues - 1);
     updateResults();
@@ -56,7 +56,8 @@ void BoysFunctionIntermediate::updateResults() {
                    << "_nt" << m_nIntegralValues
                    << ".arma";
     cout << "Loading Boys file " << fileNameStream.str() << endl;
-    bool allGood = m_results.load(fileNameStream.str());
+//    bool allGood = m_results.load(fileNameStream.str());
+    bool allGood = m_results.load("boys_tabulated.dat");
     if(!allGood) {
         cout << "BoysFunctionIntermediate::updateResults(): Boys function data file not found. Generating now." << endl;
     }
