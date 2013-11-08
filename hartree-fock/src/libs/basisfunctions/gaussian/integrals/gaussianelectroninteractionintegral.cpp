@@ -96,7 +96,7 @@ double GaussianElectronInteractionIntegral::electronInteractionIntegral(int iA, 
                                                                         int iB, int jB, int kB,
                                                                         int iC, int jC, int kC,
                                                                         int iD, int jD, int kD) {
-    double result = 1;
+    double result = 0;
     double p = m_exponentP;
     double q = m_exponentQ;
 
