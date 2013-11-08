@@ -5,13 +5,15 @@
 
 GaussianElectronInteractionIntegral::GaussianElectronInteractionIntegral(int angularMomentumMax) :
     m_hermiteIntegral(4*angularMomentumMax+1),
-    m_hermiteExpansionCoefficientAC(angularMomentumMax+1),
-    m_hermiteExpansionCoefficientBD(angularMomentumMax+1)
+    m_hermiteExpansionCoefficientAB(angularMomentumMax+1),
+    m_hermiteExpansionCoefficientCD(angularMomentumMax+1)
 {
     reset(angularMomentumMax);
 }
 
-GaussianElectronInteractionIntegral::GaussianElectronInteractionIntegral(const rowvec &corePositionA, const rowvec &corePositionB, const rowvec &corePositionC, const rowvec &corePositionD, double exponentA, double exponentB, double exponentC, double exponentD, int angularMomentumMax) :
+GaussianElectronInteractionIntegral::GaussianElectronInteractionIntegral(const rowvec &corePositionA, const rowvec &corePositionB,
+                                                                         const rowvec &corePositionC, const rowvec &corePositionD,
+                                                                         double exponentA, double exponentB, double exponentC, double exponentD, int angularMomentumMax) :
     GaussianElectronInteractionIntegral(angularMomentumMax)
 {
     set(corePositionA, corePositionB, corePositionC, corePositionD, exponentA, exponentB, exponentC, exponentD);
@@ -40,52 +42,55 @@ GaussianElectronInteractionIntegral::GaussianElectronInteractionIntegral(const r
 void GaussianElectronInteractionIntegral::reset(int angularMomentumMax)
 {
     m_hermiteIntegral.reset(4*angularMomentumMax+1);
-    m_hermiteExpansionCoefficientAC.reset(angularMomentumMax+1);
-    m_hermiteExpansionCoefficientBD.reset(angularMomentumMax+1);
+    m_hermiteExpansionCoefficientAB.reset(angularMomentumMax+1);
+    m_hermiteExpansionCoefficientCD.reset(angularMomentumMax+1);
 }
 
-void GaussianElectronInteractionIntegral::set(const rowvec &corePositionA, const rowvec &corePositionB, const rowvec &corePositionC, const rowvec &corePositionD, double exponentA, double exponentB, double exponentC, double exponentD)
+void GaussianElectronInteractionIntegral::set(const rowvec &corePositionA, const rowvec &corePositionB,
+                                              const rowvec &corePositionC, const rowvec &corePositionD,
+                                              double exponentA, double exponentB, double exponentC, double exponentD)
 {
-    setAC(corePositionA, corePositionC, exponentA, exponentC);
-    setBD(corePositionB, corePositionD, exponentB, exponentD);
+    setAB(corePositionA, corePositionB, exponentA, exponentB);
+    setCD(corePositionC, corePositionD, exponentC, exponentD);
 }
 
-void GaussianElectronInteractionIntegral::setAC(const rowvec &corePositionA, const rowvec &corePositionC, double exponentA, double exponentC)
+void GaussianElectronInteractionIntegral::setAB(const rowvec &corePositionA, const rowvec &corePositionB,
+                                                double exponentA, double exponentB)
 {
     double a = exponentA;
-    double c = exponentC;
+    double b = exponentB;
 //    double c = exponentC;
 //    double d = exponentD;
-    double p = a + c;
+    double p = a + b;
     m_exponentP = p;
 //    double q = c + d;
-    rowvec P = (a * corePositionA + c * corePositionC) / (a + c);
+    rowvec P = (a * corePositionA + b * corePositionB) / (a + b);
     m_centerOfMassP = P;
 //    rowvec Q = (c * corePositionC + d * corePositionD) / (c + d);
 //    rowvec PQ = P - Q;
 //    double alpha = p*q/(p+q);
 //    m_hermiteIntegral.set(alpha, PQ);
-    m_hermiteExpansionCoefficientAC.set(a, c, corePositionA, corePositionC);
+    m_hermiteExpansionCoefficientAB.set(a, b, corePositionA, corePositionB);
 //    m_hermiteExpansionCoefficientCD.set(c, d, corePositionC, corePositionD);
 }
 
-void GaussianElectronInteractionIntegral::setBD(const rowvec &corePositionB, const rowvec &corePositionD, double exponentB, double exponentD)
+void GaussianElectronInteractionIntegral::setCD(const rowvec &corePositionC, const rowvec &corePositionD, double exponentC, double exponentD)
 {
 //    double a = exponentA;
 //    double b = exponentB;
-    double b = exponentB;
+    double c = exponentC;
     double d = exponentD;
     double p = m_exponentP;
-    double q = b + d;
+    double q = c + d;
     m_exponentQ = q;
     rowvec P = m_centerOfMassP;
-    rowvec Q = (b * corePositionB + d * corePositionD) / (b + d);
+    rowvec Q = (c * corePositionC + d * corePositionD) / (c + d);
     m_centerOfMassQ = Q;
     rowvec PQ = P - Q;
     double alpha = p*q/(p+q);
     m_hermiteIntegral.set(alpha, PQ);
 //    m_hermiteExpansionCoefficientAB.set(a, b, corePositionA, corePositionB);
-    m_hermiteExpansionCoefficientBD.set(b, d, corePositionB, corePositionD);
+    m_hermiteExpansionCoefficientCD.set(c, d, corePositionC, corePositionD);
 }
 
 GaussianElectronInteractionIntegral::~GaussianElectronInteractionIntegral()
@@ -101,8 +106,8 @@ double GaussianElectronInteractionIntegral::electronInteractionIntegral(int iA, 
     double q = m_exponentQ;
 
     const HermiteIntegral &R = m_hermiteIntegral;
-    const HermiteExpansionCoefficient &Eac = m_hermiteExpansionCoefficientAC;
-    const HermiteExpansionCoefficient &Ebd = m_hermiteExpansionCoefficientBD;
+    const HermiteExpansionCoefficient &Eab = m_hermiteExpansionCoefficientAB;
+    const HermiteExpansionCoefficient &Ecd = m_hermiteExpansionCoefficientCD;
     int tMax = iA + iB;
     int uMax = jA + jB;
     int vMax = kA + kB;
@@ -116,8 +121,8 @@ double GaussianElectronInteractionIntegral::electronInteractionIntegral(int iA, 
                     for (int nu = 0; nu < nuMax + 1; ++nu) {
                         for (int phi = 0; phi < phiMax + 1; ++phi) {
                             double product = 1;
-                            product *= Eac(iA, jA, kA, iB, jB, kB, t, u, v);
-                            product *= Ebd(iC, jC, kC, iD, jD, kD, tau, nu, phi);
+                            product *= Eab(iA, jA, kA, iB, jB, kB, t, u, v);
+                            product *= Ecd(iC, jC, kC, iD, jD, kD, tau, nu, phi);
                             product *= pow(-1, tau + nu + phi);
                             product *= R(0, t + tau, u + nu, v + phi);
                             result += product;

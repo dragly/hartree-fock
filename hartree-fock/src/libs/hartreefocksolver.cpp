@@ -111,11 +111,11 @@ void HartreeFockSolver::setupQ() {
     uint n = f->nBasisFunctions();
 //    cout << "n=" << n <<endl;
     for(uint p = 0; p < n; p++) {
-//        cout << "p" << p << endl;
+        cout << "Q calculating for p " << p << " of " << n << endl;
         for(uint r = 0; r < n; r++) {
             for(uint q = 0; q < n; q++) {
                 for(uint s = 0; s < n; s++) {
-                    Q(p,r)(q,s) = f->coupledIntegral(p, r, q, s);
+                    Q(p,r)(q,s) = f->coupledIntegral(p, q, r, s); // NOTE: Indexes changed on purpose in element and call
                 }
             }
         }
@@ -166,7 +166,7 @@ void HartreeFockSolver::advance() {
         for(uint q = 0; q < no; q++) {
             for(uint r = 0; r < no; r++) {
                 for(uint s = 0; s < no; s++) {
-                    energy += 0.25 * Qtilde(p, q, r, s) * P(p,q) * P(r,s);
+                    energy += 0.25 * Qtilde(p, q, r, s) * P(p,q) * P(s,r);
                 }
             }
         }
@@ -205,7 +205,7 @@ void HartreeFockSolver::setupF() {
             F(p,q) = h(p,q);
             for(uint r = 0; r < n; r++) {
                 for(uint s = 0; s < n; s++) {
-                    F(p,q) += 0.5 * Qtilde(p, q, r, s) * P(r,s);
+                    F(p,q) += 0.5 * Qtilde(p, q, r, s) * P(s,r);
                 }
             }
         }

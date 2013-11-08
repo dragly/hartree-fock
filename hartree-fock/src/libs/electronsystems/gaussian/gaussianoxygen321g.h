@@ -22,6 +22,8 @@ public:
 private:
     uint m_nParticles;
     uint m_nBasisFunctions;
+    int m_angularMomentumMax;
+    double m_coreCharge;
 
     vector<GaussianContractedOrbital> m_basisFunctions;
     mat m_corePositions;
