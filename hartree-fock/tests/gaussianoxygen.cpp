@@ -1,6 +1,6 @@
 #include <unittest++/UnitTest++.h>
 
-#include <electronsystems/gaussian/gaussianoxygen321g.h>
+#include <electronsystems/gaussian/gaussianoxygen431g.h>
 #include <hartreefocksolver.h>
 
 SUITE(GaussianOxygen) {
@@ -15,7 +15,7 @@ SUITE(GaussianOxygen) {
         cout << "Setting up solver" << endl;
         HartreeFockSolver solver(&system);
         cout << "Starting loop" << endl;
-        for(int i = 0; i < 100; i++) {
+        for(int i = 0; i < 10; i++) {
             solver.advance();
         }
         cout << "Result energy: " << solver.energy() << endl;

@@ -1,5 +1,5 @@
-#ifndef GAUSSIANOXYGEN321G_H
-#define GAUSSIANOXYGEN321G_H
+#ifndef GAUSSIANOXYGEN431G_H
+#define GAUSSIANOXYGEN431G_H
 
 #include <electronsystems/gaussian/gaussiansystem.h>
 #include <basisfunctions/gaussian/gaussiancontractedorbital.h>
@@ -11,4 +11,4 @@ public:
     GaussianOxygen431G();
 };
 
-#endif // GAUSSIANOXYGEN321G_H
+#endif // GAUSSIANOXYGEN431G_H

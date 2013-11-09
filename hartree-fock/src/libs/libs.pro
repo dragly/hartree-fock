@@ -24,11 +24,11 @@ SOURCES += hartreesolver.cpp \
     basisfunctions/gaussian/integrals/gaussianelectroninteractionintegral.cpp \
     basisfunctions/gaussian/integrals/gaussiankineticintegral.cpp \
     basisfunctions/gaussian/integrals/gaussianoverlapintegral.cpp \
-    electronsystems/gaussian/gaussianoxygen321g.cpp \
     basisfunctions/gaussian/gaussiancontractedorbital.cpp \
     basisfunctions/gaussian/gaussianprimitiveorbital.cpp \
     electronsystems/gaussian/gaussiansystem.cpp \
-    electronsystems/gaussian/gaussiannitrogen431g.cpp
+    electronsystems/gaussian/gaussiannitrogen431g.cpp \
+    electronsystems/gaussian/gaussianoxygen431g.cpp
 
 HEADERS += \
     hartreesolver.h \
@@ -48,11 +48,11 @@ HEADERS += \
     basisfunctions/gaussian/integrals/gaussianelectroninteractionintegral.h \
     basisfunctions/gaussian/integrals/gaussiankineticintegral.h \
     basisfunctions/gaussian/integrals/gaussianoverlapintegral.h \
-    electronsystems/gaussian/gaussianoxygen321g.h \
     basisfunctions/gaussian/gaussiancontractedorbital.h \
     basisfunctions/gaussian/gaussianprimitiveorbital.h \
     electronsystems/gaussian/gaussiansystem.h \
-    electronsystems/gaussian/gaussiannitrogen431g.h
+    electronsystems/gaussian/gaussiannitrogen431g.h \
+    electronsystems/gaussian/gaussianoxygen431g.h
 
 OTHER_FILES += \
     defaults.pri \

@@ -50,12 +50,12 @@ bool HermiteExpansionCoefficient::checkIndexCombinationForE(int iA, int iB, int 
 }
 
 void HermiteExpansionCoefficient::setupE() {
-    int maxL = m_dimension;
+//    int maxL = m_dimension;
     int maxiA = m_dimension;
     int maxiB = m_dimension;
     // Since we are only going to need E_i_j_0 for the integrals, we cap t to i and j to only have the
     // needed values available for the algorithm.
-    int maxt = 2 * maxL;
+    int maxt = 2 * m_dimension - 1;
     double a = m_a;
     double b = m_b;
     double p = a + b;
@@ -78,7 +78,7 @@ void HermiteExpansionCoefficient::setupE() {
 //        cout << "KAB=" << dim_E(0,0,0) << endl;
         //    performed.push_back("000");
         for(int iB = 0; iB < maxiB; iB++) {
-            for(int t = 0; t < maxt - 1; t++) {
+            for(int t = 0; t < maxt; t++) {
                 int iA = 0;
                 if(iA == 0 && iB == 0 && t == 0) {
                     continue;
@@ -105,7 +105,7 @@ void HermiteExpansionCoefficient::setupE() {
         }
         for(int iA = 1; iA < maxiA; iA++) {
             for(int iB = 0; iB < maxiB; iB++) {
-                for(int t = 0; t < maxt - 1; t++) {
+                for(int t = 0; t < maxt; t++) {
                     // p = previous, n = next
                     // E(t,i,j) = 1 / (2*p) * E(t-1,i-1,j) + XPA * E(t,i-1,j) + (t + 1)*E(t+1,i-1,j)
                     int iAp = iA - 1;
