@@ -19,6 +19,8 @@ public:
     virtual uint nParticles();
     virtual double additionalEnergyTerms();
 
+//    double particleDensity(double x, double y, double z);
+    double particleDensity(const mat &C, double x, double y, double z);
 protected:
     uint m_nParticles;
     uint m_nBasisFunctions;

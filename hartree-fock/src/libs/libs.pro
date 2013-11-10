@@ -28,7 +28,8 @@ SOURCES += hartreesolver.cpp \
     basisfunctions/gaussian/gaussianprimitiveorbital.cpp \
     electronsystems/gaussian/gaussiansystem.cpp \
     electronsystems/gaussian/gaussiannitrogen431g.cpp \
-    electronsystems/gaussian/gaussianoxygen431g.cpp
+    electronsystems/gaussian/gaussianoxygen431g.cpp \
+    electronsystems/gaussian/simplegaussian.cpp
 
 HEADERS += \
     hartreesolver.h \
@@ -52,7 +53,8 @@ HEADERS += \
     basisfunctions/gaussian/gaussianprimitiveorbital.h \
     electronsystems/gaussian/gaussiansystem.h \
     electronsystems/gaussian/gaussiannitrogen431g.h \
-    electronsystems/gaussian/gaussianoxygen431g.h
+    electronsystems/gaussian/gaussianoxygen431g.h \
+    electronsystems/gaussian/simplegaussian.h
 
 OTHER_FILES += \
     defaults.pri \

@@ -38,4 +38,18 @@ void GaussianContractedOrbital::setPrimitiveBasisFunctions(const vector<Gaussian
     m_primitiveBasisFunctions = primitiveBasisFunctions;
 }
 
+double GaussianContractedOrbital::evaluated(double x, double y, double z) const
+{
+    double xDiff = x - corePosition()(0);
+    double yDiff = y - corePosition()(1);
+    double zDiff = z - corePosition()(2);
+    double rSquared = (xDiff*xDiff + yDiff*yDiff + zDiff*zDiff);
+    double result = 0;
+    for(uint i = 0; i < m_primitiveBasisFunctions.size(); i++) {
+        const GaussianPrimitiveOrbital &p = m_primitiveBasisFunctions.at(i);
+        result += p.weight() * pow(xDiff, p.xExponent()) * pow (yDiff, p.yExponent()) * pow(zDiff, p.zExponent()) * exp(-p.exponent() * rSquared * rSquared);
+    }
+    return result;
+}
+
 

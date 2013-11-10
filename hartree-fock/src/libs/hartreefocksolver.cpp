@@ -110,21 +110,21 @@ void HartreeFockSolver::setupQ() {
     ElectronSystem* f = m_electronSystem;
     uint n = f->nBasisFunctions();
 //    cout << "n=" << n <<endl;
-    fstream qFile;
-    qFile.open("Q2.dat", ios::out);
-    qFile << setprecision(9);
+//    fstream qFile;
+//    qFile.open("Q2.dat", ios::out);
+//    qFile << setprecision(9);
     for(uint p = 0; p < n; p++) {
         cout << "Q calculating for p " << p << " of " << n << endl;
         for(uint r = 0; r < n; r++) {
             for(uint q = 0; q < n; q++) {
                 for(uint s = 0; s < n; s++) {
                     Q(p,r)(q,s) = f->coupledIntegral(p, q, r, s); // NOTE: Indexes changed on purpose in element and call
-                    qFile << Q(p,r)(q,s) << "\n";
+//                    qFile << Q(p,r)(q,s) << "\n";
                 }
             }
         }
     }
-    qFile.close();
+//    qFile.close();
 }
 
 void HartreeFockSolver::resetC() {
@@ -178,7 +178,7 @@ void HartreeFockSolver::advance() {
     }
     energy += m_electronSystem->additionalEnergyTerms();
     m_energy = energy;
-    cout << m_energy << endl;
+//    cout << m_energy << endl;
 }
 
 void HartreeFockSolver::normalizeCwithRegardsToS(){

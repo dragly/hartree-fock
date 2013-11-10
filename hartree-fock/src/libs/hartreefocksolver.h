@@ -24,6 +24,7 @@ public:
     ElectronSystem *electronSystem();
 
     inline double energy();
+    const mat &coefficientMatrix() const;
 private:
     mat h;
     mat S;
@@ -66,6 +67,11 @@ inline ElectronSystem *HartreeFockSolver::electronSystem() {
 inline double HartreeFockSolver::energy()
 {
     return m_energy;
+}
+
+inline const mat &HartreeFockSolver::coefficientMatrix() const
+{
+    return C;
 }
 
 #endif // HARTREEFOCKSOLVER_H
