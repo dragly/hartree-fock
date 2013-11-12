@@ -106,6 +106,16 @@ double GaussianSystem::additionalEnergyTerms()
     return result;
 }
 
+void GaussianSystem::addContractedOrbital(const GaussianContractedOrbital &contractedOrbital)
+{
+    m_basisFunctions.push_back(contractedOrbital);
+}
+
+void GaussianSystem::addContractedOrbitals(const vector<GaussianContractedOrbital> &contractedOrbitals)
+{
+    m_basisFunctions.insert(m_basisFunctions.end(), contractedOrbitals.begin(), contractedOrbitals.end());
+}
+
 double GaussianSystem::particleDensity(const mat& C, double x, double y, double z) {
     if(C.n_rows < m_basisFunctions.size() || C.n_cols < m_nParticles / 2) {
         cout << "C matrix has the wrong dimensions" << endl;

@@ -21,6 +21,9 @@ public:
 
 //    double particleDensity(double x, double y, double z);
     double particleDensity(const mat &C, double x, double y, double z);
+
+    void addContractedOrbital(const GaussianContractedOrbital &contractedOrbital);
+    void addContractedOrbitals(const vector<GaussianContractedOrbital> &contractedOrbitals);
 protected:
     uint m_nParticles;
     uint m_nBasisFunctions;

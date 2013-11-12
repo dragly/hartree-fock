@@ -118,33 +118,4 @@ SUITE(GaussianDensity) {
         cout << densitySum << endl;
         cout << basisDensitySum << endl;
     }
-//    TEST(OrthogonalityCheck) {
-//        mat C;
-//        mat S;
-//        C.load("coefficients.dat");
-//        S.load("overlap.dat");
-//        mat SC = S * C;
-//        mat CSC = C.t() * SC;
-//        mat Ct = C.t();
-
-//        mat CSC2 = zeros(8,8);
-//        for(int i = 0; i < 8; i++) {
-//            for(int j = 0; j < 8; j++) {
-//                double result = 0;
-//                for(int k = 0; k < 18; k++) {
-//                    for(int l = 0; l < 18; l++) {
-//                        result += Ct(i,k) * C(l,j) * S(k,l);
-//                    }
-//                }
-//                CSC2(i,j) = result;
-//            }
-//        }
-////        for(int i = 0; i < C.n_cols; i++) {
-////            for(int j = 0; j < C.n_cols; j++) {
-////                cout << "C(" << i << ") * C(" << j << ") = " << dot(C.col(i), C.col(j)) << endl;
-////            }
-////        }
-//        cout << CSC << endl;
-//        cout << CSC2 << endl;
-//    }
 }

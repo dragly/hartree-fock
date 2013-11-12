@@ -1,5 +1,7 @@
 include($$TOP_PWD/defaults.pri)
 
+LIBS += -lboost_regex
+
 TEMPLATE = lib
 CONFIG += console
 CONFIG -= app_bundle
@@ -29,7 +31,8 @@ SOURCES += hartreesolver.cpp \
     electronsystems/gaussian/gaussiansystem.cpp \
     electronsystems/gaussian/gaussiannitrogen431g.cpp \
     electronsystems/gaussian/gaussianoxygen431g.cpp \
-    electronsystems/gaussian/simplegaussian.cpp
+    electronsystems/gaussian/simplegaussian.cpp \
+    parsers/turbomoleparser.cpp
 
 HEADERS += \
     hartreesolver.h \
@@ -54,7 +57,8 @@ HEADERS += \
     electronsystems/gaussian/gaussiansystem.h \
     electronsystems/gaussian/gaussiannitrogen431g.h \
     electronsystems/gaussian/gaussianoxygen431g.h \
-    electronsystems/gaussian/simplegaussian.h
+    electronsystems/gaussian/simplegaussian.h \
+    parsers/turbomoleparser.h
 
 OTHER_FILES += \
     defaults.pri \

@@ -13,7 +13,8 @@ SOURCES += main.cpp \
     boysfunction.cpp \
     hydrogen.cpp \
     gaussianoxygen.cpp \
-    gaussiandensity.cpp
+    gaussiandensity.cpp \
+    parser.cpp
 
 LIBS += -lunittest++ -L$$TOP_OUT_PWD/src/libs -lhartree-fock
 
