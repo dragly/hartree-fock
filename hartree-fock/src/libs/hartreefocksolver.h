@@ -25,6 +25,7 @@ public:
 
     inline double energy();
     const mat &coefficientMatrix() const;
+    const mat &overlapMatrix();
 private:
     mat h;
     mat S;
@@ -72,6 +73,10 @@ inline double HartreeFockSolver::energy()
 inline const mat &HartreeFockSolver::coefficientMatrix() const
 {
     return C;
+}
+
+inline const mat &HartreeFockSolver::overlapMatrix() {
+    return S;
 }
 
 #endif // HARTREEFOCKSOLVER_H

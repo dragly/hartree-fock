@@ -130,6 +130,7 @@ double GaussianSystem::particleDensity(const mat& C, double x, double y, double 
 //    cout << "nParticles: " << m_nParticles << endl;
     double result = 0;
 
+    // TODO This should include some integrals over a lot of overlap functions - if not, why?s
     for(int i = 0; i < m_nParticles / 2; i++) {
         double innerResult = 0;
         for(int j = 0; j < m_basisFunctions.size(); j++) {
