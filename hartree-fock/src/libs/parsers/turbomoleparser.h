@@ -3,6 +3,7 @@
 
 #include <basisfunctions/gaussian/gaussianprimitiveorbital.h>
 #include <basisfunctions/gaussian/gaussiancontractedorbital.h>
+#include <hf.h>
 
 #include <string>
 #include <unordered_map>
@@ -15,30 +16,18 @@ class TurboMoleParser
 public:
     TurboMoleParser();
 
-    enum AtomOrbitalType {
-        sOrbitalType,
-        pOrbitalType,
-        dOrbitalType,
-        fOrbitalType
-    };
+    bool load(string fileName);
 
-    enum AtomType {
-        Hydrogen,
-        Nitrogen,
-        Oxygen,
-        Sulfur
-    };
+    const vector<GaussianContractedOrbital> &contractedBasisFunctions() const;
 
-    bool read(string fileName);
+    HF::AtomType atomType() const;
+
 private:
-    unordered_map<AtomType, int, hash<int>> nExpectedCoreSOrbitals;
-    unordered_map<AtomType, int, hash<int>> nExpectedCorePOrbitals;
-    unordered_map<AtomType, int, hash<int>> nExpectedValenceSOrbitals;
-    unordered_map<AtomType, int, hash<int>> nExpectedValencePOrbitals;
-    vector<GaussianContractedOrbital> contractedBasisFunctions;
-    AtomOrbitalType currentOrbitalType = sOrbitalType;
-    vector<GaussianPrimitiveOrbital> collectedPrimitiveBasisFunctions;
+    vector<GaussianContractedOrbital> m_contractedBasisFunctions;
+    HF::AtomOrbitalType m_currentOrbitalType = HF::sOrbitalType;
+    vector<GaussianPrimitiveOrbital> m_collectedPrimitiveBasisFunctions;
     void mergePrimitivesIntoContracted();
+    HF::AtomType m_atomType;
 };
 
 #endif // TURBOMOLEPARSER_H

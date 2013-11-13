@@ -29,10 +29,11 @@ SOURCES += hartreesolver.cpp \
     basisfunctions/gaussian/gaussiancontractedorbital.cpp \
     basisfunctions/gaussian/gaussianprimitiveorbital.cpp \
     electronsystems/gaussian/gaussiansystem.cpp \
-    electronsystems/gaussian/gaussiannitrogen431g.cpp \
-    electronsystems/gaussian/gaussianoxygen431g.cpp \
-    electronsystems/gaussian/simplegaussian.cpp \
-    parsers/turbomoleparser.cpp
+#    electronsystems/gaussian/gaussiannitrogen431g.cpp \
+#    electronsystems/gaussian/gaussianoxygen431g.cpp \
+    parsers/turbomoleparser.cpp \
+    electronsystems/gaussian/gaussiancore.cpp \
+    hf.cpp
 
 HEADERS += \
     hartreesolver.h \
@@ -55,10 +56,11 @@ HEADERS += \
     basisfunctions/gaussian/gaussiancontractedorbital.h \
     basisfunctions/gaussian/gaussianprimitiveorbital.h \
     electronsystems/gaussian/gaussiansystem.h \
-    electronsystems/gaussian/gaussiannitrogen431g.h \
-    electronsystems/gaussian/gaussianoxygen431g.h \
-    electronsystems/gaussian/simplegaussian.h \
-    parsers/turbomoleparser.h
+#    electronsystems/gaussian/gaussiannitrogen431g.h \
+#    electronsystems/gaussian/gaussianoxygen431g.h \
+    parsers/turbomoleparser.h \
+    electronsystems/gaussian/gaussiancore.h \
+    hf.h
 
 OTHER_FILES += \
     defaults.pri \

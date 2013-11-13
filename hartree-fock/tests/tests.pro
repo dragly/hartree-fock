@@ -12,7 +12,6 @@ SOURCES += main.cpp \
     gaussiantypeintegrals.cpp \
     boysfunction.cpp \
     hydrogen.cpp \
-    gaussianoxygen.cpp \
     gaussiandensity.cpp \
     parser.cpp
 

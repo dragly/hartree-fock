@@ -1,7 +1,6 @@
 #include <boysfunction.cpp>
 #include <gaussiantypeintegrals.cpp>
 #include <hydrogen.cpp>
-#include <gaussianoxygen.cpp>
 #include <parser.cpp>
 
 #include <unittest++/UnitTest++.h>
@@ -43,8 +42,8 @@ int main()
 //    result = runner.RunTestsIf(UnitTest::Test::GetTestList(), "GaussianIntegral", UnitTest::True(), 0);
 //    result = runner.RunTestsIf(UnitTest::Test::GetTestList(), "Hydrogen", UnitTest::True(), 0);
 //    result = runner.RunTestsIf(UnitTest::Test::GetTestList(), "GaussianOxygen", UnitTest::True(), 0);
-    //    result = runner.RunTestsIf(UnitTest::Test::GetTestList(), "GaussianDensity", UnitTest::True(), 0);
-        result = runner.RunTestsIf(UnitTest::Test::GetTestList(), "Parser", UnitTest::True(), 0);
+        result = runner.RunTestsIf(UnitTest::Test::GetTestList(), "GaussianDensity", UnitTest::True(), 0);
+//        result = runner.RunTestsIf(UnitTest::Test::GetTestList(), "Parser", UnitTest::True(), 0);
 #endif
 
     return result;

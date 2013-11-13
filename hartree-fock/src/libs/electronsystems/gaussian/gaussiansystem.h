@@ -2,6 +2,7 @@
 #define GAUSSIANSYSTEM_H
 
 #include <electronsystems/electronsystem.h>
+#include <electronsystems/gaussian/gaussiancore.h>
 #include <basisfunctions/gaussian/gaussiancontractedorbital.h>
 #include <basisfunctions/gaussian/integrals/gaussianelectroninteractionintegral.h>
 
@@ -21,17 +22,16 @@ public:
 
 //    double particleDensity(double x, double y, double z);
     double particleDensity(const mat &C, double x, double y, double z);
-
-    void addContractedOrbital(const GaussianContractedOrbital &contractedOrbital);
-    void addContractedOrbitals(const vector<GaussianContractedOrbital> &contractedOrbitals);
+    void addCore(const GaussianCore& core);
 protected:
     uint m_nParticles;
     uint m_nBasisFunctions;
     int m_angularMomentumMax;
-    double m_coreCharge;
+//    vector<double> m_coreCharges;
 
+    vector<GaussianCore> m_cores;
     vector<GaussianContractedOrbital> m_basisFunctions;
-    mat m_corePositions;
+//    vector<rowvec> m_corePositions;
     GaussianElectronInteractionIntegral electronInteractionIntegral;
 };
 

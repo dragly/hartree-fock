@@ -15,8 +15,7 @@ GaussianSystem::GaussianSystem() :
     m_nParticles(0),
     m_nBasisFunctions(0),
     m_angularMomentumMax(0),
-    electronInteractionIntegral(0),
-    m_coreCharge(0)
+    electronInteractionIntegral(0)
 {
 }
 
@@ -57,12 +56,13 @@ double GaussianSystem::uncoupledIntegral(int p, int q)
                                                     m_angularMomentumMax);
             result += pP.weight() * qP.weight() * kineticIntegral.kineticIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
                                                                                   qP.xExponent(), qP.yExponent(), qP.zExponent());
-            for(uint i = 0; i < m_corePositions.n_rows; i++) {
-                const rowvec &corePositionC = m_corePositions.row(i);
+            for(uint i = 0; i < m_cores.size(); i++) {
+                const GaussianCore &core = m_cores.at(i);
+                const rowvec &corePositionC = core.position();
                 GaussianColoumbAttractionIntegral coloumbIntegral(pBF.corePosition(), qBF.corePosition(), corePositionC,
                                                                   pP.exponent(), qP.exponent(),
                                                                   m_angularMomentumMax);
-                result -= m_coreCharge * pP.weight() * qP.weight() * coloumbIntegral.coloumbAttractionIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
+                result -= core.charge() * pP.weight() * qP.weight() * coloumbIntegral.coloumbAttractionIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
                                                                                                                qP.xExponent(), qP.yExponent(), qP.zExponent());
             }
         }
@@ -98,22 +98,14 @@ uint GaussianSystem::nParticles()
 double GaussianSystem::additionalEnergyTerms()
 {
     double result = 0;
-    for(uint i = 0; i < m_corePositions.n_rows; i++) {
-        for(uint j = i + 1; j < m_corePositions.n_rows; j++) {
-            result += m_coreCharge*m_coreCharge / sqrt(dot(m_corePositions.row(i) - m_corePositions.row(j), m_corePositions.row(i)- m_corePositions.row(j)));
+    for(uint i = 0; i < m_cores.size(); i++) {
+        const GaussianCore &core1 = m_cores.at(i);
+        for(uint j = i + 1; j < m_cores.size(); j++) {
+            const GaussianCore &core2 = m_cores.at(j);
+            result += core1.charge()*core2.charge() / sqrt(dot(core1.position() - core2.position(), core1.position() - core2.position()));
         }
     }
     return result;
-}
-
-void GaussianSystem::addContractedOrbital(const GaussianContractedOrbital &contractedOrbital)
-{
-    m_basisFunctions.push_back(contractedOrbital);
-}
-
-void GaussianSystem::addContractedOrbitals(const vector<GaussianContractedOrbital> &contractedOrbitals)
-{
-    m_basisFunctions.insert(m_basisFunctions.end(), contractedOrbitals.begin(), contractedOrbitals.end());
 }
 
 double GaussianSystem::particleDensity(const mat& C, double x, double y, double z) {
@@ -193,4 +185,22 @@ double GaussianSystem::particleDensity(const mat& C, double x, double y, double 
     //        cout << endl;
     //    }
     return result;
+}
+
+void GaussianSystem::addCore(const GaussianCore &core)
+{
+    m_nBasisFunctions += core.contractedOrbitals().size();
+    m_nParticles += core.nElectrons();
+    m_basisFunctions.insert(m_basisFunctions.end(), core.contractedOrbitals().begin(), core.contractedOrbitals().end());
+    m_cores.push_back(core);
+    int angularMomentumMax = 0;
+    for(const GaussianContractedOrbital &contracted : m_basisFunctions) {
+        for(const GaussianPrimitiveOrbital &primitive : contracted.primitiveBasisFunctions()) {
+            angularMomentumMax = max(angularMomentumMax, primitive.xExponent());
+            angularMomentumMax = max(angularMomentumMax, primitive.yExponent());
+            angularMomentumMax = max(angularMomentumMax, primitive.zExponent());
+        }
+    }
+    m_angularMomentumMax = angularMomentumMax;
+    electronInteractionIntegral = GaussianElectronInteractionIntegral(angularMomentumMax);
 }
