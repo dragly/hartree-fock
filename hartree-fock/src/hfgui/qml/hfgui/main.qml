@@ -22,7 +22,10 @@ Rectangle {
             fovzoom: false
             camera: Camera {
                 center: Qt.vector3d(0,0,0)
-                eye: Qt.vector3d(12, 0, 0)
+                eye: Qt.vector3d(20, 0, 0)
+                nearPlane: 0.5
+                farPlane: 100
+                fieldOfView: 60
             }
 
             Layout.fillWidth: true
