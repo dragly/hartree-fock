@@ -12,7 +12,7 @@ using namespace arma;
 class GaussianContractedOrbital
 {
 public:
-//    GaussianContractedOrbital();
+    GaussianContractedOrbital();
     GaussianContractedOrbital(const rowvec &corePosition);
 
     void addPrimitiveBasisFunction(const GaussianPrimitiveOrbital& primitive);

@@ -1,8 +1,9 @@
 #include "gaussiancontractedorbital.h"
 
-//GaussianContractedOrbital::GaussianContractedOrbital()
-//{
-//}
+GaussianContractedOrbital::GaussianContractedOrbital() :
+    GaussianContractedOrbital(rowvec(0,0,0))
+{
+}
 
 GaussianContractedOrbital::GaussianContractedOrbital(const rowvec& corePosition) :
     m_corePosition(corePosition)

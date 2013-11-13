@@ -23,7 +23,6 @@ GaussianNitrogen431G::GaussianNitrogen431G() :
     m_corePositions = corePositions;
     m_corePositions.reshape(3,2);
     m_corePositions = m_corePositions.t();
-    cout << m_corePositions << endl;
 
     for(uint i = 0; i < m_corePositions.n_rows; i++) {
         GaussianContractedOrbital contracted1_1s(m_corePositions.row(i));
@@ -69,6 +68,12 @@ GaussianNitrogen431G::GaussianNitrogen431G() :
             m_basisFunctions.push_back(contracted5_2p);
         }
 
+    }
+    for(GaussianContractedOrbital orbital : m_basisFunctions) {
+        cout << "Contracted:" << endl;
+        for(GaussianPrimitiveOrbital primitive : orbital.primitiveBasisFunctions()) {
+            cout << primitive.weight() << " * " << primitive.exponent() << endl;
+        }
     }
 }
 
