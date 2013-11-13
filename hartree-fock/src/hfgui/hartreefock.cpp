@@ -68,53 +68,60 @@ const cube &HartreeFock::positions() const
 
 void HartreeFock::loadPointsFromFile()
 {
-    cout << "Setting up Hartree Fock!" << endl;
-    vector<GaussianCore> cores;
-//    cores.push_back(GaussianCore({0,0,0}, "oxygen431g.tm"));
-//    cores.push_back(GaussianCore({-1.43,1.108,0}, "hydrogen431g.tm"));
-//    cores.push_back(GaussianCore({1.43,1.108,0}, "hydrogen431g.tm"));
-//    cores.push_back(GaussianCore({0.0,-1.81,0}, "hydrogen431g.tm"));
-
-
-//    cores.push_back(GaussianCore({-1.0715,0,0}, "nitrogen431g.tm"));
-    cores.push_back(GaussianCore({0,0,0}, "silicon321g.tm"));
-    cores.push_back(GaussianCore({2.735589103989223,0.9956730070350279,0}, "oxygen431g.tm"));
-    cores.push_back(GaussianCore({-2.735589103989223,0.9956730070350279,0}, "oxygen431g.tm"));
-    GaussianSystem system;
-    for(const GaussianCore &core : cores) {
-        system.addCore(core);
-    }
-    mat C;
-    HartreeFockSolver solver(&system);
-    for(int i = 0; i < 100; i++) {
-        solver.advance();
-    }
-    cout << "Energy: " << solver.energy() << endl;
-    C = solver.coefficientMatrix();
+    bool recalc = false;
     vec x = linspace(-5, 5, 100);
     vec y = linspace(-5, 5, 100);
     vec z = linspace(-5, 5, 100);
-    double dx = x(1) - x(0);
-    double dy = y(1) - y(0);
-    double dz = z(1) - z(0);
-    double densitySum = 0;
-    m_densityVoxels = cube(x.n_elem, y.n_elem, z.n_elem);
-    for(uint i = 0; i < x.n_elem; i++) {
-        cout << "Calculating density for x = " << x(i) << endl;
-        for(uint j = 0; j < y.n_elem; j++) {
-            for(uint k = 0; k < z.n_elem; k++) {
-                double density = system.particleDensity(C, x(i), y(j), z(k));
-                densitySum += density * dx * dy * dz;
-                m_densityVoxels(i,j,k) = density;
+    if(recalc) {
+        cout << "Setting up Hartree Fock!" << endl;
+        vector<GaussianCore> cores;
+        //    cores.push_back(GaussianCore({0,0,0}, "oxygen431g.tm"));
+        //    cores.push_back(GaussianCore({-1.43,1.108,0}, "hydrogen431g.tm"));
+        //    cores.push_back(GaussianCore({1.43,1.108,0}, "hydrogen431g.tm"));
+        //    cores.push_back(GaussianCore({0.0,-1.81,0}, "hydrogen431g.tm"));
+
+
+        //    cores.push_back(GaussianCore({-1.0715,0,0}, "nitrogen431g.tm"));
+        cores.push_back(GaussianCore({0,0,0}, "silicon321g.tm"));
+        cores.push_back(GaussianCore({2.735589103989223,0.9956730070350279,0}, "oxygen431g.tm"));
+        cores.push_back(GaussianCore({-2.735589103989223,0.9956730070350279,0}, "oxygen431g.tm"));
+        GaussianSystem system;
+        for(const GaussianCore &core : cores) {
+            system.addCore(core);
+        }
+        mat C;
+        HartreeFockSolver solver(&system);
+        for(int i = 0; i < 100; i++) {
+            solver.advance();
+        }
+        cout << "Energy: " << solver.energy() << endl;
+        C = solver.coefficientMatrix();
+        double dx = x(1) - x(0);
+        double dy = y(1) - y(0);
+        double dz = z(1) - z(0);
+        double densitySum = 0;
+        m_densityVoxels = cube(x.n_elem, y.n_elem, z.n_elem);
+        for(uint i = 0; i < x.n_elem; i++) {
+            cout << "Calculating density for x = " << x(i) << endl;
+            for(uint j = 0; j < y.n_elem; j++) {
+                for(uint k = 0; k < z.n_elem; k++) {
+                    double density = system.particleDensity(C, x(i), y(j), z(k));
+                    densitySum += density * dx * dy * dz;
+                    m_densityVoxels(i,j,k) = density;
+                }
             }
         }
+        cout << "Density sum: " << densitySum << endl;
+        m_densityVoxels -= m_densityVoxels.min();
+        m_densityVoxels += 1e-6;
+        m_densityVoxels = sqrt(m_densityVoxels);
+        m_densityVoxels.save("density.dat");
+        m_energy = solver.energy();
+        emit energyChanged(m_energy);
+    } else {
+        bool loadOK = m_densityVoxels.load("density.dat");
+        cout << "loadOK: " << loadOK << endl;
     }
-    cout << "Density sum: " << densitySum << endl;
-    m_densityVoxels -= m_densityVoxels.min();
-    m_densityVoxels += 1e-6;
-    m_densityVoxels = sqrt(m_densityVoxels);
-    m_densityVoxels.save("density.dat", raw_ascii);
-
     double minValue = x.min();
     double maxValue = x.max();
     double mostMaxValue = max(-minValue, maxValue);
@@ -127,8 +134,6 @@ void HartreeFock::loadPointsFromFile()
     emit voxelEdgeMaxChanged(m_voxelEdgeMax);
     emit nSampleStepsChanged(m_nSampleSteps);
     emit dataChanged();
-    m_energy = solver.energy();
-    emit energyChanged(m_energy);
 }
 
 void HartreeFock::setupVoxelData() {

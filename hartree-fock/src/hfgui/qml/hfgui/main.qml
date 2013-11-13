@@ -19,6 +19,11 @@ Rectangle {
             property alias useSquareRootDensity: mainDensityPlotter.useSquareRootDensity
             property alias volumeShaderQuality: mainDensityPlotter.quality
             fillColor: "black"
+            fovzoom: false
+            camera: Camera {
+                center: Qt.vector3d(0,0,0)
+                eye: Qt.vector3d(12, 0, 0)
+            }
 
             Layout.fillWidth: true
             Layout.fillHeight: true
