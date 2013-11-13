@@ -21,7 +21,7 @@ public:
     virtual double additionalEnergyTerms();
 
 //    double particleDensity(double x, double y, double z);
-    double particleDensity(const mat &C, double x, double y, double z);
+    double particleDensity(const mat &C, double x, double y, double z) const;
     void addCore(const GaussianCore& core);
 protected:
     uint m_nParticles;

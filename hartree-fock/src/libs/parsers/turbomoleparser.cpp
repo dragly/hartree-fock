@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <boost/regex.hpp>
+#include <clocale>
 
 using namespace std;
 using namespace boost;
@@ -13,6 +14,7 @@ TurboMoleParser::TurboMoleParser()
 
 bool TurboMoleParser::load(string fileName)
 {
+    setlocale(LC_ALL, "C");
     m_contractedBasisFunctions.clear();
     ifstream dataFile(fileName);
     string line;
@@ -87,7 +89,7 @@ bool TurboMoleParser::load(string fileName)
 //            cout << primitive.weight() << " * " << primitive.exponent() << endl;
 //        }
 //    }
-//    cout << "Done!" << endl;
+    cout << "Done!" << endl;
     return true;
 }
 

@@ -99,46 +99,33 @@ SUITE(GaussianDensity) {
     //        cout << basisDensitySum << endl;
     //    }
 
-
-    TEST(GaussianCore) {
-        GaussianCore core1({0,0,0}, "oxygen431g.tm");
-        GaussianCore core2({-1.43,1.108,0}, "hydrogen431g.tm");
-        GaussianCore core3({1.43,1.108,0}, "hydrogen431g.tm");
-        GaussianSystem system;
-        system.addCore(core1);
-        system.addCore(core2);
-        system.addCore(core3);
-        HartreeFockSolver solver(&system);
-        for(int i = 0; i < 100; i++) {
-            solver.advance();
-        }
-        cout << "Energy: " << solver.energy() << endl;
-        mat C = solver.coefficientMatrix();
-        vec x = linspace(-3, 3, 50);
-        vec y = linspace(-3, 3, 50);
-        vec z = linspace(-3, 3, 50);
+    void densityToFile(string fileName, const GaussianSystem& system, const mat& C) {
+        vec x = linspace(-3, 3, 200);
+        vec y = linspace(-3, 3, 200);
+        //        vec z = linspace(-3, 3, 3);
         double dx = x(1) - x(0);
         double dy = y(1) - y(0);
-        double dz = z(1) - z(0);
+        //        double dz = z(1) - z(0);
         //        double basisDensitySum = 0;
         double densitySum = 0;
-        ofstream dataFile("density-water.dat");
+        ofstream dataFile(fileName);
         //        ofstream basisDataFile("density-oxygen-basis.dat");
         //        ofstream diffDataFile("density-oxygen-diff.dat");
         for(uint i = 0; i < x.n_elem; i++) {
+            cout << "Calculating density for x = " << x(i) << endl;
             for(uint j = 0; j < y.n_elem; j++) {
-                for(uint k = 0; k < z.n_elem; k++) {
-                    double density = system.particleDensity(C, x(i), y(j), z(k));
-                    //                    double basisDensity = system.particleDensity(bC, x(i), y(j), z(k)) / nCores;
-                    //                    double densityDiff = density - basisDensity;
-                    densitySum += density * dx * dy * dz;
-                    //                    basisDensitySum += basisDensity * dx * dy * dz;
-                    if(k == z.n_elem / 2) {
-                        dataFile << density << " ";
-                        //                        basisDataFile << basisDensity << " ";
-                        //                        diffDataFile << densityDiff << " ";
-                    }
-                }
+                //                for(uint k = 0; k < z.n_elem; k++) {
+                double density = system.particleDensity(C, x(i), y(j), 0.0);
+                //                    double basisDensity = system.particleDensity(bC, x(i), y(j), z(k)) / nCores;
+                //                    double densityDiff = density - basisDensity;
+                //                    densitySum += density * dx * dy * dz;
+                //                    basisDensitySum += basisDensity * dx * dy * dz;
+                //                    if(k == z.n_elem / 2) {
+                dataFile << density << " ";
+                //                        basisDataFile << basisDensity << " ";
+                //                        diffDataFile << densityDiff << " ";
+                //                    }
+                //                }
             }
             dataFile << endl;
             //            basisDataFile << endl;
@@ -147,75 +134,115 @@ SUITE(GaussianDensity) {
         dataFile.close();
         //        diffDataFile.close();
         //        basisDataFile.close();
-        cout << densitySum << endl;
-        //        cout << basisDensitySum << endl;
+        cout << "Density sum: " << densitySum << endl;
     }
 
-//    TEST(GaussianCore2) {
-//        GaussianCore core1({0,0,0}, "oxygen431g.tm");
-//        GaussianCore core2({-1.43,1.108,0}, "hydrogen431g.tm");
-//        GaussianCore core3({1.43,1.108,0}, "hydrogen431g.tm");
-//        //        GaussianCore core4({2.86,2.216,0}, "oxygen431g.tm");
-//        //        GaussianCore core5({2.86,4.026,0}, "hydrogen431g.tm");
-//        //        GaussianCore core6({4.29,1.108,0}, "hydrogen431g.tm");
-//        GaussianCore core4({0,-1.0,0}, "oxygen431g.tm");
-//        GaussianCore core5({-1.43,-2.108,0}, "hydrogen431g.tm");
-//        GaussianCore core6({1.43,-2.108,0}, "hydrogen431g.tm");
-//        GaussianSystem system;
-//        system.addCore(core1);
-//        system.addCore(core2);
-//        system.addCore(core3);
-//        system.addCore(core4);
-//        system.addCore(core5);
-//        system.addCore(core6);
-//        bool recalc = false;
-//        mat C;
-//        if(recalc) {
-//            HartreeFockSolver solver(&system);
-//            for(int i = 0; i < 100; i++) {
-//                solver.advance();
-//            }
-//            cout << "Energy: " << solver.energy() << endl;
-//            mat C = solver.coefficientMatrix();
-//            C.save("coefficients-water2.dat");
-//        } else {
-//            C.load("coefficients-water2.dat");
-//        }
-//        vec x = linspace(-5, 5, 75);
-//        vec y = linspace(-5, 5, 75);
-//        vec z = linspace(-5, 5, 75);
-//        double dx = x(1) - x(0);
-//        double dy = y(1) - y(0);
-//        double dz = z(1) - z(0);
-//        //        double basisDensitySum = 0;
-//        double densitySum = 0;
-//        ofstream dataFile("density-water2.dat");
-//        //        ofstream basisDataFile("density-oxygen-basis.dat");
-//        //        ofstream diffDataFile("density-oxygen-diff.dat");
-//        for(uint i = 0; i < x.n_elem; i++) {
-//            cout << "Density calc for x = " << x(i) << endl;
-//            for(uint j = 0; j < y.n_elem; j++) {
-//                for(uint k = 0; k < z.n_elem; k++) {
-//                    double density = system.particleDensity(C, x(i), y(j), z(k));
-//                    //                    double basisDensity = system.particleDensity(bC, x(i), y(j), z(k)) / nCores;
-//                    //                    double densityDiff = density - basisDensity;
-//                    densitySum += density * dx * dy * dz;
-//                    //                    basisDensitySum += basisDensity * dx * dy * dz;
-//                    if(k == z.n_elem / 2) {
-//                        dataFile << density << " ";
-//                        //                        basisDataFile << basisDensity << " ";
-//                        //                        diffDataFile << densityDiff << " ";
-//                    }
-//                }
-//            }
-//            dataFile << endl;
-//            //            basisDataFile << endl;
-//            //            diffDataFile << endl;
-//        }
-//        dataFile.close();
-//        //        diffDataFile.close();
-//        //        basisDataFile.close();
-//        cout << "density sum: " << densitySum << endl;
-//        //        cout << basisDensitySum << endl;
-//    }
+    TEST(GaussianCore) {
+        vector<GaussianCore> cores;
+        cores.push_back(GaussianCore({0,0,0}, "oxygen431g.tm"));
+        cores.push_back(GaussianCore({-1.43,1.108,0}, "hydrogen431g.tm"));
+        cores.push_back(GaussianCore({1.43,1.108,0}, "hydrogen431g.tm"));
+        GaussianSystem system;
+        for(const GaussianCore &core : cores) {
+            system.addCore(core);
+        }
+        mat C;
+        HartreeFockSolver solver(&system);
+        for(int i = 0; i < 100; i++) {
+            solver.advance();
+        }
+        cout << "Energy: " << solver.energy() << endl;
+        C = solver.coefficientMatrix();
+        C.save("coefficients-water.dat");
+        densityToFile("density-water.dat", system, C);
+
+        int counter = 0;
+        for(const GaussianCore &core : cores) {
+            cout << "Subsystem: " << counter << endl;
+            GaussianSystem system2;
+            system2.addCore(core);
+            mat C2;
+            HartreeFockSolver solver2(&system2);
+            for(int i = 0; i < 100; i++) {
+                solver2.advance();
+            }
+            cout << "Energy: " << solver2.energy() << endl;
+            C2 = solver2.coefficientMatrix();
+            stringstream coefficientsFileName;
+            coefficientsFileName << "coefficients-water" << counter << ".dat";
+            C2.save(coefficientsFileName.str(), raw_ascii);
+            stringstream densityFileName;
+            densityFileName << "density-water" << counter << ".dat";
+            densityToFile(densityFileName.str(), system2, C2);
+            counter++;
+        }
+    }
+
+    //    TEST(GaussianCore2) {
+    //        GaussianCore core1({0,0,0}, "oxygen431g.tm");
+    //        GaussianCore core2({-1.43,1.108,0}, "hydrogen431g.tm");
+    //        GaussianCore core3({1.43,1.108,0}, "hydrogen431g.tm");
+    //        //        GaussianCore core4({2.86,2.216,0}, "oxygen431g.tm");
+    //        //        GaussianCore core5({2.86,4.026,0}, "hydrogen431g.tm");
+    //        //        GaussianCore core6({4.29,1.108,0}, "hydrogen431g.tm");
+    //        GaussianCore core4({0,-1.0,0}, "oxygen431g.tm");
+    //        GaussianCore core5({-1.43,-2.108,0}, "hydrogen431g.tm");
+    //        GaussianCore core6({1.43,-2.108,0}, "hydrogen431g.tm");
+    //        GaussianSystem system;
+    //        system.addCore(core1);
+    //        system.addCore(core2);
+    //        system.addCore(core3);
+    //        system.addCore(core4);
+    //        system.addCore(core5);
+    //        system.addCore(core6);
+    //        bool recalc = false;
+    //        mat C;
+    //        if(recalc) {
+    //            HartreeFockSolver solver(&system);
+    //            for(int i = 0; i < 100; i++) {
+    //                solver.advance();
+    //            }
+    //            cout << "Energy: " << solver.energy() << endl;
+    //            mat C = solver.coefficientMatrix();
+    //            C.save("coefficients-water2.dat");
+    //        } else {
+    //            C.load("coefficients-water2.dat");
+    //        }
+    //        vec x = linspace(-5, 5, 75);
+    //        vec y = linspace(-5, 5, 75);
+    //        vec z = linspace(-5, 5, 75);
+    //        double dx = x(1) - x(0);
+    //        double dy = y(1) - y(0);
+    //        double dz = z(1) - z(0);
+    //        //        double basisDensitySum = 0;
+    //        double densitySum = 0;
+    //        ofstream dataFile("density-water2.dat");
+    //        //        ofstream basisDataFile("density-oxygen-basis.dat");
+    //        //        ofstream diffDataFile("density-oxygen-diff.dat");
+    //        for(uint i = 0; i < x.n_elem; i++) {
+    //            cout << "Density calc for x = " << x(i) << endl;
+    //            for(uint j = 0; j < y.n_elem; j++) {
+    //                for(uint k = 0; k < z.n_elem; k++) {
+    //                    double density = system.particleDensity(C, x(i), y(j), z(k));
+    //                    //                    double basisDensity = system.particleDensity(bC, x(i), y(j), z(k)) / nCores;
+    //                    //                    double densityDiff = density - basisDensity;
+    //                    densitySum += density * dx * dy * dz;
+    //                    //                    basisDensitySum += basisDensity * dx * dy * dz;
+    //                    if(k == z.n_elem / 2) {
+    //                        dataFile << density << " ";
+    //                        //                        basisDataFile << basisDensity << " ";
+    //                        //                        diffDataFile << densityDiff << " ";
+    //                    }
+    //                }
+    //            }
+    //            dataFile << endl;
+    //            //            basisDataFile << endl;
+    //            //            diffDataFile << endl;
+    //        }
+    //        dataFile.close();
+    //        //        diffDataFile.close();
+    //        //        basisDataFile.close();
+    //        cout << "density sum: " << densitySum << endl;
+    //        //        cout << basisDensitySum << endl;
+    //    }
 }

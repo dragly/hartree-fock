@@ -1,3 +1,4 @@
 TEMPLATE = subdirs
 CONFIG += ordered
-SUBDIRS += libs app
+SUBDIRS += libs app \
+    hfgui
