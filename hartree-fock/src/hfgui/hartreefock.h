@@ -15,6 +15,7 @@ class HartreeFock : public QQuickItem
     Q_PROPERTY(int nSampleSteps READ nSampleSteps NOTIFY nSampleStepsChanged)
     Q_PROPERTY(double voxelEdgeMin READ voxelEdgeMin WRITE setVoxelEdgeMin NOTIFY voxelEdgeMinChanged)
     Q_PROPERTY(double voxelEdgeMax READ voxelEdgeMax WRITE setVoxelEdgeMax NOTIFY voxelEdgeMaxChanged)
+    Q_PROPERTY(double energy READ energy NOTIFY energyChanged)
     Q_PROPERTY(QVector3D center READ center WRITE setCenter NOTIFY centerChanged)
 public:
     HartreeFock(QQuickItem* parent = 0);
@@ -44,6 +45,11 @@ public:
     QVector3D center() const
     {
         return m_center;
+    }
+
+    double energy() const
+    {
+        return m_energy;
     }
 
 public slots:
@@ -81,6 +87,8 @@ signals:
 
     void centerChanged(QVector3D arg);
 
+    void energyChanged(double arg);
+
 protected:
     void loadPointsFromFile();
     void setupVoxelData();
@@ -92,6 +100,7 @@ private:
     double m_voxelEdgeMax;
     double m_voxelEdgeMin;
     QVector3D m_center;
+    double m_energy;
 };
 
 #endif // POSITIONREADER_H

@@ -70,10 +70,16 @@ void HartreeFock::loadPointsFromFile()
 {
     cout << "Setting up Hartree Fock!" << endl;
     vector<GaussianCore> cores;
-    cores.push_back(GaussianCore({0,0,0}, "oxygen431g.tm"));
-    cores.push_back(GaussianCore({-1.43,1.108,0}, "hydrogen431g.tm"));
-    cores.push_back(GaussianCore({1.43,1.108,0}, "hydrogen431g.tm"));
-    cores.push_back(GaussianCore({0.0,-1.81,0}, "hydrogen431g.tm"));
+//    cores.push_back(GaussianCore({0,0,0}, "oxygen431g.tm"));
+//    cores.push_back(GaussianCore({-1.43,1.108,0}, "hydrogen431g.tm"));
+//    cores.push_back(GaussianCore({1.43,1.108,0}, "hydrogen431g.tm"));
+//    cores.push_back(GaussianCore({0.0,-1.81,0}, "hydrogen431g.tm"));
+
+
+//    cores.push_back(GaussianCore({-1.0715,0,0}, "nitrogen431g.tm"));
+    cores.push_back(GaussianCore({0,0,0}, "silicon321g.tm"));
+    cores.push_back(GaussianCore({2.735589103989223,0.9956730070350279,0}, "oxygen431g.tm"));
+    cores.push_back(GaussianCore({-2.735589103989223,0.9956730070350279,0}, "oxygen431g.tm"));
     GaussianSystem system;
     for(const GaussianCore &core : cores) {
         system.addCore(core);
@@ -85,9 +91,9 @@ void HartreeFock::loadPointsFromFile()
     }
     cout << "Energy: " << solver.energy() << endl;
     C = solver.coefficientMatrix();
-    vec x = linspace(-3, 3, 50);
-    vec y = linspace(-3, 3, 50);
-    vec z = linspace(-3, 3, 50);
+    vec x = linspace(-5, 5, 100);
+    vec y = linspace(-5, 5, 100);
+    vec z = linspace(-5, 5, 100);
     double dx = x(1) - x(0);
     double dy = y(1) - y(0);
     double dz = z(1) - z(0);
@@ -107,6 +113,7 @@ void HartreeFock::loadPointsFromFile()
     m_densityVoxels -= m_densityVoxels.min();
     m_densityVoxels += 1e-6;
     m_densityVoxels = sqrt(m_densityVoxels);
+    m_densityVoxels.save("density.dat", raw_ascii);
 
     double minValue = x.min();
     double maxValue = x.max();
@@ -120,6 +127,8 @@ void HartreeFock::loadPointsFromFile()
     emit voxelEdgeMaxChanged(m_voxelEdgeMax);
     emit nSampleStepsChanged(m_nSampleSteps);
     emit dataChanged();
+    m_energy = solver.energy();
+    emit energyChanged(m_energy);
 }
 
 void HartreeFock::setupVoxelData() {

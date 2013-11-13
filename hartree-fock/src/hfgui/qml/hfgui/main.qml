@@ -24,12 +24,12 @@ Rectangle {
             Layout.fillHeight: true
 
             HartreeFock {
-                id: mainPositionReader
+                id: hartreeFock
             }
 
             Item3D {
                 id: volumeItem
-                property double maxMinDifference: mainPositionReader.voxelEdgeMax - mainPositionReader.voxelEdgeMin
+                property double maxMinDifference: hartreeFock.voxelEdgeMax - hartreeFock.voxelEdgeMin
                 cullFaces: Item3D.CullBackFaces
                 scale: maxMinDifference
                 mesh: Mesh {
@@ -43,7 +43,7 @@ Rectangle {
                     blending: true
                     vertexShaderSource: "scalarvolume.vert"
                     fragmentShaderSource: "scalarvolume.frag"
-                    positionReader: mainPositionReader
+                    positionReader: hartreeFock
                 }
             }
         }
@@ -72,6 +72,9 @@ Rectangle {
                 minimumValue: 10
                 maximumValue: 1000
                 value: 100
+            }
+            Label {
+                text: qsTr("Energy:") + " " + hartreeFock.energy.toFixed(2)
             }
 
             Item {

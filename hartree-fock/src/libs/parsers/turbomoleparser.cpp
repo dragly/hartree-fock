@@ -32,7 +32,7 @@ bool TurboMoleParser::load(string fileName)
             continue;
         }
         smatch what;
-        regex basisRegex("\\s*([a-zA-Z])\\s*([0-9])-([0-9]+)([G])\\s*");
+        regex basisRegex("\\s*([a-zA-Z]+)\\s*([0-9])-([0-9]+)([G])\\s*");
         while(regex_search(line, what, basisRegex)) { // n 4-31G
             atomTypeAbbreviation = string(what[1]);
 //            int nCoreOrbitals(stoi(string(what[2])));
