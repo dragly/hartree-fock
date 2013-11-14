@@ -23,7 +23,7 @@ void main(void)
     float colorAcummulated = 0.0;
     vec4 currentColor = vec4(1.0, 1.0, 1.0, 0.0);
     vec4 standardColor = vec4(1.0, 1.0, 1.0, 1.0);
-    vec4 highlightColor = vec4(0.0, 1.0, 1.0, 1.0);
+    vec4 highlightColor = vec4(0.2, 0.8, 1.0, 1.0);
     float redAcummulated = 0.0;
     for(int i = 0; i < int(1.732 / stepSize); i++) { // 1.732 = cube diagonal
         voxelCoord += deltaDir;
@@ -35,8 +35,8 @@ void main(void)
 //        float voxelValueClamped = clamp(voxelValue.x, 0.0, 1.0);
         float voxelValueClamped = clamp(voxelValue.x, 0.0, 1.0);
         float mixerValue = clamp(voxelValue.x * 10, 0.0, 1.0);
-//        vec4 color = standardColor * mixerValue + highlightColor * (1 - mixerValue);
-        vec4 color = standardColor;
+        vec4 color = standardColor * mixerValue + highlightColor * (1 - mixerValue);
+//        vec4 color = standardColor;
         currentColor.a = color.a * voxelValueClamped + currentColor.a * (1 - color.a * voxelValueClamped);
         currentColor.rgb = (color.rgb * color.a * voxelValueClamped
                 + currentColor.rgb * currentColor.a * (1 - voxelValueClamped * color.a)) / currentColor.a;

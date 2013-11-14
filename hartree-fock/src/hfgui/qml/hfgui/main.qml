@@ -63,7 +63,7 @@ Rectangle {
                 id: densityMultiplierSlider
                 Layout.minimumWidth: 200
                 minimumValue: 1e-6
-                maximumValue: 100.0
+                maximumValue: 1000.0
                 value: 30
             }
             CheckBox {
