@@ -1,7 +1,5 @@
 include($$TOP_PWD/defaults.pri)
 
-LIBS += -lboost_regex
-
 TEMPLATE = lib
 CONFIG += console
 CONFIG -= app_bundle

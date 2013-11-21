@@ -14,7 +14,7 @@ void main(void)
     vec3 eye = ve_eyePosition.xyz;
     vec3 exitPoint = eye;
     vec3 direction = exitPoint - entryPoint.xyz;
-    direction *= -1;
+//    direction *= -1;
     float directionLength = length(direction);
     vec3 deltaDir = normalize(direction) * stepSize;
     float deltaDirLength = length(deltaDir);

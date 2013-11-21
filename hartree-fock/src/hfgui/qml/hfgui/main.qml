@@ -38,7 +38,7 @@ Rectangle {
             Item3D {
                 id: volumeItem
                 property double maxMinDifference: hartreeFock.voxelEdgeMax - hartreeFock.voxelEdgeMin
-                cullFaces: Item3D.CullBackFaces
+                cullFaces: Item3D.CullFrontFaces
                 scale: maxMinDifference
                 mesh: Mesh {
                     source: "cube.obj"
