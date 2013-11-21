@@ -112,7 +112,7 @@ SUITE(GaussianDensity) {
         //        ofstream basisDataFile("density-oxygen-basis.dat");
         //        ofstream diffDataFile("density-oxygen-diff.dat");
         for(uint i = 0; i < x.n_elem; i++) {
-            cout << "Calculating density for x = " << x(i) << endl;
+//            cout << "Calculating density for x = " << x(i) << endl;
             for(uint j = 0; j < y.n_elem; j++) {
                 //                for(uint k = 0; k < z.n_elem; k++) {
                 double density = system.particleDensity(C, x(i), y(j), 0.0);
@@ -134,7 +134,7 @@ SUITE(GaussianDensity) {
         dataFile.close();
         //        diffDataFile.close();
         //        basisDataFile.close();
-        cout << "Density sum: " << densitySum << endl;
+//        cout << "Density sum: " << densitySum << endl;
     }
 
     TEST(GaussianCore) {
@@ -151,14 +151,14 @@ SUITE(GaussianDensity) {
         for(int i = 0; i < 100; i++) {
             solver.advance();
         }
-        cout << "Energy: " << solver.energy() << endl;
+//        cout << "Energy: " << solver.energy() << endl;
         C = solver.coefficientMatrix();
         C.save("coefficients-water.dat");
         densityToFile("density-water.dat", system, C);
 
         int counter = 0;
         for(const GaussianCore &core : cores) {
-            cout << "Subsystem: " << counter << endl;
+//            cout << "Subsystem: " << counter << endl;
             GaussianSystem system2;
             system2.addCore(core);
             mat C2;
@@ -166,7 +166,7 @@ SUITE(GaussianDensity) {
             for(int i = 0; i < 100; i++) {
                 solver2.advance();
             }
-            cout << "Energy: " << solver2.energy() << endl;
+//            cout << "Energy: " << solver2.energy() << endl;
             C2 = solver2.coefficientMatrix();
             stringstream coefficientsFileName;
             coefficientsFileName << "coefficients-water" << counter << ".dat";
