@@ -115,7 +115,7 @@ void HartreeFockSolver::setupQ() {
 //    qFile.open("Q2.dat", ios::out);
 //    qFile << setprecision(9);
     for(uint p = 0; p < n; p++) {
-        cout << "Q calculating for p " << p << " of " << n << endl;
+//        cout << "Q calculating for p " << p << " of " << n << endl;
         for(uint r = 0; r < n; r++) {
             for(uint q = 0; q < n; q++) {
                 for(uint s = 0; s < n; s++) {

@@ -48,13 +48,12 @@ double GaussianSystem::coupledIntegral(int p, int q, int r, int s)
 double GaussianSystem::uncoupledIntegral(int p, int q)
 {
     double result = 0;
+    GaussianKineticIntegral kineticIntegral(m_angularMomentumMax);
     const GaussianContractedOrbital& pBF = m_basisFunctions.at(p);
     const GaussianContractedOrbital& qBF = m_basisFunctions.at(q);
     for(const GaussianPrimitiveOrbital& pP : pBF.primitiveBasisFunctions()) {
         for(const GaussianPrimitiveOrbital& qP : qBF.primitiveBasisFunctions()) {
-            GaussianKineticIntegral kineticIntegral(pBF.corePosition(), qBF.corePosition(),
-                                                    pP.exponent(), qP.exponent(),
-                                                    m_angularMomentumMax);
+            kineticIntegral.set(pBF.corePosition(), qBF.corePosition(), pP.exponent(), qP.exponent());
             result += pP.weight() * qP.weight() * kineticIntegral.kineticIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
                                                                                   qP.xExponent(), qP.yExponent(), qP.zExponent());
             for(uint i = 0; i < m_cores.size(); i++) {

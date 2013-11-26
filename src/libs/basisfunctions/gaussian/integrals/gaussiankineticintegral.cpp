@@ -3,33 +3,26 @@
 #include <math/hermiteexpansioncoefficient.h>
 #include <basisfunctions/gaussian/integrals/gaussianoverlapintegral.h>
 
-GaussianKineticIntegral::GaussianKineticIntegral(rowvec corePositionA, rowvec corePositionB,
-                                                         double exponentA, double exponentB,
-                                                         int angularMomentumMax) :
-    GaussianKineticIntegral(exponentA, exponentB,
-                                new HermiteExpansionCoefficient(exponentA, exponentB, corePositionA, corePositionB, angularMomentumMax + 3))
-{
-    m_isResponsibleForDeletingHermiteExpansionObject = true;
-}
-
-GaussianKineticIntegral::GaussianKineticIntegral(double exponentA,  double exponentB,
-                                                         HermiteExpansionCoefficient* hermiteExpansionCoefficient) :
-    m_exponentB(exponentB),
-    m_exponentSum(exponentA + exponentB),
-    m_hermiteExpansionCoefficient(hermiteExpansionCoefficient),
-    m_isResponsibleForDeletingHermiteExpansionObject(false)
+GaussianKineticIntegral::GaussianKineticIntegral(int angularMomentumMax) :
+    m_hermiteExpansionCoefficient(angularMomentumMax + 3)
 {
 }
 
-GaussianKineticIntegral::~GaussianKineticIntegral()
+GaussianKineticIntegral::GaussianKineticIntegral(const rowvec& corePositionA, const rowvec& corePositionB, double exponentA, double exponentB, int angularMomentumMax) :
+    GaussianKineticIntegral(angularMomentumMax)
 {
-    if(m_isResponsibleForDeletingHermiteExpansionObject) {
-        delete m_hermiteExpansionCoefficient;
-    }
+    set(corePositionA, corePositionB, exponentA, exponentB);
+}
+
+void GaussianKineticIntegral::set(const rowvec& corePositionA, const rowvec& corePositionB, double exponentA, double exponentB)
+{
+    m_exponentB = exponentB;
+    m_exponentSum = exponentA + exponentB;
+    m_hermiteExpansionCoefficient.set(exponentA, exponentB, corePositionA, corePositionB);
 }
 
 double GaussianKineticIntegral::kineticIntegral(int dim, int iA, int iB) {
-    GaussianOverlapIntegral overlapIntegral(m_exponentSum, m_hermiteExpansionCoefficient);
+    GaussianOverlapIntegral overlapIntegral(m_exponentSum, &m_hermiteExpansionCoefficient);
     double b = m_exponentB;
     double S_iA_iBnn = overlapIntegral.overlapIntegral(dim, iA, iB + 2);
     double S_iA_iB = overlapIntegral.overlapIntegral(dim, iA, iB);
@@ -43,7 +36,7 @@ double GaussianKineticIntegral::kineticIntegral(int dim, int iA, int iB) {
 }
 
 double GaussianKineticIntegral::kineticIntegral(int iA, int jA, int kA, int iB, int jB, int kB) {
-    GaussianOverlapIntegral overlapIntegral(m_exponentSum, m_hermiteExpansionCoefficient);
+    GaussianOverlapIntegral overlapIntegral(m_exponentSum, &m_hermiteExpansionCoefficient);
     double T_iA_iB = kineticIntegral(0, iA, iB);
     double T_jA_jB = kineticIntegral(1, jA, jB);
     double T_kA_kB = kineticIntegral(2, kA, kB);
