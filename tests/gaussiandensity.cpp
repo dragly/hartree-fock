@@ -151,7 +151,7 @@ SUITE(GaussianDensity) {
         for(int i = 0; i < 100; i++) {
             solver.advance();
         }
-//        cout << "Energy: " << solver.energy() << endl;
+        cout << "Energy: " << solver.energy() << endl;
         C = solver.coefficientMatrix();
         C.save("coefficients-water.dat");
         densityToFile("density-water.dat", system, C);

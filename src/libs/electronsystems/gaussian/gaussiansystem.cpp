@@ -49,6 +49,7 @@ double GaussianSystem::uncoupledIntegral(int p, int q)
 {
     double result = 0;
     GaussianKineticIntegral kineticIntegral(m_angularMomentumMax);
+    GaussianColoumbAttractionIntegral coloumbIntegral(m_angularMomentumMax);
     const GaussianContractedOrbital& pBF = m_basisFunctions.at(p);
     const GaussianContractedOrbital& qBF = m_basisFunctions.at(q);
     for(const GaussianPrimitiveOrbital& pP : pBF.primitiveBasisFunctions()) {
@@ -59,9 +60,8 @@ double GaussianSystem::uncoupledIntegral(int p, int q)
             for(uint i = 0; i < m_cores.size(); i++) {
                 const GaussianCore &core = m_cores.at(i);
                 const rowvec &corePositionC = core.position();
-                GaussianColoumbAttractionIntegral coloumbIntegral(pBF.corePosition(), qBF.corePosition(), corePositionC,
-                                                                  pP.exponent(), qP.exponent(),
-                                                                  m_angularMomentumMax);
+                coloumbIntegral.set(pBF.corePosition(), qBF.corePosition(), corePositionC,
+                                    pP.exponent(), qP.exponent());
                 result -= core.charge() * pP.weight() * qP.weight() * coloumbIntegral.coloumbAttractionIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
                                                                                                                qP.xExponent(), qP.yExponent(), qP.zExponent());
             }

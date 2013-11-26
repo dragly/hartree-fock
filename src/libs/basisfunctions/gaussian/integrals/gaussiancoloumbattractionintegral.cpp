@@ -16,7 +16,6 @@ GaussianColoumbAttractionIntegral::GaussianColoumbAttractionIntegral(const rowve
                                                                      int angularMomentumMax) :
     GaussianColoumbAttractionIntegral(angularMomentumMax)
 {
-    m_exponentSum = exponentA + exponentB;
     set(corePositionA, corePositionB, corePositionC, exponentA, exponentB);
 }
 
@@ -25,6 +24,7 @@ void GaussianColoumbAttractionIntegral::set(const rowvec& corePositionA, const r
     double p = exponentA + exponentB;
     rowvec P = (exponentA * corePositionA + exponentB * corePositionB) / (exponentA + exponentB);
     rowvec PC = P - corePositionC;
+    m_exponentSum = exponentA + exponentB;
     m_hermiteExpansionCoefficient.set(exponentA, exponentB, corePositionA, corePositionB);
     m_hermiteIntegral.set(p, PC);
 }

@@ -2,6 +2,7 @@
 #include <gaussiantypeintegrals.cpp>
 #include <hydrogen.cpp>
 #include <parser.cpp>
+#include <systems.cpp>
 
 #include <unittest++/UnitTest++.h>
 #include <unittest++/Test.h>
@@ -31,6 +32,7 @@ int main()
     result += runner.RunTestsIf(UnitTest::Test::GetTestList(), "GaussianOxygen", UnitTest::True(), 0);
     result += runner.RunTestsIf(UnitTest::Test::GetTestList(), "GaussianDensity", UnitTest::True(), 0);
     result += runner.RunTestsIf(UnitTest::Test::GetTestList(), "Parser", UnitTest::True(), 0);
+    result += runner.RunTestsIf(UnitTest::Test::GetTestList(), "Systems", UnitTest::True(), 0);
 #endif
 
     return result;
