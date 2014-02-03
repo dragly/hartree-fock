@@ -36,10 +36,10 @@ bool TurboMoleParser::load(string fileName)
         while(regex_search(line, what, basisRegex)) { // n 4-31G
             atomTypeAbbreviation = string(what[1]);
 //            int nCoreOrbitals(stoi(string(what[2])));
-            for(char& c : string(what[3])) {
-                int nValenceOrbital = c - '0';
-                nValenceOrbitals.push_back(nValenceOrbital);
-            }
+//            for(char& c : string(what[3])) {
+//                int nValenceOrbital = c - '0';
+//                nValenceOrbitals.push_back(nValenceOrbital);
+//            }
 //            string basisSetType(what[4]);
 
 //            cout << "Atom: " << atomTypeAbbreviation << " nCore: " << nCoreOrbitals << " type: " << basisSetType << " nValence: ";

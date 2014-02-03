@@ -5,6 +5,8 @@
 #include <electronsystems/gaussian/gaussiancore.h>
 #include <basisfunctions/gaussian/gaussiancontractedorbital.h>
 #include <basisfunctions/gaussian/integrals/gaussianelectroninteractionintegral.h>
+#include <basisfunctions/gaussian/integrals/gaussiankineticintegral.h>
+#include <basisfunctions/gaussian/integrals/gaussiancoloumbattractionintegral.h>
 
 class GaussianSystem : public ElectronSystem
 {
@@ -24,6 +26,8 @@ public:
     double particleDensity(const mat &C, double x, double y, double z) const;
     void addCore(const GaussianCore& core);
 protected:
+    void setAngularMomentumMax(int angularMomentumMax);
+private:
     uint m_nParticles;
     uint m_nBasisFunctions;
     int m_angularMomentumMax;
@@ -33,6 +37,8 @@ protected:
     vector<GaussianContractedOrbital> m_basisFunctions;
 //    vector<rowvec> m_corePositions;
     GaussianElectronInteractionIntegral electronInteractionIntegral;
+    GaussianKineticIntegral kineticIntegral;
+    GaussianColoumbAttractionIntegral coloumbIntegral;
 };
 
 #endif // GAUSSIANSYSTEM_H

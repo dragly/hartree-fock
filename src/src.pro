@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
-CONFIG += ordered
+CONFIG += ordered gui
 SUBDIRS += libs app
 gui {
     SUBDIRS += hfgui

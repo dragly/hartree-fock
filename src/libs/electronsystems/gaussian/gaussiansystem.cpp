@@ -16,7 +16,9 @@ GaussianSystem::GaussianSystem() :
     m_nParticles(0),
     m_nBasisFunctions(0),
     m_angularMomentumMax(0),
-    electronInteractionIntegral(0)
+    electronInteractionIntegral(0),
+    kineticIntegral(0),
+    coloumbIntegral(0)
 {
 }
 
@@ -48,8 +50,6 @@ double GaussianSystem::coupledIntegral(int p, int q, int r, int s)
 double GaussianSystem::uncoupledIntegral(int p, int q)
 {
     double result = 0;
-    GaussianKineticIntegral kineticIntegral(m_angularMomentumMax);
-    GaussianColoumbAttractionIntegral coloumbIntegral(m_angularMomentumMax);
     const GaussianContractedOrbital& pBF = m_basisFunctions.at(p);
     const GaussianContractedOrbital& qBF = m_basisFunctions.at(q);
     for(const GaussianPrimitiveOrbital& pP : pBF.primitiveBasisFunctions()) {
@@ -143,6 +143,13 @@ void GaussianSystem::addCore(const GaussianCore &core)
             angularMomentumMax = max(angularMomentumMax, primitive.zExponent());
         }
     }
+    setAngularMomentumMax(angularMomentumMax);
+}
+
+void GaussianSystem::setAngularMomentumMax(int angularMomentumMax)
+{
     m_angularMomentumMax = angularMomentumMax;
     electronInteractionIntegral = GaussianElectronInteractionIntegral(angularMomentumMax);
+    kineticIntegral = GaussianKineticIntegral(angularMomentumMax);
+    coloumbIntegral = GaussianColoumbAttractionIntegral(angularMomentumMax);
 }

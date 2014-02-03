@@ -75,16 +75,16 @@ void HartreeFock::loadPointsFromFile()
     if(recalc) {
         cout << "Setting up Hartree Fock!" << endl;
         vector<GaussianCore> cores;
-        //    cores.push_back(GaussianCore({0,0,0}, "oxygen431g.tm"));
-        //    cores.push_back(GaussianCore({-1.43,1.108,0}, "hydrogen431g.tm"));
-        //    cores.push_back(GaussianCore({1.43,1.108,0}, "hydrogen431g.tm"));
+            cores.push_back(GaussianCore({0,0,0}, "oxygen431g.tm"));
+            cores.push_back(GaussianCore({-1.43,1.108,0}, "hydrogen431g.tm"));
+            cores.push_back(GaussianCore({1.43,1.108,0}, "hydrogen431g.tm"));
         //    cores.push_back(GaussianCore({0.0,-1.81,0}, "hydrogen431g.tm"));
 
 
         //    cores.push_back(GaussianCore({-1.0715,0,0}, "nitrogen431g.tm"));
-        cores.push_back(GaussianCore({0,0,0}, "silicon321g.tm"));
-        cores.push_back(GaussianCore({2.735589103989223,0.9956730070350279,0}, "oxygen431g.tm"));
-        cores.push_back(GaussianCore({-2.735589103989223,0.9956730070350279,0}, "oxygen431g.tm"));
+//        cores.push_back(GaussianCore({0,0,0}, "silicon321g.tm"));
+//        cores.push_back(GaussianCore({2.735589103989223,0.9956730070350279,0}, "oxygen431g.tm"));
+//        cores.push_back(GaussianCore({-2.735589103989223,0.9956730070350279,0}, "oxygen431g.tm"));
         GaussianSystem system;
         for(const GaussianCore &core : cores) {
             system.addCore(core);
