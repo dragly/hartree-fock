@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
-CONFIG += ordered gui
+CONFIG += ordered
 SUBDIRS += libs app
-gui {
+!nogui {
     SUBDIRS += hfgui
 }
