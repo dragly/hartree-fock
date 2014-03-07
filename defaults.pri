@@ -17,3 +17,24 @@ first.depends = $(first) copydata
 export(first.depends)
 export(copydata.commands)
 QMAKE_EXTRA_TARGETS += first copydata
+
+
+folder_01.source = $$TOP_PWD/utils
+folder_01.target = utils
+
+DEPLOYMENTFOLDERS = folder_01
+
+for(deploymentfolder, DEPLOYMENTFOLDERS) {
+    item = item$${deploymentfolder}
+    greaterThan(QT_MAJOR_VERSION, 4) {
+        itemsources = $${item}.files
+    } else {
+        itemsources = $${item}.sources
+    }
+    $$itemsources = $$eval($${deploymentfolder}.source)
+    itempath = $${item}.path
+    $$itempath= $$eval($${deploymentfolder}.target)
+    export($$itemsources)
+    export($$itempath)
+    DEPLOYMENT += $$item
+}
