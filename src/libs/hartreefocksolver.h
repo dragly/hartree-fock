@@ -26,15 +26,20 @@ public:
     inline double energy();
     const mat &coefficientMatrix() const;
     const mat &overlapMatrix();
+    double convergenceTreshold() const;
+    void setConvergenceTreshold(double convergenceTreshold);
+
+    int iterationsUsed() const;
+
+    void solve();
 private:
     mat m_uncoupledMatrix;
     mat m_overlapMatrix;
     mat m_fockMatrix;
     mat m_densityMatrix;
     mat m_coefficientMatrix;
-
-//    double ****Q;
     field<mat> m_coupledMatrix;
+    vec m_fockEnergies;
 
     ElectronSystem *m_electronSystem;
 
@@ -45,14 +50,16 @@ private:
     void setupS();
     void setuph();
     void normalizeCwithRegardsToS();
-    double coupledMatrixTilde(int p, int q, int r, int s);
-
     void cleanUpQMemory();
     void allocateQMemory();
 
-    double *m_QData;
+    int m_iterationsUsed;
 
+    double coupledMatrixTilde(int p, int q, int r, int s);
+    double *m_QData;
     double m_energy = 0;
+    double m_convergenceTreshold;
+    double m_previousFockEnergyRMS;
 };
 
 inline void HartreeFockSolver::setElectronSystem(ElectronSystem *basisFunction) {

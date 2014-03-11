@@ -29,9 +29,10 @@ SUITE(Systems) {
         }
         mat C;
         HartreeFockSolver solver(&system);
-        for(int i = 0; i < 100; i++) {
-            solver.advance();
-        }
+//        for(int i = 0; i < 100; i++) {
+//            solver.advance();
+//        }
+        solver.solve();
         cout << "Neon 3-21G s-limited: " << solver.energy() << endl;
     }
     TEST(Neon321) {
@@ -43,9 +44,10 @@ SUITE(Systems) {
         }
         mat C;
         HartreeFockSolver solver(&system);
-        for(int i = 0; i < 100; i++) {
-            solver.advance();
-        }
+//        for(int i = 0; i < 100; i++) {
+//            solver.advance();
+//        }
+        solver.solve();
         cout << "Neon 3-21G: " << solver.energy() << endl;
     }
     TEST(OxygenSix) {

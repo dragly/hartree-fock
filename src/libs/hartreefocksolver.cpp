@@ -10,7 +10,8 @@ using namespace arma;
 using namespace std;
 
 HartreeFockSolver::HartreeFockSolver(ElectronSystem *basisFunction) :
-    m_electronSystem(basisFunction)
+    m_electronSystem(basisFunction),
+    m_convergenceTreshold(1e-8)
 {
     cout << setprecision(20);
     allocateQMemory();
@@ -90,6 +91,85 @@ void HartreeFockSolver::resetC() {
     m_coefficientMatrix = zeros(f->nBasisFunctions(), f->nParticles() / 2);
 }
 
+void HartreeFockSolver::normalizeCwithRegardsToS(){
+    ElectronSystem* f = m_electronSystem;
+    uint no = f->nBasisFunctions();
+    uint nk = f->nParticles() / 2;
+
+    const mat& S = m_overlapMatrix;
+    mat& C = m_coefficientMatrix;
+
+    for(uint k = 0; k < nk; k++) {
+        double factor = 0.0;
+        for(uint p = 0; p < no; p++){
+            for(uint q = 0; q < no; q++){
+                factor += C(p,k) * S(p,q) * C(q,k);
+            }
+        }
+        C.col(k) = C.col(k) / sqrt(factor);
+    }
+}
+
+double HartreeFockSolver::coupledMatrixTilde(int p, int q, int r, int s) { // TODO: Find a better name for tilde
+    field<mat>& Q = m_coupledMatrix;
+    return 2 * Q(p,r)(q,s) - Q(p,r)(s,q);
+}
+double HartreeFockSolver::convergenceTreshold() const
+{
+    return m_convergenceTreshold;
+}
+
+void HartreeFockSolver::setConvergenceTreshold(double convergenceTreshold)
+{
+    m_convergenceTreshold = convergenceTreshold;
+}
+
+int HartreeFockSolver::iterationsBeforeConvergence() const
+{
+    return m_iterationsBeforeConvergence;
+}
+
+
+void HartreeFockSolver::setupF() {
+    ElectronSystem* f = m_electronSystem;
+    uint n = f->nBasisFunctions();
+    mat &F = m_fockMatrix;
+    mat &P = m_densityMatrix;
+    mat &h = m_uncoupledMatrix;
+    F = zeros(n,n);
+    for(uint p = 0; p < n; p++) {
+        for(uint q = 0; q < n; q++) {
+            F(p,q) = h(p,q);
+            for(uint r = 0; r < n; r++) {
+                for(uint s = 0; s < n; s++) {
+                    double Qtilde = coupledMatrixTilde(p, q, r, s);
+                    F(p,q) += 0.5 * Qtilde * P(s,r);
+                }
+            }
+        }
+    }
+}
+
+void HartreeFockSolver::setupP() {
+    mat &P = m_densityMatrix;
+    mat &C = m_coefficientMatrix;
+    P = 2 * C * C.t();
+}
+
+void HartreeFockSolver::solve() {
+    int iterationsMax = 10000;
+    for(int i = 0; i < iterationsMax; i++) {
+        vec previousFockEnergies = m_fockEnergies;
+        advance();
+        if(i > 0) {
+            if(sum(abs(m_fockEnergies - previousFockEnergies)) / m_fockEnergies.n_elem < m_convergenceTreshold) {
+                m_iterationsBeforeConvergence = i;
+                break;
+            }
+        }
+    }
+}
+
 void HartreeFockSolver::advance() {
     ElectronSystem* f = m_electronSystem;
     uint no = f->nBasisFunctions();
@@ -106,9 +186,8 @@ void HartreeFockSolver::advance() {
     mat &F = m_fockMatrix;
     F = V.t() * F * V;
 
-    vec eps;
     mat Cmat;
-    eig_sym(eps, Cmat, m_fockMatrix);
+    eig_sym(m_fockEnergies, Cmat, m_fockMatrix);
 
 
     mat &C = m_coefficientMatrix;
@@ -139,54 +218,4 @@ void HartreeFockSolver::advance() {
     }
     energy += m_electronSystem->additionalEnergyTerms();
     m_energy = energy;
-}
-
-void HartreeFockSolver::normalizeCwithRegardsToS(){
-    ElectronSystem* f = m_electronSystem;
-    uint no = f->nBasisFunctions();
-    uint nk = f->nParticles() / 2;
-
-    const mat& S = m_overlapMatrix;
-    mat& C = m_coefficientMatrix;
-
-    for(uint k = 0; k < nk; k++) {
-        double factor = 0.0;
-        for(uint p = 0; p < no; p++){
-            for(uint q = 0; q < no; q++){
-                factor += C(p,k) * S(p,q) * C(q,k);
-            }
-        }
-        C.col(k) = C.col(k) / sqrt(factor);
-    }
-}
-
-double HartreeFockSolver::coupledMatrixTilde(int p, int q, int r, int s) { // TODO: Find a better name for tilde
-    field<mat>& Q = m_coupledMatrix;
-    return 2 * Q(p,r)(q,s) - Q(p,r)(s,q);
-}
-
-void HartreeFockSolver::setupF() {
-    ElectronSystem* f = m_electronSystem;
-    uint n = f->nBasisFunctions();
-    mat &F = m_fockMatrix;
-    mat &P = m_densityMatrix;
-    mat &h = m_uncoupledMatrix;
-    F = zeros(n,n);
-    for(uint p = 0; p < n; p++) {
-        for(uint q = 0; q < n; q++) {
-            F(p,q) = h(p,q);
-            for(uint r = 0; r < n; r++) {
-                for(uint s = 0; s < n; s++) {
-                    double Qtilde = coupledMatrixTilde(p, q, r, s);
-                    F(p,q) += 0.5 * Qtilde * P(s,r);
-                }
-            }
-        }
-    }
-}
-
-void HartreeFockSolver::setupP() {
-    mat &P = m_densityMatrix;
-    mat &C = m_coefficientMatrix;
-    P = 2 * C * C.t();
 }
