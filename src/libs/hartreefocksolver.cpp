@@ -124,9 +124,9 @@ void HartreeFockSolver::setConvergenceTreshold(double convergenceTreshold)
     m_convergenceTreshold = convergenceTreshold;
 }
 
-int HartreeFockSolver::iterationsBeforeConvergence() const
+int HartreeFockSolver::iterationsUsed() const
 {
-    return m_iterationsBeforeConvergence;
+    return m_iterationsUsed;
 }
 
 
@@ -163,7 +163,7 @@ void HartreeFockSolver::solve() {
         advance();
         if(i > 0) {
             if(sum(abs(m_fockEnergies - previousFockEnergies)) / m_fockEnergies.n_elem < m_convergenceTreshold) {
-                m_iterationsBeforeConvergence = i;
+                m_iterationsUsed = i;
                 break;
             }
         }
