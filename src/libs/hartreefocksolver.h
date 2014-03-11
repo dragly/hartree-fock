@@ -27,14 +27,14 @@ public:
     const mat &coefficientMatrix() const;
     const mat &overlapMatrix();
 private:
-    mat m_h;
-    mat m_S;
-    mat m_F;
-    mat m_P;
-    mat m_C;
+    mat m_uncoupledMatrix;
+    mat m_overlapMatrix;
+    mat m_fockMatrix;
+    mat m_densityMatrix;
+    mat m_coefficientMatrix;
 
 //    double ****Q;
-    field<mat> m_Q;
+    field<mat> m_coupledMatrix;
 
     ElectronSystem *m_electronSystem;
 
@@ -45,7 +45,7 @@ private:
     void setupS();
     void setuph();
     void normalizeCwithRegardsToS();
-    double Qtilde(int p, int q, int r, int s);
+    double coupledMatrixTilde(int p, int q, int r, int s);
 
     void cleanUpQMemory();
     void allocateQMemory();
@@ -70,11 +70,11 @@ inline double HartreeFockSolver::energy()
 
 inline const mat &HartreeFockSolver::coefficientMatrix() const
 {
-    return m_C;
+    return m_coefficientMatrix;
 }
 
 inline const mat &HartreeFockSolver::overlapMatrix() {
-    return m_S;
+    return m_overlapMatrix;
 }
 
 #endif // HARTREEFOCKSOLVER_H
