@@ -64,7 +64,6 @@ void HartreeFockSolver::allocateQMemory() {
             Q(i,j) = zeros(n,n);
         }
     }
-    isQAllocated = true;
 }
 
 void HartreeFockSolver::cleanUpQMemory() {

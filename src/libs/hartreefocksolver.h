@@ -27,14 +27,14 @@ public:
     const mat &coefficientMatrix() const;
     const mat &overlapMatrix();
 private:
-    mat h;
-    mat S;
-    mat F;
-    mat P;
-    mat C;
+    mat m_h;
+    mat m_S;
+    mat m_F;
+    mat m_P;
+    mat m_C;
 
 //    double ****Q;
-    field<mat> Q;
+    field<mat> m_Q;
 
     ElectronSystem *m_electronSystem;
 
@@ -50,9 +50,7 @@ private:
     void cleanUpQMemory();
     void allocateQMemory();
 
-    double *QData;
-
-    bool isQAllocated = false;
+    double *m_QData;
 
     double m_energy = 0;
 };
@@ -72,11 +70,11 @@ inline double HartreeFockSolver::energy()
 
 inline const mat &HartreeFockSolver::coefficientMatrix() const
 {
-    return C;
+    return m_C;
 }
 
 inline const mat &HartreeFockSolver::overlapMatrix() {
-    return S;
+    return m_S;
 }
 
 #endif // HARTREEFOCKSOLVER_H
