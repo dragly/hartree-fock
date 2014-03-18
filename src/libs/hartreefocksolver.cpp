@@ -82,9 +82,24 @@ void HartreeFockSolver::setupCoupledMatrix() {
     uint n = f->nBasisFunctions();
     for(uint p = 0; p < n; p++) {
         for(uint r = 0; r < n; r++) {
-            for(uint q = 0; q < n; q++) {
-                for(uint s = 0; s < n; s++) {
+            for(uint q = p; q < n; q++) {
+                for(uint s = r; s < n; s++) {
                     m_coupledMatrix(p,r)(q,s) = f->coupledIntegral(p, q, r, s); // NOTE: Indexes changed on purpose in element and call
+                }
+            }
+        }
+    }
+    for(uint p = 0; p < n; p++) {
+        for(uint r = 0; r < n; r++) {
+            for(uint q = p; q < n; q++) {
+                for(uint s = r; s < n; s++) {
+                    m_coupledMatrix(q,r)(p,s) = m_coupledMatrix(p,r)(q,s);
+                    m_coupledMatrix(p,s)(q,r) = m_coupledMatrix(p,r)(q,s);
+                    m_coupledMatrix(q,s)(p,r) = m_coupledMatrix(p,r)(q,s);
+                    m_coupledMatrix(r,p)(s,q) = m_coupledMatrix(p,r)(q,s);
+                    m_coupledMatrix(s,p)(r,q) = m_coupledMatrix(p,r)(q,s);
+                    m_coupledMatrix(r,q)(s,p) = m_coupledMatrix(p,r)(q,s);
+                    m_coupledMatrix(s,q)(r,p) = m_coupledMatrix(p,r)(q,s);
                 }
             }
         }
