@@ -43,15 +43,15 @@ private:
 
     ElectronSystem *m_electronSystem;
 
-    void resetC();
-    void setupF();
-    void setupP();
-    void setupQ();
-    void setupS();
-    void setuph();
-    void normalizeCwithRegardsToS();
-    void cleanUpQMemory();
-    void allocateQMemory();
+    void resetCoefficientMatrix();
+    void setupFockMatrix();
+    void setupDensityMatrix();
+    void setupCoupledMatrix();
+    void setupOverlapMatrix();
+    void setupUncoupledMatrix();
+    void normalizeCoefficientMatrix();
+    void cleanUpCoupledMatrix();
+    void allocateCoupledMatrix();
 
     int m_iterationsUsed;
 
