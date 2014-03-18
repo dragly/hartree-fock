@@ -33,7 +33,8 @@ SUITE(Systems) {
 //            solver.advance();
 //        }
         solver.solve();
-        cout << "Neon 3-21G s-limited: " << solver.energy() << endl;
+        CHECK_CLOSE(-75.90033695819778, solver.energy(), 1e-5);
+//        cout << "Neon 3-21G s-limited: " << solver.energy() << endl;
     }
     TEST(Neon321) {
         vector<GaussianCore> cores;
@@ -48,7 +49,8 @@ SUITE(Systems) {
 //            solver.advance();
 //        }
         solver.solve();
-        cout << "Neon 3-21G: " << solver.energy() << endl;
+        CHECK_CLOSE(-127.8038245281914, solver.energy(), 1e-5);
+//        cout << "Neon 3-21G: " << solver.energy() << endl;
     }
     TEST(OxygenSix) {
         vector<GaussianCore> cores;
@@ -64,6 +66,7 @@ SUITE(Systems) {
             solver.advance();
         }
         solver.overlapMatrix().save("S.mat", raw_ascii);
-        cout << "Oxygen 6-311G: " << solver.energy() << endl;
+        CHECK_CLOSE(-149.5117583638631, solver.energy(), 1e-5);
+//        cout << "Oxygen 6-311G: " << solver.energy() << endl;
     }
 }
