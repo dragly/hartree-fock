@@ -32,6 +32,9 @@ public:
     int iterationsUsed() const;
 
     void solve();
+    int nIterationsMax() const;
+    void setNIterationsMax(int nIterationsMax);
+
 private:
     mat m_uncoupledMatrix;
     mat m_overlapMatrix;
@@ -60,6 +63,7 @@ private:
     double m_energy = 0;
     double m_convergenceTreshold;
     double m_previousFockEnergyRMS;
+    int m_nIterationsMax;
 };
 
 inline void HartreeFockSolver::setElectronSystem(ElectronSystem *basisFunction) {

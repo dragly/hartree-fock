@@ -11,7 +11,8 @@ using namespace std;
 
 HartreeFockSolver::HartreeFockSolver(ElectronSystem *basisFunction) :
     m_electronSystem(basisFunction),
-    m_convergenceTreshold(1e-8)
+    m_convergenceTreshold(1e-8),
+    m_nIterationsMax(1e3)
 {
     cout << setprecision(20);
     allocateCoupledMatrix();
@@ -133,6 +134,16 @@ double HartreeFockSolver::coupledMatrixTilde(int p, int q, int r, int s) { // TO
     field<mat>& Q = m_coupledMatrix;
     return 2 * Q(p,r)(q,s) - Q(p,r)(s,q);
 }
+int HartreeFockSolver::nIterationsMax() const
+{
+    return m_nIterationsMax;
+}
+
+void HartreeFockSolver::setNIterationsMax(int nIterationsMax)
+{
+    m_nIterationsMax = nIterationsMax;
+}
+
 
 void HartreeFockSolver::normalizeCoefficientMatrix(){
     ElectronSystem* f = m_electronSystem;
@@ -215,8 +226,7 @@ void HartreeFockSolver::setupDensityMatrix() {
 }
 
 void HartreeFockSolver::solve() {
-    int iterationsMax = 10000;
-    for(int i = 0; i < iterationsMax; i++) {
+    for(int i = 0; i < m_nIterationsMax; i++) {
         vec previousFockEnergies = m_fockEnergies;
         advance();
         if(i > 0) {
