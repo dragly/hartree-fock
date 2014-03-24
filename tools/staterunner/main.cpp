@@ -6,14 +6,31 @@
 #include <hartreefocksolver.h>
 #include <electronsystems/gaussian/gaussiancore.h>
 #include <electronsystems/gaussian/gaussiansystem.h>
+#include <boost/mpi.hpp>
 
 #include <H5Cpp.h>
 
 using namespace std;
 using namespace H5;
+using boost::mpi::communicator;
+using boost::mpi::environment;
+
+int blockLow(int id, int np, int n) {
+    return (id * n) / np;
+}
+
+int blockHigh(int id, int np, int n) {
+    return blockLow(id + 1, np, n) - 1;
+}
+
+int blockSize(int id, int p, int n) {
+    return blockLow(id + 1,p,n) - blockLow(id,p,n);
+}
 
 int main(int argc, char* argv[])
 {
+    environment env;
+    communicator world;
     if(argc < 2) {
         cout << "Error: No file provided." << endl;
         cout << "Usage: programname <filename>" << endl;
@@ -73,20 +90,34 @@ int main(int argc, char* argv[])
 
     atomMetaAttributeOut.write(atomMetaCompound, atomMetaData);
 
+    vector<string> allStates;
     for(int stateIndex = 0; stateIndex < int(inFile.getNumObjs()); stateIndex++) {
         string objectName = inFile.getObjnameByIdx(stateIndex);
         if(objectName.find("state") == string::npos) {
             continue;
         }
-        cout << "Opening " << objectName << endl;
-        DataSet atomDataSet(inFile.openDataSet(objectName));
+        allStates.push_back(objectName);
+    }
+    cout << "Found a total of " << allStates.size() << " number of states." << endl;
+    vector<string> states;
+    cout << blockLow(world.rank(), world.size(), allStates.size()) << " " << blockHigh(world.rank(), world.size(), allStates.size()) << endl;
+    for(int i = blockLow(world.rank(), world.size(), allStates.size());
+        i <= blockHigh(world.rank(), world.size(), allStates.size());
+        i++) {
+        states.push_back(allStates.at(i));
+    }
+    cout << "I got " << states.size() << " states to handle." << endl;
+    return 0;
+    for(const string& stateName : states) {
+        cout << "Opening " << stateName << endl;
+        DataSet atomDataSet(inFile.openDataSet(stateName));
         hsize_t dims2[1];
         atomDataSet.getSpace().getSimpleExtentDims(dims2);
         int nAtoms2 = dims2[0];
         cout << nAtoms2 << endl;
 
         if(nAtoms != nAtoms2) {
-            cerr << "Error! The number of atoms in " << objectName << " (nAtoms = " << nAtoms2 << ") does not match "
+            cerr << "Error! The number of atoms in " << stateName << " (nAtoms = " << nAtoms2 << ") does not match "
                  << "the number of atoms in the metadata (= " << nAtoms << ")" << endl;
             cerr << "Cannot continue" << endl;
             exit(0);
@@ -97,7 +128,7 @@ int main(int argc, char* argv[])
 
         cout << "Writing atoms to new file..." << endl;
 
-        DataSet atomDataSetOut(outFile.createDataSet(objectName, atomCompound, DataSpace(atomDataSet.getSpace())));
+        DataSet atomDataSetOut(outFile.createDataSet(stateName, atomCompound, DataSpace(atomDataSet.getSpace())));
         atomDataSetOut.write(atoms, atomCompound);
 
         GaussianSystem system;
