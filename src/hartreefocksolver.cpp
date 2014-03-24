@@ -168,7 +168,6 @@ void HartreeFockSolver::advance() {
     ElectronSystem* f = m_electronSystem;
     uint no = f->nBasisFunctions();
     uint nk = f->nParticles() / 2;
-    nk = max(int(nk), 2); // TODO Fix this hack for the Hydrogen atom
     setupFockMatrix();
 
     vec s;
