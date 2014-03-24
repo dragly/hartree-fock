@@ -1,8 +1,6 @@
 #include <unittest++/UnitTest++.h>
 
 #include <parsers/turbomoleparser.h>
-#include <electronsystems/gaussian/gaussianoxygen431g.h>
-#include <electronsystems/gaussian/gaussiannitrogen431g.h>
 #include <electronsystems/gaussian/gaussiancore.h>
 #include <hartreefocksolver.h>
 

@@ -1,6 +1,5 @@
 #include <unittest++/UnitTest++.h>
 
-#include <basisfunctions/gaussiantypeorbitalintegrator.h>
 #include <basisfunctions/gaussian/integrals/gaussianoverlapintegral.h>
 #include <basisfunctions/gaussian/integrals/gaussiankineticintegral.h>
 #include <basisfunctions/gaussian/integrals/gaussiancoloumbattractionintegral.h>
