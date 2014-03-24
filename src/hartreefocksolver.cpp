@@ -29,7 +29,7 @@ void HartreeFockSolver::reset() {
     setupOverlapMatrix();
     setupCoupledMatrix();
     resetCoefficientMatrix();
-    //    normalizeCwithRegardsToS();
+//    normalizeCoefficientMatrix();
     setupDensityMatrix();
 }
 
@@ -37,6 +37,7 @@ void HartreeFockSolver::resetCoefficientMatrix() {
     ElectronSystem* f = m_electronSystem;
     m_coefficientMatrix.reset();
     m_coefficientMatrix = zeros(f->nBasisFunctions(), f->nParticles() / 2);
+//    m_coefficientMatrix = randn(f->nBasisFunctions(), f->nParticles() / 2) * 100;
 }
 
 void HartreeFockSolver::allocateCoupledMatrix() {
@@ -221,7 +222,14 @@ int HartreeFockSolver::iterationsUsed() const
 void HartreeFockSolver::setupDensityMatrix() {
     mat &P = m_densityMatrix;
     mat &C = m_coefficientMatrix;
-    P = 2 * C * C.t();
+    mat tempP = 2 * C * C.t();
+//    P = tempP;
+    double mixFactor = 0.5;
+    if(P.n_elem > 0) {
+        P = mixFactor * P + (1 - mixFactor) * tempP; // smoothing
+    } else {
+        P = tempP;
+    }
 }
 
 void HartreeFockSolver::solve() {

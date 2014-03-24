@@ -143,7 +143,6 @@ int main(int argc, char* argv[])
         solver.solve();
 
         double energy = solver.energy();
-        cout <<  atoms[1].x << " " << energy << endl;
 
         Attribute energyAttribute(atomDataSetOut.createAttribute("energy", PredType::NATIVE_DOUBLE, H5S_SCALAR));
         energyAttribute.write(PredType::NATIVE_DOUBLE, &energy);

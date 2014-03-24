@@ -24,8 +24,8 @@ public:
     ElectronSystem *electronSystem();
 
     inline double energy();
-    const mat &coefficientMatrix() const;
-    const mat &overlapMatrix();
+    const mat& coefficientMatrix() const;
+    const mat& overlapMatrix();
     double convergenceTreshold() const;
     void setConvergenceTreshold(double convergenceTreshold);
 
