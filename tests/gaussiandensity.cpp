@@ -103,11 +103,11 @@ SUITE(GaussianDensity) {
         vec x = linspace(-3, 3, 200);
         vec y = linspace(-3, 3, 200);
         //        vec z = linspace(-3, 3, 3);
-        double dx = x(1) - x(0);
-        double dy = y(1) - y(0);
+//        double dx = x(1) - x(0);
+//        double dy = y(1) - y(0);
         //        double dz = z(1) - z(0);
         //        double basisDensitySum = 0;
-        double densitySum = 0;
+//        double densitySum = 0;
         ofstream dataFile(fileName);
         //        ofstream basisDataFile("density-oxygen-basis.dat");
         //        ofstream diffDataFile("density-oxygen-diff.dat");

@@ -1,4 +1,5 @@
-include(../../defaults.pri)
+include(../defaults.pri)
+include(../defaults-nonsrc.pri)
 
 QT += 3dquick
 
@@ -33,12 +34,13 @@ HEADERS += \
     hartreefock.h
 
 OTHER_FILES += \
-    qml/hfgui/scalarvolume.frag
+    qml/hfgui/scalarvolume.frag \
+    defaults-nonsrc.pri
 
-LIBS += -L$$TOP_OUT_PWD/src/libs -lhartree-fock
+LIBS += -L$$PWD/src -lhartree-fock
 
-copydata.commands = $(COPY_DIR) $$TOP_PWD/utils/* $$OUT_PWD
+#copydata.commands = $(COPY_DIR) ../data/* $$OUT_PWD
 first.depends = $(first) copydeploymentfolders copydata
 export(first.depends)
-export(copydata.commands)
-QMAKE_EXTRA_TARGETS += first copydata copydeploymentfolders
+#export(copydata.commands)
+#QMAKE_EXTRA_TARGETS += first copydata copydeploymentfolders

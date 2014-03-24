@@ -97,8 +97,8 @@ private:
     cube m_densityVoxels;
     int m_nSampleSteps;
     GLushort *m_voxelData;
-    double m_voxelEdgeMax;
     double m_voxelEdgeMin;
+    double m_voxelEdgeMax;
     QVector3D m_center;
     double m_energy;
 };

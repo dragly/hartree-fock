@@ -374,6 +374,7 @@ void VolumeShaderProgramEffect::afterLink()
 bool VolumeShaderProgramEffect::beforeLink()
 {
 //    program()->bindAttributeLocation("multiTexCoord3D", 8);
+    return true;
 }
 
 /*!

@@ -1,4 +1,5 @@
-include($$TOP_PWD/defaults.pri)
+include(../defaults.pri)
+include(../defaults-nonsrc.pri)
 
 TARGET = hartree-fock-tests
 
@@ -16,7 +17,7 @@ SOURCES += main.cpp \
     parser.cpp \
     systems.cpp
 
-LIBS += -lunittest++ -L$$TOP_OUT_PWD/src/libs -lhartree-fock
+LIBS += -lunittest++ -L../src/libs -lhartree-fock
 
 HEADERS += \
     basisfunction.h

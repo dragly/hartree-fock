@@ -27,7 +27,6 @@ HartreeFock::~HartreeFock()
 void HartreeFock::generateRandomPoints() {
     m_filePositions.reset();
     m_filePositions = arma::zeros(1,20*20*20,3);
-    double spacing = 1;
     int nPerDim = 20;
     int counter = 0;
     for(int i = 0; i < nPerDim; i++) {
@@ -142,9 +141,9 @@ void HartreeFock::setupVoxelData() {
         delete[] m_voxelData;
     }
     m_voxelData = new GLushort[nElements];
-    for(int i = 0; i < m_densityVoxels.n_rows; i++) {
-        for(int j = 0; j < m_densityVoxels.n_cols; j++) {
-            for(int k = 0; k < m_densityVoxels.n_slices; k++) {
+    for(int i = 0; i < int(m_densityVoxels.n_rows); i++) {
+        for(int j = 0; j < int(m_densityVoxels.n_cols); j++) {
+            for(int k = 0; k < int(m_densityVoxels.n_slices); k++) {
                 int index = i
                         + j * m_densityVoxels.n_rows
                         + k * m_densityVoxels.n_cols * m_densityVoxels.n_rows;

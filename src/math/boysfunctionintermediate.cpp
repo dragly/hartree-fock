@@ -8,10 +8,10 @@ using namespace std;
 BoysFunctionIntermediate::BoysFunctionIntermediate(int levelMax, int nValues, double limitMin, double limitMax, int nIntegralValues) :
     m_nValues(nValues),
     m_levelMax(levelMax),
+    m_neededLevelMax(m_levelMax + m_taylorExpansionOrder + 1),
     m_limitMin(limitMin),
     m_limitMax(limitMax),
-    m_nIntegralValues(nIntegralValues),
-    m_neededLevelMax(m_levelMax + m_taylorExpansionOrder + 1)
+    m_nIntegralValues(nIntegralValues)
 {
     m_dx = (limitMax - limitMin) / (nValues - 1);
     updateResults();

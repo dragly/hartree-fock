@@ -119,7 +119,7 @@ double GaussianSystem::particleDensity(const mat& C, double x, double y, double 
     nk = max(nk, 1);
     for(int i = 0; i < nk; i++) {
         double innerResult = 0;
-        for(int j = 0; j < m_basisFunctions.size(); j++) {
+        for(int j = 0; j < int(m_basisFunctions.size()); j++) {
             const GaussianContractedOrbital &bf = m_basisFunctions.at(j);
             double evaluation = bf.evaluated(x,y,z);
             innerResult += C(j,i) * C(j,i) * evaluation * evaluation;
