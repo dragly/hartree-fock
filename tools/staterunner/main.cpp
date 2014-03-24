@@ -10,7 +10,6 @@
 #include <H5Cpp.h>
 
 using namespace std;
-using namespace libconfig;
 using namespace H5;
 
 int main(int argc, char* argv[])
@@ -28,9 +27,9 @@ int main(int argc, char* argv[])
     };
 
     CompType atomCompound( sizeof(AtomData) );
-    atomCompound.insertMember( "x", HOFFSET(AtomData, x), PredType::NATIVE_DOUBLE);
-    atomCompound.insertMember( "y", HOFFSET(AtomData, y), PredType::NATIVE_DOUBLE);
-    atomCompound.insertMember( "z", HOFFSET(AtomData, z), PredType::NATIVE_DOUBLE);
+    atomCompound.insertMember("x", HOFFSET(AtomData, x), PredType::NATIVE_DOUBLE);
+    atomCompound.insertMember("y", HOFFSET(AtomData, y), PredType::NATIVE_DOUBLE);
+    atomCompound.insertMember("z", HOFFSET(AtomData, z), PredType::NATIVE_DOUBLE);
 
 
     struct AtomMetaData {
@@ -44,7 +43,7 @@ int main(int argc, char* argv[])
 
     cout << "Opening file " << argv[1] << endl;
     H5File inFile(argv[1], H5F_ACC_RDONLY );
-    cout << inFile.getNumObjs() << " configurations found" << endl;
+    cout << inFile.getNumObjs() << " states found" << endl;
 
     cout << "Getting atom metadata" << endl;
     Group rootGroup(inFile.openGroup("/"));
@@ -74,20 +73,20 @@ int main(int argc, char* argv[])
 
     atomMetaAttributeOut.write(atomMetaCompound, atomMetaData);
 
-    for(int config = 0; config < int(inFile.getNumObjs()); config++) {
-        string configName = inFile.getObjnameByIdx(config);
-        if(configName.find("configuration") == string::npos) {
+    for(int stateIndex = 0; stateIndex < int(inFile.getNumObjs()); stateIndex++) {
+        string objectName = inFile.getObjnameByIdx(stateIndex);
+        if(objectName.find("state") == string::npos) {
             continue;
         }
-        cout << "Opening " << configName << endl;
-        DataSet atomDataSet(inFile.openDataSet(configName));
+        cout << "Opening " << objectName << endl;
+        DataSet atomDataSet(inFile.openDataSet(objectName));
         hsize_t dims2[1];
         atomDataSet.getSpace().getSimpleExtentDims(dims2);
         int nAtoms2 = dims2[0];
         cout << nAtoms2 << endl;
 
         if(nAtoms != nAtoms2) {
-            cerr << "Error! The number of atoms in configuration " << configName << " (nAtoms = " << nAtoms2 << ") does not match "
+            cerr << "Error! The number of atoms in " << objectName << " (nAtoms = " << nAtoms2 << ") does not match "
                  << "the number of atoms in the metadata (= " << nAtoms << ")" << endl;
             cerr << "Cannot continue" << endl;
             exit(0);
@@ -98,7 +97,7 @@ int main(int argc, char* argv[])
 
         cout << "Writing atoms to new file..." << endl;
 
-        DataSet atomDataSetOut(outFile.createDataSet(configName, atomCompound, DataSpace(atomDataSet.getSpace())));
+        DataSet atomDataSetOut(outFile.createDataSet(objectName, atomCompound, DataSpace(atomDataSet.getSpace())));
         atomDataSetOut.write(atoms, atomCompound);
 
         GaussianSystem system;
