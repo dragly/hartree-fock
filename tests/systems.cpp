@@ -21,6 +21,21 @@ SUITE(Systems) {
         }
         CHECK_CLOSE(solver.energy(), -75.90736859918989, 1e-6);
     }
+    TEST(HydrogenMolecule) {
+        vector<GaussianCore> cores;
+        cores.push_back(GaussianCore({0,0,0}, "hydrogen321g.tm"));
+        cores.push_back(GaussianCore({1.4,0.0,0}, "hydrogen321g.tm"));
+        GaussianSystem system;
+        for(const GaussianCore &core : cores) {
+            system.addCore(core);
+        }
+        mat C;
+        HartreeFockSolver solver(&system);
+        for(int i = 0; i < 1000; i++) {
+            solver.advance();
+        }
+        CHECK_CLOSE(-1.122933363617109, solver.energy(), 1e-6);
+    }
     TEST(NeonTest) {
         vector<GaussianCore> cores;
         cores.push_back(GaussianCore({0,0,0}, "neontest321g.tm"));
@@ -67,6 +82,7 @@ SUITE(Systems) {
             solver.advance();
         }
         solver.overlapMatrix().save("S.mat", raw_ascii);
+        cout << "Oxygen energy: " << solver.energy() << endl;
         CHECK_CLOSE(-149.5117583638631, solver.energy(), 1e-5);
 //        cout << "Oxygen 6-311G: " << solver.energy() << endl;
     }

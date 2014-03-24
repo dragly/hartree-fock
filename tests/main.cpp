@@ -4,6 +4,11 @@
 #include <parser.cpp>
 #include <systems.cpp>
 
+#include <basisfunctions/gaussian/gaussiancontractedorbital.h>
+#include <electronsystems/gaussian/gaussiancore.h>
+#include <electronsystems/gaussian/gaussiansystem.h>
+#include <hartreefocksolver.h>
+
 #include <unittest++/UnitTest++.h>
 #include <unittest++/Test.h>
 #include <unittest++/TestReporterStdout.h>
@@ -30,7 +35,6 @@ int main()
     result += runner.RunTestsIf(UnitTest::Test::GetTestList(), "GaussianIntegral", UnitTest::True(), 0);
     result += runner.RunTestsIf(UnitTest::Test::GetTestList(), "Hydrogen", UnitTest::True(), 0);
     result += runner.RunTestsIf(UnitTest::Test::GetTestList(), "GaussianOxygen", UnitTest::True(), 0);
-    result += runner.RunTestsIf(UnitTest::Test::GetTestList(), "GaussianDensity", UnitTest::True(), 0);
     result += runner.RunTestsIf(UnitTest::Test::GetTestList(), "Parser", UnitTest::True(), 0);
     result += runner.RunTestsIf(UnitTest::Test::GetTestList(), "Systems", UnitTest::True(), 0);
 #endif

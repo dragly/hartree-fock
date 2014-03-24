@@ -133,6 +133,8 @@ int main(int argc, char* argv[])
                 fileName = "oxygen321g.tm";
             } else if(atomMetaData[i].type == 1 && !strcmp(atomMetaData[i].basisName, "3-21G")) {
                 fileName = "hydrogen321g.tm";
+            } else if(atomMetaData[i].type == 1 && !strcmp(atomMetaData[i].basisName, "6-311G")) {
+                fileName = "hydrogen6311g.tm";
             }
             system.addCore(GaussianCore({ atoms[i].x, atoms[i].y, atoms[i].z}, fileName));
         }
@@ -141,6 +143,7 @@ int main(int argc, char* argv[])
         solver.solve();
 
         double energy = solver.energy();
+        cout <<  atoms[1].x << " " << energy << endl;
 
         Attribute energyAttribute(atomDataSetOut.createAttribute("energy", PredType::NATIVE_DOUBLE, H5S_SCALAR));
         energyAttribute.write(PredType::NATIVE_DOUBLE, &energy);
