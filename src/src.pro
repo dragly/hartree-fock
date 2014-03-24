@@ -31,7 +31,8 @@ SOURCES += hartreesolver.cpp \
 #    electronsystems/gaussian/gaussianoxygen431g.cpp \
     parsers/turbomoleparser.cpp \
     electronsystems/gaussian/gaussiancore.cpp \
-    hf.cpp
+    hf.cpp \
+    basisfunctions/gaussiantypeorbitalintegrator.cpp
 
 HEADERS += \
     hartreesolver.h \
@@ -58,7 +59,8 @@ HEADERS += \
 #    electronsystems/gaussian/gaussianoxygen431g.h \
     parsers/turbomoleparser.h \
     electronsystems/gaussian/gaussiancore.h \
-    hf.h
+    hf.h \
+    basisfunctions/gaussiantypeorbitalintegrator.h
 
 OTHER_FILES += \
     defaults.pri \
