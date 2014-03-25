@@ -92,6 +92,11 @@ int main(int argc, char* argv[])
         }
         allStates.push_back(objectName);
     }
+
+    // Shuffle the states to avoid certain processors to get less work to do
+    // because some areas of configuration space may be easier to calculate
+    random_shuffle(allStates.begin(), allStates.end());
+
     vector<string> states;
     for(int i = blockLow(world.rank(), world.size(), allStates.size());
         i <= blockHigh(world.rank(), world.size(), allStates.size());
@@ -117,7 +122,7 @@ int main(int argc, char* argv[])
             cerr << "Error! The number of atoms in " << stateName << " (nAtoms = " << nAtoms2 << ") does not match "
                  << "the number of atoms in the metadata (= " << nAtoms << ")" << endl;
             cerr << "Cannot continue" << endl;
-            exit(0);
+            throw std::logic_error("Mismatching number of atoms");
         }
 
         AtomData *atoms = new AtomData[nAtoms2];

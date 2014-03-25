@@ -16,6 +16,8 @@ SUITE(Systems) {
         }
         mat C;
         HartreeFockSolver solver(&system);
+        solver.setConvergenceTreshold(1e-6);
+        solver.setNIterationsMax(1e3);
         for(int i = 0; i < 100; i++) {
             solver.advance();
         }
@@ -31,6 +33,8 @@ SUITE(Systems) {
         }
         mat C;
         HartreeFockSolver solver(&system);
+        solver.setConvergenceTreshold(1e-6);
+        solver.setNIterationsMax(1e3);
         for(int i = 0; i < 1000; i++) {
             solver.advance();
         }
@@ -45,6 +49,8 @@ SUITE(Systems) {
         }
         mat C;
         HartreeFockSolver solver(&system);
+        solver.setConvergenceTreshold(1e-6);
+        solver.setNIterationsMax(1e3);
 //        for(int i = 0; i < 100; i++) {
 //            solver.advance();
 //        }
@@ -61,11 +67,13 @@ SUITE(Systems) {
         }
         mat C;
         HartreeFockSolver solver(&system);
+        solver.setConvergenceTreshold(1e-6);
+        solver.setNIterationsMax(1e3);
 //        for(int i = 0; i < 100; i++) {
 //            solver.advance();
 //        }
         solver.solve();
-        CHECK_CLOSE(-127.8038245281914, solver.energy(), 1e-5);
+        CHECK_CLOSE(-127.8038139236938, solver.energy(), 1e-5);
 //        cout << "Neon 3-21G: " << solver.energy() << endl;
     }
     TEST(OxygenSix) {
@@ -78,12 +86,14 @@ SUITE(Systems) {
         }
         mat C;
         HartreeFockSolver solver(&system);
+        solver.setConvergenceTreshold(1e-6);
+        solver.setNIterationsMax(1e3);
         for(int i = 0; i < 100; i++) {
             solver.advance();
         }
         solver.overlapMatrix().save("S.mat", raw_ascii);
-        cout << "Oxygen energy: " << solver.energy() << endl;
-        CHECK_CLOSE(-149.5117583638631, solver.energy(), 1e-5);
+//        cout << "Oxygen energy: " << solver.energy() << endl;
+        CHECK_CLOSE(-149.5111286894001, solver.energy(), 1e-5);
 //        cout << "Oxygen 6-311G: " << solver.energy() << endl;
     }
 }
