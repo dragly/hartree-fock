@@ -7,9 +7,9 @@
 SUITE(Systems) {
     TEST(Water) {
         vector<GaussianCore> cores;
-        cores.push_back(GaussianCore({0,0,0}, "oxygen431g.tm"));
-        cores.push_back(GaussianCore({-1.43,1.108,0}, "hydrogen431g.tm"));
-        cores.push_back(GaussianCore({1.43,1.108,0}, "hydrogen431g.tm"));
+        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_4-31G.tm"));
+        cores.push_back(GaussianCore({-1.43,1.108,0}, "atom_1_basis_4-31G.tm"));
+        cores.push_back(GaussianCore({1.43,1.108,0}, "atom_1_basis_4-31G.tm"));
         GaussianSystem system;
         for(const GaussianCore &core : cores) {
             system.addCore(core);
@@ -25,8 +25,8 @@ SUITE(Systems) {
     }
     TEST(HydrogenMolecule) {
         vector<GaussianCore> cores;
-        cores.push_back(GaussianCore({0,0,0}, "hydrogen321g.tm"));
-        cores.push_back(GaussianCore({1.4,0.0,0}, "hydrogen321g.tm"));
+        cores.push_back(GaussianCore({0,0,0}, "atom_1_basis_3-21G.tm"));
+        cores.push_back(GaussianCore({1.4,0.0,0}, "atom_1_basis_3-21G.tm"));
         GaussianSystem system;
         for(const GaussianCore &core : cores) {
             system.addCore(core);
@@ -40,27 +40,9 @@ SUITE(Systems) {
         }
         CHECK_CLOSE(-1.122933363617109, solver.energy(), 1e-6);
     }
-    TEST(NeonTest) {
-        vector<GaussianCore> cores;
-        cores.push_back(GaussianCore({0,0,0}, "neontest321g.tm"));
-        GaussianSystem system;
-        for(const GaussianCore &core : cores) {
-            system.addCore(core);
-        }
-        mat C;
-        HartreeFockSolver solver(&system);
-        solver.setConvergenceTreshold(1e-6);
-        solver.setNIterationsMax(1e3);
-//        for(int i = 0; i < 100; i++) {
-//            solver.advance();
-//        }
-        solver.solve();
-        CHECK_CLOSE(-75.90033695819778, solver.energy(), 1e-5);
-//        cout << "Neon 3-21G s-limited: " << solver.energy() << endl;
-    }
     TEST(Neon321) {
         vector<GaussianCore> cores;
-        cores.push_back(GaussianCore({0,0,0}, "neon321g.tm"));
+        cores.push_back(GaussianCore({0,0,0}, "atom_10_basis_3-21G.tm"));
         GaussianSystem system;
         for(const GaussianCore &core : cores) {
             system.addCore(core);
@@ -78,8 +60,8 @@ SUITE(Systems) {
     }
     TEST(OxygenSix) {
         vector<GaussianCore> cores;
-        cores.push_back(GaussianCore({0,0,0}, "oxygen6311g.tm"));
-        cores.push_back(GaussianCore({2.282,0,0}, "oxygen6311g.tm"));
+        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_6-311G.tm"));
+        cores.push_back(GaussianCore({2.282,0,0}, "atom_8_basis_6-311G.tm"));
         GaussianSystem system;
         for(const GaussianCore &core : cores) {
             system.addCore(core);
