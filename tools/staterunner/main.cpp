@@ -12,7 +12,7 @@
 
 using namespace std;
 using namespace H5;
-using namespace boost;
+namespace mpi = boost::mpi;
 
 int blockLow(int id, int np, int n) {
     return (id * n) / np;
@@ -36,6 +36,9 @@ int main(int argc, char* argv[])
         cout << "Error: No file provided." << endl;
         cout << "Usage: programname <filename>" << endl;
     }
+
+    string inFileName = argv[1];
+
     /* First structure  and dataset*/
     struct AtomData {
         double x;
@@ -59,63 +62,97 @@ int main(int argc, char* argv[])
     atomMetaCompound.insertMember( "type", HOFFSET(AtomMetaData, type), PredType::NATIVE_INT);
     atomMetaCompound.insertMember( "basisName", HOFFSET(AtomMetaData, basisName), string_type);
 
-    H5File inFile(argv[1], H5F_ACC_RDONLY );
+    vector<int> stateIDs;
+    if(world.rank() == 0) {
+        H5File inFile(inFileName, H5F_ACC_RDONLY );
+        H5::Group statesGroup(inFile.openGroup("/states"));
+        int nStates = statesGroup.getNumObjs();
+        vector<int> allStates;
+        allStates.reserve(nStates);
+        for(int i = 0; i < nStates; i++) {
+            allStates.push_back(i);
+        }
+        random_shuffle(allStates.begin(), allStates.end());
+        for(int p = 0; p < world.size(); p++) {
+            vector<int> states;
+            for(int i = blockLow(p, world.size(), allStates.size());
+                i <= blockHigh(p, world.size(), allStates.size());
+                i++) {
 
-    Group rootGroup(inFile.openGroup("/"));
-    string metaInformationName = "atomMetaInformation";
-    Attribute atomMetaAttribute(rootGroup.openAttribute(metaInformationName));
-    hsize_t dims[1];
-    atomMetaAttribute.getSpace().getSimpleExtentDims(dims);
-    int nAtoms = dims[0];
-    cout << nAtoms << endl;
+                states.push_back(allStates.at(i));
 
-    AtomMetaData atomMetaData[nAtoms];
-    atomMetaAttribute.read(atomMetaCompound, atomMetaData);
+            }
+            if(p == 0) {
+                stateIDs = states;
+            } else {
+                world.send(p, 0, states);
+            }
+        }
+        inFile.close();
+    } else {
+        world.recv(0, 0, stateIDs);
+    }
+    cout << "Rank " << world.rank() << ": I have " << stateIDs.size() << " states to dig!" << endl;
+    world.barrier();
 
+    // Copy HDF5 file
     stringstream outFileName;
     outFileName << "results.h5." << setfill('0') << setw(4) << world.rank();
-    H5File outFile(outFileName.str(), H5F_ACC_TRUNC );
-    Group rootGroupOut(outFile.openGroup("/"));
 
-    cout << "Writing atom metadata..." << endl;
-    Attribute atomMetaAttributeOut(rootGroupOut.createAttribute(metaInformationName,
-                                                                atomMetaCompound,
-                                                                DataSpace(atomMetaAttribute.getSpace())));
+    // Open outFile for writing
+    H5File outFile(outFileName.str(), H5F_ACC_TRUNC);
 
-    atomMetaAttributeOut.write(atomMetaCompound, atomMetaData);
-
-    vector<string> allStates;
-    for(int stateIndex = 0; stateIndex < int(inFile.getNumObjs()); stateIndex++) {
-        string objectName = inFile.getObjnameByIdx(stateIndex);
-        if(objectName.find("state") == string::npos) {
+    for(int p = 0; p < world.size(); p++) {
+        world.barrier();
+        if(p != world.rank()) {
             continue;
         }
-        allStates.push_back(objectName);
+        // Open inFile for reading
+        H5File inFile(inFileName, H5F_ACC_RDONLY);
+
+        // Copy states to outFile
+
+        for(int i = 0; i < int(inFile.getNumObjs()); i++) {
+            string objectName = inFile.getObjnameByIdx(i);
+            if(objectName == string("states")) {
+                H5::Group statesGroup(inFile.openGroup("/states"));
+                H5::Group statesGroupOut(outFile.createGroup("/states"));
+                for(int stateID : stateIDs) {
+                    string stateName = statesGroup.getObjnameByIdx(stateID);
+                    H5Ocopy(statesGroup.getId(), stateName.c_str(), statesGroupOut.getId(), stateName.c_str(), H5Pcreate(H5P_OBJECT_COPY), H5P_DEFAULT);
+                }
+            } else {
+                H5Ocopy(inFile.getId(), objectName.c_str(), outFile.getId(), objectName.c_str(), H5Pcreate(H5P_OBJECT_COPY), H5P_DEFAULT);
+            }
+        }
+        inFile.close();
     }
 
-    // Shuffle the states to avoid certain processors to get less work to do
-    // because some areas of configuration space may be easier to calculate
-    random_shuffle(allStates.begin(), allStates.end());
+    H5::Group rootGroup(outFile.openGroup("/"));
+    string metaInformationName = "atomMeta";
+    DataSet atomMeta(rootGroup.openDataSet(metaInformationName));
+    hsize_t dims[1];
+    atomMeta.getSpace().getSimpleExtentDims(dims);
+    int nAtoms = dims[0];
 
-    vector<string> states;
-    for(int i = blockLow(world.rank(), world.size(), allStates.size());
-        i <= blockHigh(world.rank(), world.size(), allStates.size());
-        i++) {
-        states.push_back(allStates.at(i));
-    }
-    cout << "I got " << states.size() << " states to handle." << endl;
-    int nTotal = states.size();
+    AtomMetaData atomMetaData[nAtoms];
+    atomMeta.read(atomMetaData, atomMetaCompound);
+
+    H5::Group statesGroup(outFile.openGroup("/states"));
+
+    int nTotal = statesGroup.getNumObjs();
     int currentState = 0;
-    for(const string& stateName : states) {
+    for(int stateID = 0; stateID < nTotal; stateID++) {
         if(world.rank() == 0) {
             cout << "Rank " << world.rank()
                  << ", progress: " << fixed << setprecision(2) << double(currentState) / nTotal * 100 << " %"
                  << ", time: " << timer.elapsed() << " s"
                  << endl;
         }
-        DataSet atomDataSet(inFile.openDataSet(stateName));
+        string stateName = statesGroup.getObjnameByIdx(stateID);
+        DataSet stateDataSet(statesGroup.openDataSet(stateName));
         hsize_t dims2[1];
-        atomDataSet.getSpace().getSimpleExtentDims(dims2);
+        stateDataSet.getSpace().getSimpleExtentDims(dims2);
         int nAtoms2 = dims2[0];
 
         if(nAtoms != nAtoms2) {
@@ -126,21 +163,13 @@ int main(int argc, char* argv[])
         }
 
         AtomData *atoms = new AtomData[nAtoms2];
-        atomDataSet.read(atoms, atomCompound);
-
-        DataSet atomDataSetOut(outFile.createDataSet(stateName, atomCompound, DataSpace(atomDataSet.getSpace())));
-        atomDataSetOut.write(atoms, atomCompound);
+        stateDataSet.read(atoms, atomCompound);
 
         GaussianSystem system;
         for(int i = 0; i < nAtoms2; i++) {
-            string fileName = "";
-            if(atomMetaData[i].type == 8 && !strcmp(atomMetaData[i].basisName, "3-21G")) {
-                fileName = "oxygen321g.tm";
-            } else if(atomMetaData[i].type == 1 && !strcmp(atomMetaData[i].basisName, "3-21G")) {
-                fileName = "hydrogen321g.tm";
-            } else if(atomMetaData[i].type == 1 && !strcmp(atomMetaData[i].basisName, "6-311G")) {
-                fileName = "hydrogen6311g.tm";
-            }
+            stringstream basisFile;
+            basisFile << "atom_" << atomMetaData[i].type << "_basis_" << atomMetaData[i].basisName << ".tm";
+            string fileName = basisFile.str();
             system.addCore(GaussianCore({ atoms[i].x, atoms[i].y, atoms[i].z}, fileName));
         }
         HartreeFockSolver solver(&system);
@@ -149,7 +178,7 @@ int main(int argc, char* argv[])
 
         double energy = solver.energy();
 
-        Attribute energyAttribute(atomDataSetOut.createAttribute("energy", PredType::NATIVE_DOUBLE, H5S_SCALAR));
+        Attribute energyAttribute(stateDataSet.createAttribute("energy", PredType::NATIVE_DOUBLE, H5S_SCALAR));
         energyAttribute.write(PredType::NATIVE_DOUBLE, &energy);
         outFile.flush(H5F_SCOPE_GLOBAL);
 
@@ -161,6 +190,7 @@ int main(int argc, char* argv[])
     if(world.rank() == 0) {
         cout << "Total time "  << fixed << setprecision(2) << timer.elapsed() << " s" << endl;
     }
+    outFile.close();
     return 0;
 }
 
