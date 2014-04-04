@@ -5,11 +5,14 @@
 UnrestrictedHartreeFockSolver::UnrestrictedHartreeFockSolver(ElectronSystem *system) :
     HartreeFockSolver(system)
 {
+    resetCoefficientMatrices();
+    setupDensityMatrices();
 }
 
 void UnrestrictedHartreeFockSolver::reset() {
     HartreeFockSolver::reset();
     resetCoefficientMatrices();
+    setupDensityMatrices();
 }
 
 void UnrestrictedHartreeFockSolver::resetCoefficientMatrices() {
@@ -24,65 +27,42 @@ void UnrestrictedHartreeFockSolver::setupFockMatrices() {
     ElectronSystem* f = electronSystem();
     uint n = f->nBasisFunctions();
 
-    mat &F = m_fockMatrixUp;
-    for (int i = 0; i < 2; ++i) {
-        if(i == 1) {
-            F = m_fockMatrixDown;
-        }
-        const mat &P = densityMatrix();
-        const mat &h = uncoupledMatrix();
-        F = zeros(n,n);
-        for(uint p = 0; p < n; p++) {
-            for(uint q = 0; q < n; q++) {
-                F(p,q) = h(p,q);
-                for(uint r = 0; r < n; r++) {
-                    for(uint s = 0; s < n; s++) {
-                        double Qtilde = coupledMatrixTilde(p, q, r, s);
-                        F(p,q) += 0.5 * Qtilde * P(s,r);
-                    }
+    mat &Fu = m_fockMatrixUp;
+    mat &Fd = m_fockMatrixDown;
+    const mat &Pu = m_densityMatrixUp;
+    const mat &Pd = m_densityMatrixDown;
+    const mat &h = uncoupledMatrix();
+    const field<mat> &Q = coupledMatrix();
+    Fu = zeros(n,n);
+    Fd = zeros(n,n);
+    for(uint p = 0; p < n; p++) {
+        for(uint q = 0; q < n; q++) {
+            Fu(p,q) = h(p,q);
+            Fd(p,q) = h(p,q);
+            for(uint r = 0; r < n; r++) {
+                for(uint s = 0; s < n; s++) {
+                    Fu(p,q) += Pu(s,r) * (Q(p,r)(q,s) - Q(p,r)(s,q)) + Pd(s,r) * Q(p,r)(q,s);
+                    Fd(p,q) += Pd(s,r) * (Q(p,r)(q,s) - Q(p,r)(s,q)) + Pu(s,r) * Q(p,r)(q,s);
                 }
             }
-        }
-    }
-}
-
-void UnrestrictedHartreeFockSolver::normalizeCoefficientMatrices(){
-    ElectronSystem* f = electronSystem();
-    uint no = f->nBasisFunctions();
-    uint nk = f->nParticles() / 2;
-
-    const mat& S = overlapMatrix();
-    mat& C = m_coefficientMatrixUp;
-    for(int i = 0; i < 2; i++) {
-        if(i == 1) {
-            C = m_coefficientMatrixDown;
-        }
-        for(uint k = 0; k < nk; k++) {
-            double factor = 0.0;
-            for(uint p = 0; p < no; p++){
-                for(uint q = 0; q < no; q++){
-                    factor += C(p,k) * S(p,q) * C(q,k);
-                }
-            }
-            C.col(k) = C.col(k) / sqrt(factor);
         }
     }
 }
 
 void UnrestrictedHartreeFockSolver::setupDensityMatrices() {
-    mat &P = m_densityMatrixUp;
-    mat &C = m_coefficientMatrixUp;
-    for (int i = 0; i < 2; ++i) {
-        P = m_densityMatrixDown;
-        C = m_coefficientMatrixDown;
-        mat tempP = 2 * C * C.t();
-    //    P = tempP;
-        double mixFactor = 0.9;
-        if(P.n_elem > 0) {
-            P = mixFactor * P + (1 - mixFactor) * tempP; // smoothing
-        } else {
-            P = tempP;
-        }
+    mat &Pu = m_densityMatrixUp;
+    mat &Pd = m_densityMatrixDown;
+    mat &Cu = m_coefficientMatrixUp;
+    mat &Cd = m_coefficientMatrixDown;
+    mat tempPu = Cu * Cu.t();
+    mat tempPd = Cd * Cd.t();
+    double mixFactor = 0.5;
+    if(Pu.n_elem > 0 && Pd.n_elem > 0) {
+        Pu = mixFactor * Pu + (1 - mixFactor) * tempPu; // smoothing
+        Pd = mixFactor * Pd + (1 - mixFactor) * tempPd; // smoothing
+    } else {
+        Pu = tempPu;
+        Pd = tempPd;
     }
 }
 
@@ -90,7 +70,7 @@ void UnrestrictedHartreeFockSolver::advance() {
     ElectronSystem* f = electronSystem();
     uint no = f->nBasisFunctions();
     uint nkUp = f->nParticlesUp();
-    uint nkDown = f->nParticlesDown();
+    uint nkDn = f->nParticlesDown();
     setupFockMatrices();
 
     vec s;
@@ -98,52 +78,56 @@ void UnrestrictedHartreeFockSolver::advance() {
     eig_sym(s, U, overlapMatrix());
     mat V = U*diagmat(1.0/sqrt(s));
 
-    mat &F = m_fockMatrixUp;
-    mat &C = m_coefficientMatrixUp;
-    int nk = nkUp;
-    vec &fockEnergies = m_fockEnergiesUp;
-    for (int i = 0; i < 2; ++i) {
-        if(i == 1) {
-            F = m_fockMatrixDown;
-            C = m_coefficientMatrixDown;
-            nk = nkDown;
-            fockEnergies = m_fockEnergiesDown;
-        }
-        F = V.t() * F * V;
+    mat &Fu = m_fockMatrixUp;
+    mat &Fd = m_fockMatrixDown;
+    mat &Cu = m_coefficientMatrixUp;
+    mat &Cd = m_coefficientMatrixDown;
+    vec &fockEnergiesUp = m_fockEnergiesUp;
+    vec &fockEnergiesDn = m_fockEnergiesDown;
 
-        mat Cprime;
-        eig_sym(fockEnergies, Cprime, F);
+    Fu = V.t() * Fu * V;
+    Fd = V.t() * Fd * V;
 
-        C = V*Cprime.submat(0, 0, no - 1, nk - 1);
-    }
-    normalizeCoefficientMatrices();
+    mat CprimeUp;
+    mat CprimeDn;
+
+    eig_sym(fockEnergiesUp, CprimeUp, Fu);
+    eig_sym(fockEnergiesDn, CprimeDn, Fd);
+
+    Cu = V*CprimeUp.submat(0, 0, no - 1, nkUp - 1);
+    Cd = V*CprimeDn.submat(0, 0, no - 1, nkDn - 1);
+
+    normalizeCoefficientMatrix(f->nParticlesUp(), m_coefficientMatrixUp);
+    normalizeCoefficientMatrix(f->nParticlesDown(), m_coefficientMatrixDown);
+
     setupDensityMatrices();
 
     double energy = 0;
-    mat& P = m_densityMatrixUp;
-    for (int i = 0; i < 2; ++i) {
-        if(i == 1) {
-            P = m_densityMatrixDown;
-        }
+    mat &Pu = m_densityMatrixUp;
+    mat &Pd = m_densityMatrixDown;
 
-        const mat& h = uncoupledMatrix();
-        for(uint p = 0; p < no; p++) {
-            for(uint q = 0; q < no; q++) {
-                energy += P(p,q) * h(p,q);
-            }
-        }
+    const mat& h = uncoupledMatrix();
 
-        for(uint p = 0; p < no; p++) {
-            for(uint q = 0; q < no; q++) {
-                for(uint r = 0; r < no; r++) {
-                    for(uint s = 0; s < no; s++) {
-                        double Qtilde = coupledMatrixTilde(p, q, r, s);
-                        energy += 0.25 * Qtilde * P(p,q) * P(s,r);
-                    }
-                }
-            }
-        }
-    }
+    energy += 0.5 * accu( (Pu + Pd) % h + Fu % Pu + Fd % Pd);
+//    for(uint p = 0; p < no; p++) {
+//        for(uint q = 0; q < no; q++) {
+//            energy += Pu(p,q) * h(p,q);
+//            energy += Pd(p,q) * h(p,q);
+//        }
+//    }
+
+//    const field<mat> &Q = coupledMatrix();
+//    for(uint p = 0; p < no; p++) {
+//        for(uint q = 0; q < no; q++) {
+//            for(uint r = 0; r < no; r++) {
+//                for(uint s = 0; s < no; s++) {
+//                    energy += Pu(p,q) * Pu(s,r) * (Q(p,r)(q,s) - Q(p,r)(s,q)) + Pd(p,q) * Pd(s,r) * Q(p,r)(q,s);
+//                    energy += Pd(p,q) * Pd(s,r) * (Q(p,r)(q,s) - Q(p,r)(s,q)) + Pu(p,q) * Pu(s,r) * Q(p,r)(q,s);
+//                }
+//            }
+//        }
+//    }
+
     energy += electronSystem()->additionalEnergyTerms();
     m_energyUHF = energy;
 }

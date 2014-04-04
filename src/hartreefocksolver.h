@@ -39,6 +39,9 @@ public:
     const mat &densityMatrix() const;
     const field<mat> &coupledMatrix() const;
 
+    double densityMixFactor() const;
+    void setDensityMixFactor(double densityMixFactor);
+
 protected:
     void normalizeCoefficientMatrix(uint nParticles, mat &coefficientMatrix);
     double coupledMatrixTilde(int p, int q, int r, int s);
@@ -69,6 +72,7 @@ private:
     double m_convergenceTreshold;
     double m_previousFockEnergyRMS;
     int m_nIterationsMax;
+    double m_densityMixFactor;
 };
 
 #endif // HARTREEFOCKSOLVER_H

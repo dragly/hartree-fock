@@ -29,7 +29,6 @@ private:
     double m_energyUHF;
 
     void setupFockMatrices();
-    void normalizeCoefficientMatrices();
     void setupDensityMatrices();
 };
 

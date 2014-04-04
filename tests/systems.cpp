@@ -18,6 +18,7 @@ SUITE(Systems) {
         HartreeFockSolver solver(&system);
         solver.setConvergenceTreshold(1e-12);
         solver.setNIterationsMax(1e3);
+        solver.setDensityMixFactor(0.5);
         solver.solve();
         CHECK_CLOSE(solver.energy(), -75.90736859918989, 1e-6);
     }
@@ -33,6 +34,7 @@ SUITE(Systems) {
         HartreeFockSolver solver(&system);
         solver.setConvergenceTreshold(1e-12);
         solver.setNIterationsMax(1e3);
+        solver.setDensityMixFactor(0.5);
         solver.solve();
         CHECK_CLOSE(-1.122933363617109, solver.energy(), 1e-6);
     }
@@ -47,6 +49,7 @@ SUITE(Systems) {
         HartreeFockSolver solver(&system);
         solver.setConvergenceTreshold(1e-12);
         solver.setNIterationsMax(1e3);
+        solver.setDensityMixFactor(0.5);
         solver.solve();
         CHECK_CLOSE(-127.8038245281864, solver.energy(), 1e-5);
     }
@@ -62,6 +65,7 @@ SUITE(Systems) {
         HartreeFockSolver solver(&system);
         solver.setConvergenceTreshold(1e-12);
         solver.setNIterationsMax(1e4);
+        solver.setDensityMixFactor(0.5);
         solver.solve();
         CHECK_CLOSE(-149.5117583638509, solver.energy(), 1e-5);
 //        cout << "Oxygen 6-311G: " << solver.energy() << endl;

@@ -12,11 +12,16 @@ using namespace std;
 HartreeFockSolver::HartreeFockSolver(ElectronSystem *basisFunction) :
     m_electronSystem(basisFunction),
     m_convergenceTreshold(1e-8),
-    m_nIterationsMax(1e3)
+    m_nIterationsMax(1e3),
+    m_densityMixFactor(0.5)
 {
     cout << setprecision(20);
     allocateCoupledMatrix();
-    reset();
+    setupUncoupledMatrix();
+    setupOverlapMatrix();
+    setupCoupledMatrix();
+    resetCoefficientMatrix();
+    setupDensityMatrix();
 }
 
 HartreeFockSolver::~HartreeFockSolver()
@@ -29,7 +34,6 @@ void HartreeFockSolver::reset() {
     setupOverlapMatrix();
     setupCoupledMatrix();
     resetCoefficientMatrix();
-//    normalizeCoefficientMatrix();
     setupDensityMatrix();
 }
 
@@ -49,6 +53,16 @@ void HartreeFockSolver::allocateCoupledMatrix() {
         }
     }
 }
+double HartreeFockSolver::densityMixFactor() const
+{
+    return m_densityMixFactor;
+}
+
+void HartreeFockSolver::setDensityMixFactor(double densityMixFactor)
+{
+    m_densityMixFactor = densityMixFactor;
+}
+
 
 void HartreeFockSolver::cleanUpCoupledMatrix() {
     m_coupledMatrix.reset();
@@ -214,9 +228,9 @@ void HartreeFockSolver::setupDensityMatrix() {
     mat &C = m_coefficientMatrix;
     mat tempP = 2 * C * C.t();
 //    P = tempP;
-    double mixFactor = 0.5;
+
     if(P.n_elem > 0) {
-        P = mixFactor * P + (1 - mixFactor) * tempP; // smoothing
+        P = m_densityMixFactor * P + (1 - m_densityMixFactor) * tempP; // smoothing
     } else {
         P = tempP;
     }
