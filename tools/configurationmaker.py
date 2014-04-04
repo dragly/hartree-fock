@@ -1,6 +1,6 @@
 import h5py
 import numpy
-from numpy import dtype, zeros, linspace, pi, cos, sin
+from numpy import dtype, zeros, linspace, pi, cos, sin, sqrt
 f = h5py.File("states.h5", "w")
 
 atomType = dtype([("x", float), ("y", float), ("z", float)])
@@ -18,9 +18,9 @@ atomMeta[2]["basisName"] = "3-21G"
 
 dataset2 = f.create_dataset("atomMeta", data=atomMeta)
 
-angles = linspace(pi/3, pi, 10)
-r12s = linspace(1.0, 6.0, 10)
-r13s = linspace(1.0, 6.0, 10)
+angles = linspace(pi/50, pi, 25)
+r12s = linspace(1.0, 6.0, 12)
+r13s = linspace(1.0, 6.0, 12)
 
 dataset2.attrs["description"] = "H2O with variation of angles and distances"
 dataset2.attrs["angleMin"] = angles.min()
@@ -31,6 +31,8 @@ dataset2.attrs["r13Min"] = r13s.min()
 dataset2.attrs["r13Max"] = r13s.max()
 
 statesGroup = f.create_group("states")
+
+skipped = 0
 
 stateCounter = 0
 for j in range(len(r12s)):  
@@ -48,6 +50,15 @@ for j in range(len(r12s)):
             atoms[2]["y"] = sin(angles[i]) * r13s[k]
             atoms[2]["z"] = 0.0
             
+            dx = atoms[2]["x"] - atoms[1]["x"]
+            dy = atoms[2]["y"] - atoms[1]["y"]
+            dz = atoms[2]["z"] - atoms[1]["z"]
+            
+            r23 = sqrt(dx*dx + dy*dy + dz*dz)
+            if r23 < 0.5:
+                skipped += 1
+                continue
+            
             dataset = statesGroup.create_dataset("state%010d" % stateCounter, data=atoms)
 
             dataset.attrs["angle"] = angles[i]
@@ -55,5 +66,6 @@ for j in range(len(r12s)):
             dataset.attrs["r13"] = r13s[k]
             
             stateCounter += 1
-    
+
+print skipped, "states skipped due to low H2 distance"
 f.close()

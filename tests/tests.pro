@@ -15,7 +15,8 @@ SOURCES += main.cpp \
     hydrogen.cpp \
     gaussiandensity.cpp \
     parser.cpp \
-    systems.cpp
+    systems.cpp \
+    coulomb.cpp
 
 LIBS += -lunittest++ -L../src/libs -lhartree-fock
 

@@ -14,6 +14,13 @@ public:
 
     virtual uint nBasisFunctions() = 0;
     virtual uint nParticles() = 0;
+    virtual uint nParticlesUp() {
+        return nParticles() / 2;
+    }
+    virtual uint nParticlesDown() {
+        return nParticles() - nParticlesUp();
+    }
+
     virtual double additionalEnergyTerms() = 0;
 };
 

@@ -8,13 +8,12 @@ from collections import OrderedDict
 
 plots = {}
 
-r13min = inf
-r13max = -inf
-
 energy_min = inf
 energy_max = -inf
 
-for statesFile in glob("/home/svenni/Dropbox/studies/master/code/hartree-fock/build-hartree-fock-Desktop_Qt_5_2_0_with_GDB-Release/tools/staterunner/results.h5.*"):
+
+
+for statesFile in glob("/home/svenni/Dropbox/studies/master/code/hartree-fock/build-hartree-fock-Desktop_Qt_5_2_1_GCC_64bit-Release/tools/staterunner/results.h5.*"):
     f = h5py.File(statesFile, "r")
     atomsMeta = f.get("atomMeta")
     states = f.get("/states")
@@ -33,16 +32,22 @@ for statesFile in glob("/home/svenni/Dropbox/studies/master/code/hartree-fock/bu
         plots[r12_name]["angles_r13s"].append([angle, r13])
         plots[r12_name]["energies"].append(energy)
         
-        r13min = min(r13min, r13)
-        r13max = max(r13max, r13)
+        r13_min = atomsMeta.attrs["r13Min"]
+        r13_max = atomsMeta.attrs["r13Max"]
+        
+        angle_min = atomsMeta.attrs["angleMin"]
+        angle_max = atomsMeta.attrs["angleMax"]
         
         energy_min = min(energy_min, energy)
         energy_max = max(energy_max, energy)
     f.close()
-        
 
-angles = linspace(pi / 3, pi, 100)
-r13s = linspace(r13min, r13max, 100)
+print "Angle min:", angle_min, "max:", angle_max
+print "r13 min:", r13_min, "max:", r13_max
+
+angles = linspace(angle_min, angle_max, 100)
+
+r13s = linspace(r13_min, r13_max, 100)
 grid_angles, grid_r13s = meshgrid(angles, r13s)
 n_plots = len(plots)
 n_plots_per_dim = int(sqrt(n_plots) + 1)
@@ -62,9 +67,10 @@ for r12_name in plots:
     grid_energies = griddata(array(values["angles_r13s"]), array(values["energies"]), (grid_angles, grid_r13s), method="nearest")
     
     img = imshow(grid_energies, origin="lower", vmin=energy_min, vmax=energy_max,
-                 extent=[angles.min(), angles.max(), r13s.min(), r13s.max()], 
+                 extent=[angle_min,angle_max, r13_min, r13_max], 
                          interpolation="nearest", 
-                         aspect=(angles.max() - angles.min()) / (r13s.max() - r13s.min()))
+                         aspect=(angle_max - angle_min) / (r13_max - r13_min))
+    colorbar()
     
     plot_counter += 1
     

@@ -9,7 +9,7 @@ from collections import OrderedDict
 def rescale(value, value_min, value_max):
     return (value - value_min) / (value_max - value_min) * 0.8 + 0.1
 
-file_name = "/home/svenni/Dropbox/studies/master/code/hartree-fock/build-hartree-fock-Desktop_Qt_5_2_0_with_GDB-Release/tools/staterunner/results.h5.*"
+file_name = "/home/svenni/Dropbox/studies/master/code/hartree-fock/build-hartree-fock-Desktop_Qt_5_2_1_GCC_64bit-Release/tools/staterunner/results.h5.*"
 
 train_file = open("train.fann", "w")
 test_file = open("test.fann", "w")
@@ -45,10 +45,12 @@ for statesFile in glob(file_name):
         
     f.close()
 
-n_states_train = int(n_states_total * 0.8)
+n_states_train = int(0.8 * n_states_total)
 n_states_test = n_states_total - n_states_train
 
-print n_states_train, n_states_test
+print "Using", n_states_train, " of the states for training and", n_states_test, "for testing"
+
+print "Energies min:", energy_min, "max:", energy_max
     
 train_file.write("%d %d %d\n\n" % (n_states_train, n_parameters, n_outputs))
 test_file.write("%d %d %d\n\n" % (n_states_test, n_parameters, n_outputs))
@@ -59,7 +61,15 @@ for statesFile in glob(file_name):
     f = h5py.File(statesFile, "r")
     atomsMeta = f.get("atomMeta")
     states = f.get("/states")
+    stateNames = []
+    
     for stateName in states:
+        stateNames.append(stateName)
+    
+    # Shuffle to get a random order
+    shuffle(stateNames)
+    
+    for stateName in stateNames:
         if state_counter < n_states_train:
             target_file = train_file
         else:
@@ -68,10 +78,20 @@ for statesFile in glob(file_name):
         atoms = states.get(stateName)
         r12 = rescale(atoms.attrs["r12"], r12_min, r12_max)
         r13 = rescale(atoms.attrs["r13"], r13_min, r13_max)
+        
+        dx = atoms[2]["x"] - atoms[1]["x"]
+        dy = atoms[2]["y"] - atoms[1]["y"]
+        dz = atoms[2]["z"] - atoms[1]["z"]
+        
+        r23 = sqrt(dx*dx + dy*dy + dz*dz)
+        
+        r23 = rescale(r23, 0, 12)
+        
         angle = rescale(atoms.attrs["angle"], angle_min, angle_max)
         energy = rescale(atoms.attrs["energy"], energy_min, energy_max)
         
         target_file.write("%.10f %.10f %.10f\n\n" % (r12, r13, angle))
+        target_file.write("%.10f %.10f %.10f %.10f\n\n" % (r12, r13, angle, r23))
         target_file.write("%.10f\n\n" % (energy))
         state_counter += 1
         
