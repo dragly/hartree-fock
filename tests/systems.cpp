@@ -16,11 +16,9 @@ SUITE(Systems) {
         }
         mat C;
         HartreeFockSolver solver(&system);
-        solver.setConvergenceTreshold(1e-6);
+        solver.setConvergenceTreshold(1e-12);
         solver.setNIterationsMax(1e3);
-        for(int i = 0; i < 100; i++) {
-            solver.advance();
-        }
+        solver.solve();
         CHECK_CLOSE(solver.energy(), -75.90736859918989, 1e-6);
     }
     TEST(HydrogenMolecule) {
@@ -33,11 +31,9 @@ SUITE(Systems) {
         }
         mat C;
         HartreeFockSolver solver(&system);
-        solver.setConvergenceTreshold(1e-6);
+        solver.setConvergenceTreshold(1e-12);
         solver.setNIterationsMax(1e3);
-        for(int i = 0; i < 1000; i++) {
-            solver.advance();
-        }
+        solver.solve();
         CHECK_CLOSE(-1.122933363617109, solver.energy(), 1e-6);
     }
     TEST(Neon321) {
@@ -49,14 +45,10 @@ SUITE(Systems) {
         }
         mat C;
         HartreeFockSolver solver(&system);
-        solver.setConvergenceTreshold(1e-6);
+        solver.setConvergenceTreshold(1e-12);
         solver.setNIterationsMax(1e3);
-//        for(int i = 0; i < 100; i++) {
-//            solver.advance();
-//        }
         solver.solve();
-        CHECK_CLOSE(-127.8038139236938, solver.energy(), 1e-5);
-//        cout << "Neon 3-21G: " << solver.energy() << endl;
+        CHECK_CLOSE(-127.8038245281864, solver.energy(), 1e-5);
     }
     TEST(OxygenSix) {
         vector<GaussianCore> cores;
@@ -68,14 +60,10 @@ SUITE(Systems) {
         }
         mat C;
         HartreeFockSolver solver(&system);
-        solver.setConvergenceTreshold(1e-6);
-        solver.setNIterationsMax(1e3);
-        for(int i = 0; i < 100; i++) {
-            solver.advance();
-        }
-        solver.overlapMatrix().save("S.mat", raw_ascii);
-//        cout << "Oxygen energy: " << solver.energy() << endl;
-        CHECK_CLOSE(-149.5111286894001, solver.energy(), 1e-5);
+        solver.setConvergenceTreshold(1e-12);
+        solver.setNIterationsMax(1e4);
+        solver.solve();
+        CHECK_CLOSE(-149.5117583638509, solver.energy(), 1e-5);
 //        cout << "Oxygen 6-311G: " << solver.energy() << endl;
     }
 }
