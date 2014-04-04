@@ -214,7 +214,7 @@ void HartreeFockSolver::setupDensityMatrix() {
     mat &C = m_coefficientMatrix;
     mat tempP = 2 * C * C.t();
 //    P = tempP;
-    double mixFactor = 0.9;
+    double mixFactor = 0.5;
     if(P.n_elem > 0) {
         P = mixFactor * P + (1 - mixFactor) * tempP; // smoothing
     } else {
