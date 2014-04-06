@@ -19,7 +19,6 @@ SUITE(Development) {
             for(const GaussianCore &core : cores) {
                 system.addCore(core);
             }
-            system.setNParticlesDown(1);
             UnrestrictedHartreeFockSolver solver(&system);
             solver.setConvergenceTreshold(1e-9);
             solver.setNIterationsMax(1e3);
