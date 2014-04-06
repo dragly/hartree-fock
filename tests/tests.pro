@@ -17,7 +17,8 @@ SOURCES += main.cpp \
     parser.cpp \
     systems.cpp \
     coulomb.cpp \
-    unrestricted.cpp
+    unrestricted.cpp \
+    development.cpp
 
 LIBS += -lunittest++ -L../src/libs -lhartree-fock
 

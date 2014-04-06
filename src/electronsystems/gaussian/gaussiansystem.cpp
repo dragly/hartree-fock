@@ -63,7 +63,7 @@ double GaussianSystem::uncoupledIntegral(int p, int q)
                 coloumbIntegral.set(pBF.corePosition(), qBF.corePosition(), corePositionC,
                                     pP.exponent(), qP.exponent());
                 result -= core.charge() * pP.weight() * qP.weight() * coloumbIntegral.coloumbAttractionIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
-                                                                                                               qP.xExponent(), qP.yExponent(), qP.zExponent());
+                                                                                                                qP.xExponent(), qP.yExponent(), qP.zExponent());
             }
         }
     }

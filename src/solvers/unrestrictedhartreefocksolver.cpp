@@ -11,6 +11,7 @@ UnrestrictedHartreeFockSolver::UnrestrictedHartreeFockSolver(ElectronSystem *sys
 {
     resetCoefficientMatrices();
     setupDensityMatrices();
+    m_densityMatrixUp(0,1) = 0.1; // Added asymmetry between the spin up and spin down orbitals
     setupFockMatrices();
 }
 
@@ -18,6 +19,7 @@ void UnrestrictedHartreeFockSolver::reset() {
     HartreeFockSolver::reset();
     resetCoefficientMatrices();
     setupDensityMatrices();
+    m_densityMatrixUp(0,1) = 0.1; // Added asymmetry between the spin up and spin down orbitals
     setupFockMatrices();
 }
 
@@ -99,8 +101,12 @@ void UnrestrictedHartreeFockSolver::advance() {
     eig_sym(fockEnergiesUp, CprimeUp, FprimeUp);
     eig_sym(fockEnergiesDn, CprimeDn, FprimeDn);
 
-    Cu = V*CprimeUp.submat(0, 0, no - 1, nkUp - 1);
-    Cd = V*CprimeDn.submat(0, 0, no - 1, nkDn - 1);
+    if(nkUp > 0) {
+        Cu = V*CprimeUp.submat(0, 0, no - 1, nkUp - 1);
+    }
+    if(nkDn > 0) {
+        Cd = V*CprimeDn.submat(0, 0, no - 1, nkDn - 1);
+    }
 
     normalizeCoefficientMatrix(f->nParticlesUp(), m_coefficientMatrixUp);
     normalizeCoefficientMatrix(f->nParticlesDown(), m_coefficientMatrixDown);
@@ -121,7 +127,6 @@ void UnrestrictedHartreeFockSolver::advance() {
 }
 
 void UnrestrictedHartreeFockSolver::solve() {
-    setupFockMatrices();
     for(int i = 0; i < nIterationsMax(); i++) {
         vec previousFockEnergies = m_fockEnergiesUp;
         advance();
