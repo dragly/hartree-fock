@@ -18,12 +18,27 @@ SUITE(Unrestricted) {
         for(const GaussianCore &core : cores) {
             system.addCore(core);
         }
-        mat C;
         UnrestrictedHartreeFockSolver solver(&system);
         solver.setConvergenceTreshold(1e-12);
         solver.setNIterationsMax(1e3);
         solver.setDensityMixFactor(0.5);
         solver.solve();
         CHECK_CLOSE(-1.122933363617109, solver.energy(), 1e-6);
+    }
+    TEST(Water) {
+        vector<GaussianCore> cores;
+        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_4-31G.tm"));
+        cores.push_back(GaussianCore({-1.43,1.108,0}, "atom_1_basis_4-31G.tm"));
+        cores.push_back(GaussianCore({1.43,1.108,0}, "atom_1_basis_4-31G.tm"));
+        GaussianSystem system;
+        for(const GaussianCore &core : cores) {
+            system.addCore(core);
+        }
+        UnrestrictedHartreeFockSolver solver(&system);
+        solver.setConvergenceTreshold(1e-12);
+        solver.setNIterationsMax(1e3);
+        solver.setDensityMixFactor(0.5);
+        solver.solve();
+        CHECK_CLOSE(-75.90736859918989, solver.energy(), 1e-6);
     }
 }

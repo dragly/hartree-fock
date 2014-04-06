@@ -237,7 +237,7 @@ void HartreeFockSolver::setupDensityMatrix() {
 }
 
 void HartreeFockSolver::solve() {
-    for(int i = 0; i < m_nIterationsMax; i++) {
+    for(int i = 0; i < nIterationsMax(); i++) {
         vec previousFockEnergies = m_fockEnergies;
         advance();
         if(i > 0) {
@@ -248,6 +248,7 @@ void HartreeFockSolver::solve() {
         }
     }
 }
+
 double HartreeFockSolver::convergenceTreshold() const
 {
     return m_convergenceTreshold;

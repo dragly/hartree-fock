@@ -12,6 +12,7 @@ public:
     virtual void advance();
 
     virtual double energy();
+    virtual void solve();
 private:
     void resetCoefficientMatrices();
     mat m_fockMatrixUp;

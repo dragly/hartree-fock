@@ -1,18 +1,24 @@
 #include "unrestrictedhartreefocksolver.h"
 
 #include <electronsystems/electronsystem.h>
+#include <iomanip>
+
+using std::setprecision;
+using std::fixed;
 
 UnrestrictedHartreeFockSolver::UnrestrictedHartreeFockSolver(ElectronSystem *system) :
     HartreeFockSolver(system)
 {
     resetCoefficientMatrices();
     setupDensityMatrices();
+    setupFockMatrices();
 }
 
 void UnrestrictedHartreeFockSolver::reset() {
     HartreeFockSolver::reset();
     resetCoefficientMatrices();
     setupDensityMatrices();
+    setupFockMatrices();
 }
 
 void UnrestrictedHartreeFockSolver::resetCoefficientMatrices() {
@@ -71,7 +77,6 @@ void UnrestrictedHartreeFockSolver::advance() {
     uint no = f->nBasisFunctions();
     uint nkUp = f->nParticlesUp();
     uint nkDn = f->nParticlesDown();
-    setupFockMatrices();
 
     vec s;
     mat U;
@@ -85,14 +90,14 @@ void UnrestrictedHartreeFockSolver::advance() {
     vec &fockEnergiesUp = m_fockEnergiesUp;
     vec &fockEnergiesDn = m_fockEnergiesDown;
 
-    Fu = V.t() * Fu * V;
-    Fd = V.t() * Fd * V;
+    mat FprimeUp = V.t() * Fu * V;
+    mat FprimeDn = V.t() * Fd * V;
 
     mat CprimeUp;
     mat CprimeDn;
 
-    eig_sym(fockEnergiesUp, CprimeUp, Fu);
-    eig_sym(fockEnergiesDn, CprimeDn, Fd);
+    eig_sym(fockEnergiesUp, CprimeUp, FprimeUp);
+    eig_sym(fockEnergiesDn, CprimeDn, FprimeDn);
 
     Cu = V*CprimeUp.submat(0, 0, no - 1, nkUp - 1);
     Cd = V*CprimeDn.submat(0, 0, no - 1, nkDn - 1);
@@ -101,6 +106,7 @@ void UnrestrictedHartreeFockSolver::advance() {
     normalizeCoefficientMatrix(f->nParticlesDown(), m_coefficientMatrixDown);
 
     setupDensityMatrices();
+    setupFockMatrices();
 
     double energy = 0;
     mat &Pu = m_densityMatrixUp;
@@ -109,27 +115,23 @@ void UnrestrictedHartreeFockSolver::advance() {
     const mat& h = uncoupledMatrix();
 
     energy += 0.5 * accu( (Pu + Pd) % h + Fu % Pu + Fd % Pd);
-//    for(uint p = 0; p < no; p++) {
-//        for(uint q = 0; q < no; q++) {
-//            energy += Pu(p,q) * h(p,q);
-//            energy += Pd(p,q) * h(p,q);
-//        }
-//    }
-
-//    const field<mat> &Q = coupledMatrix();
-//    for(uint p = 0; p < no; p++) {
-//        for(uint q = 0; q < no; q++) {
-//            for(uint r = 0; r < no; r++) {
-//                for(uint s = 0; s < no; s++) {
-//                    energy += Pu(p,q) * Pu(s,r) * (Q(p,r)(q,s) - Q(p,r)(s,q)) + Pd(p,q) * Pd(s,r) * Q(p,r)(q,s);
-//                    energy += Pd(p,q) * Pd(s,r) * (Q(p,r)(q,s) - Q(p,r)(s,q)) + Pu(p,q) * Pu(s,r) * Q(p,r)(q,s);
-//                }
-//            }
-//        }
-//    }
 
     energy += electronSystem()->additionalEnergyTerms();
     m_energyUHF = energy;
+}
+
+void UnrestrictedHartreeFockSolver::solve() {
+    setupFockMatrices();
+    for(int i = 0; i < nIterationsMax(); i++) {
+        vec previousFockEnergies = m_fockEnergiesUp;
+        advance();
+        if(i > 0) {
+            if(sum(abs(m_fockEnergiesUp - previousFockEnergies)) / m_fockEnergiesUp.n_elem < convergenceTreshold()) {
+                m_iterationsUsed = i;
+                break;
+            }
+        }
+    }
 }
 
 double UnrestrictedHartreeFockSolver::energy()

@@ -30,7 +30,7 @@ public:
 
     int iterationsUsed() const;
 
-    void solve();
+    virtual void solve();
     int nIterationsMax() const;
     void setNIterationsMax(int nIterationsMax);
 
@@ -45,6 +45,7 @@ public:
 protected:
     void normalizeCoefficientMatrix(uint nParticles, mat &coefficientMatrix);
     double coupledMatrixTilde(int p, int q, int r, int s);
+    int m_iterationsUsed;
 private:
     mat m_uncoupledMatrix;
     mat m_overlapMatrix;
@@ -64,8 +65,6 @@ private:
     void setupUncoupledMatrix();
     void cleanUpCoupledMatrix();
     void allocateCoupledMatrix();
-
-    int m_iterationsUsed;
 
     double *m_QData;
     double m_energy = 0;
