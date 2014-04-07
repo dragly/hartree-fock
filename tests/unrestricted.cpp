@@ -27,21 +27,19 @@ SUITE(Unrestricted) {
     }
 
     TEST(HydrogenMoleculeLongDistance) {
-        for(int i = 0; i < 1; i++) {
-            vector<GaussianCore> cores;
-            cores.push_back(GaussianCore({0,0,0}, "atom_1_basis_4-31G.tm"));
-            cores.push_back(GaussianCore({100.0,0,0}, "atom_1_basis_4-31G.tm"));
-            GaussianSystem system;
-            for(const GaussianCore &core : cores) {
-                system.addCore(core);
-            }
-            UnrestrictedHartreeFockSolver solver(&system);
-            solver.setConvergenceTreshold(1e-9);
-            solver.setNIterationsMax(1e3);
-            solver.setDensityMixFactor(0.5);
-            solver.solve();
-            CHECK_CLOSE(-0.9964658189712963, solver.energy(), 1e-6);
+        vector<GaussianCore> cores;
+        cores.push_back(GaussianCore({0,0,0}, "atom_1_basis_4-31G.tm"));
+        cores.push_back(GaussianCore({100.0,0,0}, "atom_1_basis_4-31G.tm"));
+        GaussianSystem system;
+        for(const GaussianCore &core : cores) {
+            system.addCore(core);
         }
+        UnrestrictedHartreeFockSolver solver(&system);
+        solver.setConvergenceTreshold(1e-9);
+        solver.setNIterationsMax(1e3);
+        solver.setDensityMixFactor(0.5);
+        solver.solve();
+        CHECK_CLOSE(-0.9964658189712963, solver.energy(), 1e-6);
     }
     TEST(Water) {
         vector<GaussianCore> cores;
