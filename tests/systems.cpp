@@ -30,7 +30,6 @@ SUITE(Systems) {
         for(const GaussianCore &core : cores) {
             system.addCore(core);
         }
-        mat C;
         HartreeFockSolver solver(&system);
         solver.setConvergenceTreshold(1e-12);
         solver.setNIterationsMax(1e3);

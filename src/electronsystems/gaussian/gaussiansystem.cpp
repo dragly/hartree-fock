@@ -18,7 +18,7 @@ GaussianSystem::GaussianSystem() :
     m_angularMomentumMax(0),
     electronInteractionIntegral(0),
     kineticIntegral(0),
-    coloumbIntegral(0)
+    coulombIntegral(0)
 {
 }
 
@@ -60,9 +60,9 @@ double GaussianSystem::uncoupledIntegral(int p, int q)
             for(uint i = 0; i < m_cores.size(); i++) {
                 const GaussianCore &core = m_cores.at(i);
                 const rowvec &corePositionC = core.position();
-                coloumbIntegral.set(pBF.corePosition(), qBF.corePosition(), corePositionC,
+                coulombIntegral.set(pBF.corePosition(), qBF.corePosition(), corePositionC,
                                     pP.exponent(), qP.exponent());
-                result -= core.charge() * pP.weight() * qP.weight() * coloumbIntegral.coloumbAttractionIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
+                result -= core.charge() * pP.weight() * qP.weight() * coulombIntegral.coloumbAttractionIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
                                                                                                                 qP.xExponent(), qP.yExponent(), qP.zExponent());
             }
         }
@@ -151,5 +151,5 @@ void GaussianSystem::setAngularMomentumMax(int angularMomentumMax)
     m_angularMomentumMax = angularMomentumMax;
     electronInteractionIntegral = GaussianElectronInteractionIntegral(angularMomentumMax);
     kineticIntegral = GaussianKineticIntegral(angularMomentumMax);
-    coloumbIntegral = GaussianColoumbAttractionIntegral(angularMomentumMax);
+    coulombIntegral = GaussianColoumbAttractionIntegral(angularMomentumMax);
 }

@@ -38,7 +38,7 @@ private:
 //    vector<rowvec> m_corePositions;
     GaussianElectronInteractionIntegral electronInteractionIntegral;
     GaussianKineticIntegral kineticIntegral;
-    GaussianColoumbAttractionIntegral coloumbIntegral;
+    GaussianColoumbAttractionIntegral coulombIntegral;
 };
 
 #endif // GAUSSIANSYSTEM_H
