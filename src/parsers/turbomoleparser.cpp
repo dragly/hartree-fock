@@ -119,10 +119,10 @@ void TurboMoleParser::mergePrimitivesIntoContracted()
                       << 1 << 1 << 0 << endr
                       << 1 << 0 << 1 << endr
                       << 0 << 1 << 1 << endr;
-            for(int i = 0; i < exponents.n_rows; i++) {
+            for(int i = 0; i < int(exponents.n_rows); i++) {
                 GaussianContractedOrbital contractedOrbital;
                 for(GaussianPrimitiveOrbital primitive : m_collectedPrimitiveBasisFunctions) {
-                    double weightAdjusted = primitive.weight() * pow(2 * primitive.exponent() / M_PI, 3.0/4.0) * 2 * sqrt(primitive.exponent());
+                    double weightAdjusted = primitive.weight() * normalizationFactor(primitive.exponent(), exponents.row(i));
                     primitive.setWeight(weightAdjusted);
                     primitive.setXExponent(exponents(i, 0));
                     primitive.setYExponent(exponents(i, 1));
@@ -148,4 +148,23 @@ void TurboMoleParser::mergePrimitivesIntoContracted()
 HF::AtomType TurboMoleParser::atomType() const
 {
     return m_atomType;
+}
+double TurboMoleParser::normalizationFactor(double exp, urowvec pows)
+{
+    int i = pows.at(0);
+    int j = pows.at(1);
+    int k = pows.at(2);
+    return pow((2*exp/M_PI),0.75)*sqrt(pow(8*exp,i+j+k)*factorial(i)*factorial(j)*factorial(k)/(factorial(2*i)*factorial(2*j)*factorial(2*k)));
+}
+
+int TurboMoleParser::factorial(int n)
+{
+    double value = 1;
+    double i = 1;
+
+    while(i < n){
+        i += 1;
+        value *= i;
+    }
+    return value;
 }

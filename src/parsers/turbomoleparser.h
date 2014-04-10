@@ -22,6 +22,8 @@ public:
 
     HF::AtomType atomType() const;
 
+    double normalizationFactor(double exp, urowvec pows);
+    int factorial(int n);
 private:
     vector<GaussianContractedOrbital> m_contractedBasisFunctions;
     HF::AtomOrbitalType m_currentOrbitalType = HF::sOrbitalType;
