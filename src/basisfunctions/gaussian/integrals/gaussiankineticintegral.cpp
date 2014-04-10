@@ -32,7 +32,7 @@ double GaussianKineticIntegral::kineticIntegral(int dim, int iA, int iB) {
     } else {
         S_iA_iBpp = 0;
     }
-    return 4 * b * b * S_iA_iBnn - 2*b * (2*iB + 1) * S_iA_iB + iB * (iB + 1) * S_iA_iBpp;
+    return 4 * b * b * S_iA_iBnn - 2*b * (2*iB + 1) * S_iA_iB + iB * (iB - 1) * S_iA_iBpp;
 }
 
 double GaussianKineticIntegral::kineticIntegral(int iA, int jA, int kA, int iB, int jB, int kB) {
