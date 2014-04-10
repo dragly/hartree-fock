@@ -74,7 +74,9 @@ void GaussianElectronInteractionIntegral::setAB(const rowvec &corePositionA, con
 //    m_hermiteExpansionCoefficientCD.set(c, d, corePositionC, corePositionD);
 }
 
-void GaussianElectronInteractionIntegral::setCD(const rowvec &corePositionC, const rowvec &corePositionD, double exponentC, double exponentD)
+void GaussianElectronInteractionIntegral::setCD(const rowvec &corePositionC, const rowvec &corePositionD,
+                                                double exponentC, double exponentD,
+                                                int angularMomentum)
 {
 //    double a = exponentA;
 //    double b = exponentB;
@@ -88,7 +90,14 @@ void GaussianElectronInteractionIntegral::setCD(const rowvec &corePositionC, con
     m_centerOfMassQ = Q;
     rowvec PQ = P - Q;
     double alpha = p*q/(p+q);
-    m_hermiteIntegral.set(alpha, PQ);
+//    m_hermiteIntegral.set(alpha, PQ);
+    int dimension = 0;
+    if(angularMomentum != -1) {
+        dimension = angularMomentum + 1;
+    } else {
+        dimension = -1;
+    }
+    m_hermiteIntegral.set(alpha, PQ, dimension);
 //    m_hermiteExpansionCoefficientAB.set(a, b, corePositionA, corePositionB);
     m_hermiteExpansionCoefficientCD.set(c, d, corePositionC, corePositionD);
 }
@@ -123,7 +132,8 @@ double GaussianElectronInteractionIntegral::electronInteractionIntegral(int iA, 
                             double product = 1;
                             product *= Eab(iA, jA, kA, iB, jB, kB, t, u, v);
                             product *= Ecd(iC, jC, kC, iD, jD, kD, tau, nu, phi);
-                            product *= pow(-1, tau + nu + phi);
+//                            product *= pow(-1, tau + nu + phi);
+                            product *= (1 - 2*((tau + nu + phi) % 2));
                             product *= R(0, t + tau, u + nu, v + phi);
                             result += product;
                         }

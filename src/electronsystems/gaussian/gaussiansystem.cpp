@@ -34,7 +34,11 @@ double GaussianSystem::coupledIntegral(int p, int q, int r, int s)
             electronInteractionIntegral.setAB(pBF.corePosition(), qBF.corePosition(), pP.exponent(), qP.exponent());
             for(const GaussianPrimitiveOrbital& rP : rBF.primitiveBasisFunctions()) {
                 for(const GaussianPrimitiveOrbital& sP : sBF.primitiveBasisFunctions()) {
-                    electronInteractionIntegral.setCD(rBF.corePosition(), sBF.corePosition(), rP.exponent(), sP.exponent());
+                    int currentAngularMomentum = pP.xExponent() + pP.yExponent() + pP.zExponent()
+                            + qP.xExponent() + qP.yExponent() + qP.zExponent()
+                            + rP.xExponent() + rP.yExponent() + rP.zExponent()
+                            + sP.xExponent() + sP.yExponent() + sP.zExponent();
+                    electronInteractionIntegral.setCD(rBF.corePosition(), sBF.corePosition(), rP.exponent(), sP.exponent(), currentAngularMomentum);
                     result += pP.weight() * rP.weight() * qP.weight() * sP.weight()
                             * electronInteractionIntegral.electronInteractionIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
                                                                                       qP.xExponent(), qP.yExponent(), qP.zExponent(),

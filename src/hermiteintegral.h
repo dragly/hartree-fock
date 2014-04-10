@@ -21,6 +21,7 @@ public:
     const cube &operator()(const uword row) const;
     cube &operator()(const uword row);
     double operator ()(const uword n, const uword t, const uword u, const uword v) const;
+    void set(double alpha, const rowvec &A, int dimension);
 protected:
     double m_alpha;
     rowvec m_A;

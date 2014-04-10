@@ -39,6 +39,20 @@ void HermiteIntegral::set(double alpha, const rowvec &A, bool setupImmediately)
     }
 }
 
+void HermiteIntegral::set(double alpha, const rowvec &A, int dimension)
+{
+    m_alpha = alpha;
+    m_A = A;
+    if(dimension != -1) {
+        int tmpDimension = m_dimension;
+        m_dimension = dimension;
+        setupR();
+        m_dimension = tmpDimension;
+    } else {
+        setupR();
+    }
+}
+
 void HermiteIntegral::setupR() {
 //    const rowvec &PA = m_centerOfMassDiffA;
     const rowvec &PC = m_A;
