@@ -26,9 +26,11 @@ void UnrestrictedHartreeFockSolver::reset() {
 void UnrestrictedHartreeFockSolver::resetCoefficientMatrices() {
     ElectronSystem* f = electronSystem();
     m_coefficientMatrixUp.reset();
-    m_coefficientMatrixUp = zeros(f->nBasisFunctions(), f->nParticlesUp());
+//    m_coefficientMatrixUp = zeros(f->nBasisFunctions(), f->nParticlesUp());
+    m_coefficientMatrixUp = randn(f->nBasisFunctions(), f->nParticlesUp());
     m_coefficientMatrixDown.reset();
-    m_coefficientMatrixDown = zeros(f->nBasisFunctions(), f->nParticlesDown());
+//    m_coefficientMatrixDown = zeros(f->nBasisFunctions(), f->nParticlesDown());
+    m_coefficientMatrixDown = randn(f->nBasisFunctions(), f->nParticlesDown());
 }
 
 void UnrestrictedHartreeFockSolver::setupFockMatrices() {

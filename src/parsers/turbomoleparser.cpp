@@ -32,24 +32,10 @@ bool TurboMoleParser::load(string fileName)
             continue;
         }
         smatch what;
-        regex basisRegex("\\s*([a-zA-Z]+)\\s*([0-9])-([0-9]+)([G])\\s*");
+        regex basisRegex("^\\s*([a-zA-Z]+)");
         while(regex_search(line, what, basisRegex)) { // n 4-31G
             atomTypeAbbreviation = string(what[1]);
-//            int nCoreOrbitals(stoi(string(what[2])));
-//            for(char& c : string(what[3])) {
-//                int nValenceOrbital = c - '0';
-//                nValenceOrbitals.push_back(nValenceOrbital);
-//            }
-//            string basisSetType(what[4]);
-
-//            cout << "Atom: " << atomTypeAbbreviation << " nCore: " << nCoreOrbitals << " type: " << basisSetType << " nValence: ";
-//            for(int nValenceOrbital : nValenceOrbitals) {
-//                cout << nValenceOrbital << " ";
-//            }
-//            cout << endl;
-//            cout << "AtomType: " << HF::abbreviationToAtomType(atomTypeAbbreviation) << endl;
             m_atomType = HF::abbreviationToAtomType(atomTypeAbbreviation);
-
             break;
         }
         regex orbitalRegex("\\s*([0-9])\\s*([spdf])\\s*");
@@ -61,14 +47,10 @@ bool TurboMoleParser::load(string fileName)
                 m_currentOrbitalType = HF::pOrbitalType;
             } else if(what[2] == "d") {
                 m_currentOrbitalType = HF::dOrbitalType;
-                cout << "ERROR: d orbitals not yet supported" << endl;
-                return false;
             } else if(what[2] == "f") {
                 m_currentOrbitalType = HF::fOrbitalType;
-                cout << "ERROR: f orbitals not yet supported" << endl;
-                return false;
             } else {
-                cout << "Unknown orbital type " << string(what[1]) << endl;
+                cerr << "Unknown orbital type " << string(what[1]) << endl;
                 return false;
             }
         }
@@ -76,6 +58,7 @@ bool TurboMoleParser::load(string fileName)
         if(regex_search(line, what, exponentWeightRegex)) {
             double exponent = stod(string(what[1]));
             double weight = stod(string(what[2]));
+
             GaussianPrimitiveOrbital primitive;
             primitive.setWeight(weight);
             primitive.setExponent(exponent);
@@ -83,13 +66,13 @@ bool TurboMoleParser::load(string fileName)
         }
     }
     mergePrimitivesIntoContracted();
-//    for(GaussianContractedOrbital orbital : m_contractedBasisFunctions) {
-//        cout << "Contracted:" << endl;
-//        for(GaussianPrimitiveOrbital primitive : orbital.primitiveBasisFunctions()) {
-//            cout << primitive.weight() << " * " << primitive.exponent() << endl;
-//        }
-//    }
-//    cout << "Done!" << endl;
+    //    for(GaussianContractedOrbital orbital : m_contractedBasisFunctions) {
+    //        cout << "Contracted:" << endl;
+    //        for(GaussianPrimitiveOrbital primitive : orbital.primitiveBasisFunctions()) {
+    //            cout << primitive.weight() << " * " << primitive.exponent() << endl;
+    //        }
+    //    }
+    //    cout << "Done!" << endl;
     return true;
 }
 
@@ -127,10 +110,27 @@ void TurboMoleParser::mergePrimitivesIntoContracted()
                 m_contractedBasisFunctions.push_back(contractedOrbital);
             }
             break;
-            // TODO Support d and f type orbitals
         }
         case HF::dOrbitalType: {
-            cout << "ERROR: d orbitals not yet supported" << endl;
+            umat exponents;
+            exponents << 2 << 0 << 0 << endr
+                      << 0 << 2 << 0 << endr
+                      << 0 << 0 << 2 << endr
+                      << 1 << 1 << 0 << endr
+                      << 1 << 0 << 1 << endr
+                      << 0 << 1 << 1 << endr;
+            for(int i = 0; i < exponents.n_rows; i++) {
+                GaussianContractedOrbital contractedOrbital;
+                for(GaussianPrimitiveOrbital primitive : m_collectedPrimitiveBasisFunctions) {
+                    double weightAdjusted = primitive.weight() * pow(2 * primitive.exponent() / M_PI, 3.0/4.0) * 2 * sqrt(primitive.exponent());
+                    primitive.setWeight(weightAdjusted);
+                    primitive.setXExponent(exponents(i, 0));
+                    primitive.setYExponent(exponents(i, 1));
+                    primitive.setZExponent(exponents(i, 2));
+                    contractedOrbital.addPrimitiveBasisFunction(primitive);
+                }
+                m_contractedBasisFunctions.push_back(contractedOrbital);
+            }
             break;
         }
         case HF::fOrbitalType: {

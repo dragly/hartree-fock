@@ -3,7 +3,7 @@
 #include <fstream>
 #include <libconfig.h++>
 
-#include <hartreefocksolver.h>
+#include <solvers/unrestrictedhartreefocksolver.h>
 #include <electronsystems/gaussian/gaussiancore.h>
 #include <electronsystems/gaussian/gaussiansystem.h>
 #include <boost/mpi.hpp>
@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
 
     // Copy HDF5 file
     stringstream outFileName;
-    outFileName << "results.h5." << setfill('0') << setw(4) << world.rank();
+    outFileName << inFileName << ".results." << setfill('0') << setw(4) << world.rank();
 
     // Open outFile for writing
     H5File outFile(outFileName.str(), H5F_ACC_TRUNC);
@@ -172,8 +172,10 @@ int main(int argc, char* argv[])
             string fileName = basisFile.str();
             system.addCore(GaussianCore({ atoms[i].x, atoms[i].y, atoms[i].z}, fileName));
         }
-        HartreeFockSolver solver(&system);
+        UnrestrictedHartreeFockSolver solver(&system);
         solver.setNIterationsMax(1e3);
+        solver.setDensityMixFactor(0.95);
+        solver.setConvergenceTreshold(1e-9);
         solver.solve();
 
         double energy = solver.energy();
