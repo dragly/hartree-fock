@@ -17,8 +17,8 @@ void HermiteIntegral::reset(int dimension)
     int tMax = m_dimensionMax;
     int nMax = m_dimensionMax;
     m_R.reset();
+    // nMax + 1 because looking up element n = nMax requires a size of nMax + 1 to be available
     m_R.set_size(nMax + 1);
-    // Initialize and allocate the cubes for R
     for(int n = 0; n <= nMax; n++) {
         m_R(n) = zeros(tMax + 1, tMax + 1, tMax + 1);
     }
@@ -83,12 +83,12 @@ void HermiteIntegral::setupR(int tin, int uin, int vin) {
                         }
                         double currentValue = 0;
                         if(t2 >= 0 && u2 >= 0 && v2 >= 0) {
-                            currentValue += factor2 * m_R[n+1](t2, u2, v2);
+                            currentValue += factor2 * m_R(n+1)(t2, u2, v2);
                         }
                         if(t3 >= 0 && u3 >= 0 && v3 >= 0) {
-                            currentValue += factor3 * m_R[n+1](t3, u3, v3);
+                            currentValue += factor3 * m_R(n+1)(t3, u3, v3);
                         }
-                        m_R[n](t, u, v) = currentValue;
+                        m_R(n)(t, u, v) = currentValue;
                     }
                 }
             }

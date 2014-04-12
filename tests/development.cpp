@@ -27,7 +27,6 @@ SUITE(Development) {
 //        solver.setConvergenceTreshold(1e-12);
 //        solver.setNIterationsMax(1e3);
 //        solver.setDensityMixFactor(0.5);
-//        cout << solver.coupledMatrix() << endl;
 //        solver.solve();
 //        CHECK_CLOSE(-75.90736859918989, solver.energy(), 1e-6);
 //    }
