@@ -10,23 +10,23 @@ GaussianColoumbAttractionIntegral::GaussianColoumbAttractionIntegral(int angular
 
 }
 
-GaussianColoumbAttractionIntegral::GaussianColoumbAttractionIntegral(const rowvec& corePositionA, const rowvec& corePositionB,
-                                                                     const rowvec& corePositionC,
-                                                                     double exponentA, double exponentB,
-                                                                     int angularMomentumMax) :
-    GaussianColoumbAttractionIntegral(angularMomentumMax)
-{
-    set(corePositionA, corePositionB, corePositionC, exponentA, exponentB);
-}
+//GaussianColoumbAttractionIntegral::GaussianColoumbAttractionIntegral(const rowvec& corePositionA, const rowvec& corePositionB,
+//                                                                     const rowvec& corePositionC,
+//                                                                     double exponentA, double exponentB,
+//                                                                     int angularMomentumMax) :
+//    GaussianColoumbAttractionIntegral(angularMomentumMax)
+//{
+//    set(corePositionA, corePositionB, corePositionC, exponentA, exponentB);
+//}
 
 void GaussianColoumbAttractionIntegral::set(const rowvec& corePositionA, const rowvec& corePositionB, const rowvec& corePositionC,
-                                            double exponentA, double exponentB) {
+                                            double exponentA, double exponentB, int totalAngularMomentum) {
     double p = exponentA + exponentB;
     rowvec P = (exponentA * corePositionA + exponentB * corePositionB) / (exponentA + exponentB);
     rowvec PC = P - corePositionC;
     m_exponentSum = exponentA + exponentB;
     m_hermiteExpansionCoefficient.set(exponentA, exponentB, corePositionA, corePositionB);
-    m_hermiteIntegral.set(p, PC);
+    m_hermiteIntegral.set(p, PC, totalAngularMomentum + 1);
 }
 
 double GaussianColoumbAttractionIntegral::coloumbAttractionIntegral(int iA, int jA, int kA, int iB, int jB, int kB) {

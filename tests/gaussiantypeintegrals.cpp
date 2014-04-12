@@ -63,7 +63,8 @@ SUITE(GaussianIntegral) {
         rowvec posC = {2.3, 0.9, 3.2};
         double a = 0.2;
         double b = 0.3;
-        GaussianColoumbAttractionIntegral integrator(posA, posB, posC, a, b, 3);
+        GaussianColoumbAttractionIntegral integrator(3);
+        integrator.set(posA, posB, posC, a, b, 3);
         CHECK_CLOSE(2.788948987251e-02, integrator.coloumbAttractionIntegral(0,0,0,0,0,0), 1e-4);
         CHECK_CLOSE(6.971203468743e-02, integrator.coloumbAttractionIntegral(0,0,0,0,0,1), 1e-4);
         CHECK_CLOSE(2.024071525839e-01, integrator.coloumbAttractionIntegral(0,0,0,0,0,2), 1e-4);
@@ -175,7 +176,8 @@ SUITE(GaussianIntegral) {
         double b = 13.0077;
         double c = 13.0077;
         double d = 13.0077;
-        GaussianElectronInteractionIntegral integrator(posA, posB, posC, posD, a, b, c, d, 0);
+        GaussianElectronInteractionIntegral integrator(0);
+        integrator.set(posA, posB, posC, posD, a, b, c, d, 0);
         // regression test
         CHECK_CLOSE(0.0071666040410096028615, integrator.electronInteractionIntegral(0,0,0,0,0,0,0,0,0,0,0,0), 1e-9);
     }
@@ -189,7 +191,8 @@ SUITE(GaussianIntegral) {
         double b = 0.121949;
         double c = 0.444529;
         double d = 13.0077;
-        GaussianElectronInteractionIntegral integrator(posA, posB, posC, posD, a, b, c, d, 3);
+        GaussianElectronInteractionIntegral integrator(3);
+        integrator.set(posA, posB, posC, posD, a, b, c, d, 3);
         // regression test
         CHECK_CLOSE(0.022124581472837051566, integrator.electronInteractionIntegral(0,0,0,0,0,0,0,0,0,0,0,0), 1e-9);
     }
@@ -203,7 +206,8 @@ SUITE(GaussianIntegral) {
         double b = 0.121949;
         double c = 0.444529;
         double d = 13.0077;
-        GaussianElectronInteractionIntegral integrator(posA, posB, posC, posD, a, b, c, d, 2);
+        GaussianElectronInteractionIntegral integrator(2);
+        integrator.set(posA, posB, posC, posD, a, b, c, d, 2);
         // regression test
         CHECK_CLOSE(0.0001385810300677682, integrator.electronInteractionIntegral(0,0,0,0,1,0,0,1,0,0,0,0), 1e-9);
     }
@@ -217,7 +221,8 @@ SUITE(GaussianIntegral) {
         double b = 0.121949;
         double c = 0.444529;
         double d = 10.0077;
-        GaussianElectronInteractionIntegral integrator(posA, posB, posC, posD, a, b, c, d, 2);
+        GaussianElectronInteractionIntegral integrator(2);
+        integrator.set(posA, posB, posC, posD, a, b, c, d, 2);
         // regression test
         CHECK_CLOSE(-6.8145328932903484228e-08, integrator.electronInteractionIntegral(1,0,0,0,1,0,0,1,0,0,1,0), 1e-9);
     }

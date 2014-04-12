@@ -34,11 +34,12 @@ double GaussianSystem::coupledIntegral(int p, int q, int r, int s)
             electronInteractionIntegral.setAB(pBF.corePosition(), qBF.corePosition(), pP.exponent(), qP.exponent());
             for(const GaussianPrimitiveOrbital& rP : rBF.primitiveBasisFunctions()) {
                 for(const GaussianPrimitiveOrbital& sP : sBF.primitiveBasisFunctions()) {
-                    int currentAngularMomentum = pP.xExponent() + pP.yExponent() + pP.zExponent()
+                    int totalAngularMomentum = pP.xExponent() + pP.yExponent() + pP.zExponent()
                             + qP.xExponent() + qP.yExponent() + qP.zExponent()
                             + rP.xExponent() + rP.yExponent() + rP.zExponent()
                             + sP.xExponent() + sP.yExponent() + sP.zExponent();
-                    electronInteractionIntegral.setCD(rBF.corePosition(), sBF.corePosition(), rP.exponent(), sP.exponent(), currentAngularMomentum);
+                    electronInteractionIntegral.setCD(rBF.corePosition(), sBF.corePosition(),
+                                                      rP.exponent(), sP.exponent(), totalAngularMomentum);
                     result += pP.weight() * rP.weight() * qP.weight() * sP.weight()
                             * electronInteractionIntegral.electronInteractionIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
                                                                                       qP.xExponent(), qP.yExponent(), qP.zExponent(),
@@ -61,11 +62,14 @@ double GaussianSystem::uncoupledIntegral(int p, int q)
             kineticIntegral.set(pBF.corePosition(), qBF.corePosition(), pP.exponent(), qP.exponent());
             result += pP.weight() * qP.weight() * kineticIntegral.kineticIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
                                                                                   qP.xExponent(), qP.yExponent(), qP.zExponent());
+
+            int totalAngularMomentum = pP.xExponent() + pP.yExponent() + pP.zExponent()
+                    + qP.xExponent() + qP.yExponent() + qP.zExponent();
             for(uint i = 0; i < m_cores.size(); i++) {
                 const GaussianCore &core = m_cores.at(i);
                 const rowvec &corePositionC = core.position();
                 coulombIntegral.set(pBF.corePosition(), qBF.corePosition(), corePositionC,
-                                    pP.exponent(), qP.exponent());
+                                    pP.exponent(), qP.exponent(), totalAngularMomentum);
                 result -= core.charge() * pP.weight() * qP.weight() * coulombIntegral.coloumbAttractionIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
                                                                                                                 qP.xExponent(), qP.yExponent(), qP.zExponent());
             }

@@ -3,25 +3,19 @@
 #include <math/boysfunction.h>
 #include <math/boysfunctionintermediate.h>
 
-HermiteIntegral::HermiteIntegral(int dimension) :
+HermiteIntegral::HermiteIntegral(int dimensionMax) :
     m_alpha(0),
     m_A(zeros<rowvec>(3)),
-    m_dimension(dimension)
+    m_dimensionMax(dimensionMax)
 {
-    reset(dimension);
-}
-
-HermiteIntegral::HermiteIntegral(double alpha, const rowvec &A, int dimension, bool setupImmediately) :
-    HermiteIntegral(dimension)
-{
-    set(alpha, A, setupImmediately);
+    reset(dimensionMax);
 }
 
 void HermiteIntegral::reset(int dimension)
 {
-    m_dimension = dimension;
-    int tMax = m_dimension;
-    int nMax = m_dimension;
+    m_dimensionMax = dimension;
+    int tMax = m_dimensionMax;
+    int nMax = m_dimensionMax;
     m_R.reset();
     m_R.set_size(nMax + 1);
     // Initialize and allocate the cubes for R
@@ -30,27 +24,14 @@ void HermiteIntegral::reset(int dimension)
     }
 }
 
-void HermiteIntegral::set(double alpha, const rowvec &A, bool setupImmediately)
-{
-    m_alpha = alpha;
-    m_A = A;
-    if(setupImmediately) {
-        setupR();
-    }
-}
-
 void HermiteIntegral::set(double alpha, const rowvec &A, int dimension)
 {
     m_alpha = alpha;
     m_A = A;
-    if(dimension != -1) {
-        int tmpDimension = m_dimension;
-        m_dimension = dimension;
-        setupR();
-        m_dimension = tmpDimension;
-    } else {
-        setupR();
-    }
+    int tmpDimension = m_dimensionMax;
+    m_dimensionMax = dimension;
+    setupR();
+    m_dimensionMax = tmpDimension;
 }
 
 void HermiteIntegral::setupR() {
@@ -59,9 +40,9 @@ void HermiteIntegral::setupR() {
     double p = m_alpha;
     double boysArg = p * dot(m_A, m_A);
 //    int lMax = 2;
-    int tMax = m_dimension;
-    int tuvSumMax = m_dimension;
-    int nMax = m_dimension;
+    int tMax = m_dimensionMax;
+    int tuvSumMax = m_dimensionMax;
+    int nMax = m_dimensionMax;
     BoysFunctionIntermediate &boysFunctionIntermediate = BoysFunctionIntermediate::getInstance();
     BoysFunction boysFunction(boysArg, nMax + 1, &boysFunctionIntermediate);
 //    vector<vector<int>> calculatedIndices;

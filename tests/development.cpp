@@ -3,6 +3,7 @@
 #include "solvers/unrestrictedhartreefocksolver.h"
 #include "basisfunctions/gaussian/integrals/gaussianelectroninteractionintegral.h"
 #include "basisfunctions/gaussian/integrals/gaussianoverlapintegral.h"
+#include "math/boysfunction.h"
 
 #include <iostream>
 
@@ -172,14 +173,15 @@ SUITE(Development) {
                 system.addCore(core);
             }
             mat C;
-            HartreeFockSolver solver(&system);
+            UnrestrictedHartreeFockSolver solver(&system);
             solver.setConvergenceTreshold(1e-12);
             solver.setNIterationsMax(1e4);
             solver.setDensityMixFactor(0.0);
             solver.solve();
             cout << "Used: " << solver.iterationsUsed() << endl;
             cout << "Energy: " << solver.energy() << endl;
-            CHECK_CLOSE(-149.5295405478762, solver.energy(), 1e-5);
+//            CHECK_CLOSE(-149.5295405478762, solver.energy(), 1e-5);
+            CHECK_CLOSE(-149.5876095851103, solver.energy(), 1e-5);
     //        cout << "Oxygen 6-311G: " << solver.energy() << endl;
         }
     //    TEST(HydrogenMolecule) {

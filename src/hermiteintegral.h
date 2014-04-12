@@ -9,11 +9,12 @@ using namespace std;
 class HermiteIntegral
 {
 public:
-    HermiteIntegral(int dimension);
+    HermiteIntegral(int dimensionMax);
     HermiteIntegral(double alpha, const rowvec &A, int dimension, bool setupImmediately = true);
 
     void reset(int dimension);
     void set(double alpha, const rowvec &A, bool setupImmediately = true);
+    void set(double alpha, const rowvec &A, int dimension);
     void setupR();
 
     const cube &operator [](const uword row) const;
@@ -21,12 +22,11 @@ public:
     const cube &operator()(const uword row) const;
     cube &operator()(const uword row);
     double operator ()(const uword n, const uword t, const uword u, const uword v) const;
-    void set(double alpha, const rowvec &A, int dimension);
 protected:
     double m_alpha;
     rowvec m_A;
     field<cube> m_R;
-    int m_dimension;
+    int m_dimensionMax;
 };
 
 inline const cube &HermiteIntegral::operator()(const uword row) const {
