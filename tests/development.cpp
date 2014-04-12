@@ -28,6 +28,7 @@ SUITE(Development) {
         solver.setNIterationsMax(1e3);
         solver.setDensityMixFactor(0.5);
         cout << solver.overlapMatrix() << endl;
+        cout << solver.uncoupledMatrix() << endl;
         solver.solve();
         CHECK_CLOSE(-75.90736859918989, solver.energy(), 1e-6);
     }
