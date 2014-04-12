@@ -40,6 +40,8 @@ private:
     // Added to protect from copying
     BoysFunctionIntermediate(const BoysFunctionIntermediate&);
     void operator=(const BoysFunctionIntermediate&);
+
+    double factorialInverseTable[40];
 };
 
 #endif // BOYSFUNCTIONINTERMEDIATE_H
