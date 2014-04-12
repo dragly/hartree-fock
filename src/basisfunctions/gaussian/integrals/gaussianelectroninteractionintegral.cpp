@@ -5,7 +5,7 @@
 #include <basisfunctions/gaussian/gaussianprimitiveorbital.h>
 
 GaussianElectronInteractionIntegral::GaussianElectronInteractionIntegral(int singleAngularMomentumMax) :
-    m_hermiteIntegral(4 * singleAngularMomentumMax+1),
+    m_hermiteIntegral(4 * singleAngularMomentumMax),
     m_hermiteExpansionCoefficientAB(singleAngularMomentumMax+1),
     m_hermiteExpansionCoefficientCD(singleAngularMomentumMax+1)
 {

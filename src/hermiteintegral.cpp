@@ -19,7 +19,7 @@ void HermiteIntegral::reset(int dimension)
     m_R.reset();
     m_R.set_size(nMax + 1);
     // Initialize and allocate the cubes for R
-    for(int n = 0; n < nMax + 1; n++) {
+    for(int n = 0; n <= nMax; n++) {
         m_R(n) = zeros(tMax + 1, tMax + 1, tMax + 1);
     }
 }
