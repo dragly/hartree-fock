@@ -31,6 +31,7 @@ private:
 
     void setupFockMatrices();
     void setupDensityMatrices();
+    void resetFockMatrices();
 };
 
 #endif // UNRESTRICTEDHARTREEFOCKSOLVER_H

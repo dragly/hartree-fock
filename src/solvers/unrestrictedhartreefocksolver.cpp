@@ -12,6 +12,7 @@ UnrestrictedHartreeFockSolver::UnrestrictedHartreeFockSolver(ElectronSystem *sys
     resetCoefficientMatrices();
     setupDensityMatrices();
     m_densityMatrixUp(0,1) = 0.1; // Added asymmetry between the spin up and spin down orbitals
+    resetFockMatrices();
     setupFockMatrices();
 }
 
@@ -20,7 +21,14 @@ void UnrestrictedHartreeFockSolver::reset() {
     resetCoefficientMatrices();
     setupDensityMatrices();
     m_densityMatrixUp(0,1) = 0.1; // Added asymmetry between the spin up and spin down orbitals
+    resetFockMatrices();
     setupFockMatrices();
+}
+
+void UnrestrictedHartreeFockSolver::resetFockMatrices() {
+    uint n = electronSystem()->nBasisFunctions();
+    m_fockMatrixUp = zeros(n,n);
+    m_fockMatrixDown = zeros(n,n);
 }
 
 void UnrestrictedHartreeFockSolver::resetCoefficientMatrices() {
@@ -43,8 +51,6 @@ void UnrestrictedHartreeFockSolver::setupFockMatrices() {
     const mat &Pd = m_densityMatrixDown;
     const mat &h = uncoupledMatrix();
     const field<mat> &Q = coupledMatrix();
-    Fu = zeros(n,n);
-    Fd = zeros(n,n);
     for(uint p = 0; p < n; p++) {
         for(uint q = 0; q < n; q++) {
             Fu(p,q) = h(p,q);
