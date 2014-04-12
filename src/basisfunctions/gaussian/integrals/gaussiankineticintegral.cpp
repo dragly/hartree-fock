@@ -40,6 +40,12 @@ double GaussianKineticIntegral::kineticIntegral(int dim, int iA, int iB) {
     return 4 * b * b * S_iA_iBnn - 2*b * (2*iB + 1) * S_iA_iB + iB * (iB - 1) * S_iA_iBpp;
 }
 
+double GaussianKineticIntegral::kineticIntegral(const GaussianPrimitiveOrbital& primitiveA,
+                                                const GaussianPrimitiveOrbital& primitiveB) {
+    return kineticIntegral(primitiveA.xExponent(), primitiveA.yExponent(), primitiveA.zExponent(),
+                           primitiveB.xExponent(), primitiveB.yExponent(), primitiveB.zExponent());
+}
+
 double GaussianKineticIntegral::kineticIntegral(int iA, int jA, int kA, int iB, int jB, int kB) {
     GaussianOverlapIntegral overlapIntegral(m_exponentSum, &m_hermiteExpansionCoefficient);
     double T_iA_iB = kineticIntegral(0, iA, iB);

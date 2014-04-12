@@ -64,6 +64,16 @@ GaussianElectronInteractionIntegral::~GaussianElectronInteractionIntegral()
 {
 }
 
+double GaussianElectronInteractionIntegral::electronInteractionIntegral(const GaussianPrimitiveOrbital& primitiveA,
+                                                                        const GaussianPrimitiveOrbital& primitiveB,
+                                                                        const GaussianPrimitiveOrbital& primitiveC,
+                                                                        const GaussianPrimitiveOrbital& primitiveD) {
+    return electronInteractionIntegral(primitiveA.xExponent(), primitiveA.yExponent(), primitiveA.zExponent(),
+                                       primitiveB.xExponent(), primitiveB.yExponent(), primitiveB.zExponent(),
+                                       primitiveC.xExponent(), primitiveC.yExponent(), primitiveC.zExponent(),
+                                       primitiveD.xExponent(), primitiveD.yExponent(), primitiveD.zExponent());
+}
+
 double GaussianElectronInteractionIntegral::electronInteractionIntegral(int iA, int jA, int kA,
                                                                         int iB, int jB, int kB,
                                                                         int iC, int jC, int kC,

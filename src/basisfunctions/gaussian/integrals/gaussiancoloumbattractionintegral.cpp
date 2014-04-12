@@ -20,8 +20,10 @@ GaussianColoumbAttractionIntegral::GaussianColoumbAttractionIntegral(int angular
 //    set(corePositionA, corePositionB, corePositionC, exponentA, exponentB);
 //}
 
-void GaussianColoumbAttractionIntegral::set(const rowvec& corePositionA, const rowvec& corePositionB, const rowvec& corePositionC,
-                                            const GaussianPrimitiveOrbital& primitiveA, const GaussianPrimitiveOrbital& primitiveB) {
+void GaussianColoumbAttractionIntegral::set(const rowvec& corePositionA, const rowvec& corePositionB,
+                                            const rowvec& corePositionC,
+                                            const GaussianPrimitiveOrbital& primitiveA,
+                                            const GaussianPrimitiveOrbital& primitiveB) {
     double exponentA = primitiveA.exponent();
     double exponentB = primitiveB.exponent();
     double p = exponentA + exponentB;
@@ -33,6 +35,12 @@ void GaussianColoumbAttractionIntegral::set(const rowvec& corePositionA, const r
                                       primitiveA.yExponent(), primitiveB.yExponent(),
                                       primitiveA.zExponent(), primitiveB.zExponent());
     m_hermiteIntegral.set(p, PC, primitiveA.exponentMax() + primitiveB.exponentMax() + 1);
+}
+
+double GaussianColoumbAttractionIntegral::coloumbAttractionIntegral(const GaussianPrimitiveOrbital& primitiveA,
+                                                                    const GaussianPrimitiveOrbital& primitiveB) {
+    return coloumbAttractionIntegral(primitiveA.xExponent(), primitiveA.yExponent(), primitiveA.zExponent(),
+                                     primitiveB.xExponent(), primitiveB.yExponent(), primitiveB.zExponent());
 }
 
 double GaussianColoumbAttractionIntegral::coloumbAttractionIntegral(int iA, int jA, int kA, int iB, int jB, int kB) {

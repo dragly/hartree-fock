@@ -33,6 +33,12 @@ GaussianOverlapIntegral::~GaussianOverlapIntegral()
     }
 }
 
+double GaussianOverlapIntegral::overlapIntegral(const GaussianPrimitiveOrbital& primitiveA,
+                                                const GaussianPrimitiveOrbital& primitiveB) {
+    return overlapIntegral(primitiveA.xExponent(), primitiveA.yExponent(), primitiveA.zExponent(),
+                           primitiveB.xExponent(), primitiveB.yExponent(), primitiveB.zExponent());
+}
+
 double GaussianOverlapIntegral::overlapIntegral(int dim, int iA, int iB)
 {
     double p = m_exponentSum;

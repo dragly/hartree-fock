@@ -44,14 +44,14 @@ bool HermiteExpansionCoefficient::checkIndexCombinationForE(int iA, int iB, int 
 
 void HermiteExpansionCoefficient::setupE(int iA, int iB, int jA, int jB, int kA, int kB) {
     int maxiAs[3];
-    maxiAs[0] = iA;
-    maxiAs[1] = jA;
-    maxiAs[2] = kA;
+    maxiAs[0] = iA + 1;
+    maxiAs[1] = jA + 1;
+    maxiAs[2] = kA + 1;
 
     int maxiBs[3];
-    maxiBs[0] = iB;
-    maxiBs[1] = jB;
-    maxiBs[2] = kB;
+    maxiBs[0] = iB + 1;
+    maxiBs[1] = jB + 1;
+    maxiBs[2] = kB + 1;
 
     // Since we are only going to need E_i_j_0 for the integrals, we cap t to i and j to only have the
     // needed values available for the algorithm.
@@ -80,6 +80,8 @@ void HermiteExpansionCoefficient::setupE(int iA, int iB, int jA, int jB, int kA,
 
         // First row is special
         E(0,0,0) = exp(-mu * AB * AB);
+
+        // Build the first row, iA = 0
         for(int iB = 0; iB < maxiB; iB++) {
             for(int t = 0; t < maxt; t++) {
                 int iA = 0;
@@ -106,6 +108,8 @@ void HermiteExpansionCoefficient::setupE(int iA, int iB, int jA, int jB, int kA,
                 E(iA,iB,t) = 1 / (2*p) * E_iA_iBp_tp + PB * E_iA_iBp_t +  (t + 1)*E_iA_iBp_tn;
             }
         }
+
+        // Iterate over all rows for iA >= 1
         for(int iA = 1; iA < maxiA; iA++) {
             for(int iB = 0; iB < maxiB; iB++) {
                 for(int t = 0; t < maxt; t++) {

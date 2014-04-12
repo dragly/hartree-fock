@@ -19,6 +19,7 @@ public:
     double coloumbAttractionIntegral(int iA, int jA, int kA, int iB, int jB, int kB);
     void set(const rowvec &corePositionA, const rowvec &corePositionB, const rowvec &corePositionC,
              const GaussianPrimitiveOrbital &primitiveA, const GaussianPrimitiveOrbital &primitiveB);
+    double coloumbAttractionIntegral(const GaussianPrimitiveOrbital &primitiveA, const GaussianPrimitiveOrbital &primitiveB);
 protected:
     HermiteExpansionCoefficient m_hermiteExpansionCoefficient;
     HermiteIntegral m_hermiteIntegral;

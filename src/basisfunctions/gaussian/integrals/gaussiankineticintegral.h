@@ -17,6 +17,7 @@ public:
              const GaussianPrimitiveOrbital &primitiveA, const GaussianPrimitiveOrbital &primitiveB);
     double kineticIntegral(int dim, int iA, int iB);
     double kineticIntegral(int iA, int jA, int kA, int iB, int jB, int kB);
+    double kineticIntegral(const GaussianPrimitiveOrbital &primitiveA, const GaussianPrimitiveOrbital &primitiveB);
 protected:
     double m_exponentB;
     double m_exponentSum;

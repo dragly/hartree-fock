@@ -30,6 +30,7 @@ public:
                                        int iB, int jB, int kB,
                                        int iC, int jC, int kC,
                                        int iD, int jD, int kD);
+    double electronInteractionIntegral(const GaussianPrimitiveOrbital &primitiveA, const GaussianPrimitiveOrbital &primitiveB, const GaussianPrimitiveOrbital &primitiveC, const GaussianPrimitiveOrbital &primitiveD);
 protected:
     HermiteIntegral m_hermiteIntegral;
     HermiteExpansionCoefficient m_hermiteExpansionCoefficientAB;

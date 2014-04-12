@@ -31,6 +31,50 @@ SUITE(GaussianIntegral) {
 
     }
 
+    TEST(OverlapNew) {
+        rowvec posA = {1.2,2.3,3.4};
+        rowvec posB = {-1.3,1.4,-2.4};
+
+        GaussianPrimitiveOrbital primitiveA(1.0, 3, 3, 3, 0.2);
+        GaussianPrimitiveOrbital primitiveB(1.0, 3, 3, 3, 0.3);
+
+        GaussianOverlapIntegral integrator(posA, posB, primitiveA, primitiveB);
+
+        CHECK_CLOSE(2.979309089521e-01, integrator.overlapIntegral(2,0,0,2,0,0), 1e-7);
+        CHECK_CLOSE(1.072551272228e-02, integrator.overlapIntegral(2,0,0,1,1,0), 1e-7);
+        CHECK_CLOSE(6.911997087690e-02, integrator.overlapIntegral(2,0,0,1,0,1), 1e-7);
+    }
+
+    TEST(KineticNew) {
+        rowvec posA = {1.2,2.3,3.4};
+        rowvec posB = {-1.3,1.4,-2.4};
+
+        GaussianPrimitiveOrbital primitiveA(1.0, 3, 3, 3, 0.2);
+        GaussianPrimitiveOrbital primitiveB(1.0, 3, 3, 3, 0.3);
+
+        GaussianKineticIntegral integrator(3);
+
+        integrator.set(posA, posB, primitiveA, primitiveB);
+
+        CHECK_CLOSE(-3.468392469657e-01, integrator.kineticIntegral(2,0,0,2,0,0), 1e-7);
+        CHECK_CLOSE(-3.562586305833e-03, integrator.kineticIntegral(2,0,0,1,1,0), 1e-7);
+        CHECK_CLOSE(-2.295888952647e-02, integrator.kineticIntegral(2,0,0,1,0,1), 1e-7);
+        CHECK_CLOSE(2.514020826620e-01, integrator.kineticIntegral(0,0,1,0,0,1), 1e-7);
+    }
+
+    TEST(KineticNew2) {
+        rowvec posA = {1.2,2.3,3.4};
+        rowvec posB = {-1.3,1.4,-2.4};
+
+        GaussianPrimitiveOrbital primitiveA(1.0, 2, 0, 0, 0.2);
+        GaussianPrimitiveOrbital primitiveB(1.0, 2, 0, 0, 0.3);
+
+        GaussianKineticIntegral integrator(2);
+
+        integrator.set(posA, posB, primitiveA, primitiveB);
+
+        CHECK_CLOSE(-3.468392469657e-01, integrator.kineticIntegral(2,0,0,2,0,0), 1e-7);
+    }
 
     TEST(GaussianKineticIntegralTest) {
         rowvec posA = {1.2,2.3,3.4};

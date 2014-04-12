@@ -19,6 +19,7 @@ public:
 
     double overlapIntegral(int iA, int jA, int kA, int iB, int jB, int kB);
     double overlapIntegral(int dim, int i, int j);
+    double overlapIntegral(const GaussianPrimitiveOrbital &primitiveA, const GaussianPrimitiveOrbital &primitiveB);
 protected:
     double m_exponentSum;
 

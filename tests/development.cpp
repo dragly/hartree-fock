@@ -27,46 +27,30 @@ SUITE(Development) {
         solver.setConvergenceTreshold(1e-12);
         solver.setNIterationsMax(1e3);
         solver.setDensityMixFactor(0.5);
+        cout << solver.overlapMatrix() << endl;
         solver.solve();
-        CHECK_CLOSE(solver.energy(), -75.90736859918989, 1e-6);
+        CHECK_CLOSE(-75.90736859918989, solver.energy(), 1e-6);
     }
 
-    TEST(OxygenSixAsterix) {
-        vector<GaussianCore> cores;
-        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_6-31Gs.tm"));
-        cores.push_back(GaussianCore({2.282,0,0}, "atom_8_basis_6-31Gs.tm"));
-        GaussianSystem system;
-        for(const GaussianCore &core : cores) {
-            system.addCore(core);
-        }
-        mat C;
-        UnrestrictedHartreeFockSolver solver(&system);
-        solver.setConvergenceTreshold(1e-12);
-        solver.setNIterationsMax(1e4);
-        solver.setDensityMixFactor(0.0);
-        solver.solve();
-        cout << "Used: " << solver.iterationsUsed() << endl;
-        cout << "Energy: " << solver.energy() << endl;
-//            CHECK_CLOSE(-149.5295405478762, solver.energy(), 1e-5);
-        CHECK_CLOSE(-149.5876095851103, solver.energy(), 1e-5);
-//        cout << "Oxygen 6-311G: " << solver.energy() << endl;
-    }
-    //    TEST(OverlapNew) {
-    //        rowvec posA = {1.2,2.3,3.4};
-    //        rowvec posB = {-1.3,1.4,-2.4};
-    //        GaussianOverlapIntegral integrator(posA, posB, 0.2, 0.3, 3);
-    //        CHECK_CLOSE(2.979309089521e-01, integrator.overlapIntegral(2,0,0,2,0,0), 1e-7);
-    //        CHECK_CLOSE(1.072551272228e-02, integrator.overlapIntegral(2,0,0,1,1,0), 1e-7);
-    //        CHECK_CLOSE(6.911997087690e-02, integrator.overlapIntegral(2,0,0,1,0,1), 1e-7);
-    //    }
-//    TEST(KineticNew) {
-//        rowvec posA = {1.2,2.3,3.4};
-//        rowvec posB = {-1.3,1.4,-2.4};
-//        GaussianKineticIntegral integrator(posA, posB, 0.2, 0.3, 3);
-//        CHECK_CLOSE(-3.468392469657e-01, integrator.kineticIntegral(2,0,0,2,0,0), 1e-7);
-//        CHECK_CLOSE(-3.562586305833e-03, integrator.kineticIntegral(2,0,0,1,1,0), 1e-7);
-//        CHECK_CLOSE(-2.295888952647e-02, integrator.kineticIntegral(2,0,0,1,0,1), 1e-7);
-//        CHECK_CLOSE(2.514020826620e-01, integrator.kineticIntegral(0,0,1,0,0,1), 1e-7);
+//    TEST(OxygenSixAsterix) {
+//        vector<GaussianCore> cores;
+//        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_6-31Gs.tm"));
+//        cores.push_back(GaussianCore({2.282,0,0}, "atom_8_basis_6-31Gs.tm"));
+//        GaussianSystem system;
+//        for(const GaussianCore &core : cores) {
+//            system.addCore(core);
+//        }
+//        mat C;
+//        UnrestrictedHartreeFockSolver solver(&system);
+//        solver.setConvergenceTreshold(1e-12);
+//        solver.setNIterationsMax(1e4);
+//        solver.setDensityMixFactor(0.0);
+//        solver.solve();
+//        cout << "Used: " << solver.iterationsUsed() << endl;
+//        cout << "Energy: " << solver.energy() << endl;
+////            CHECK_CLOSE(-149.5295405478762, solver.energy(), 1e-5);
+//        CHECK_CLOSE(-149.5876095851103, solver.energy(), 1e-5);
+////        cout << "Oxygen 6-311G: " << solver.energy() << endl;
 //    }
 
 //    TEST(CheapOxygen) {

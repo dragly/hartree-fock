@@ -37,10 +37,7 @@ double GaussianSystem::coupledIntegral(int p, int q, int r, int s)
                     electronInteractionIntegral.setCD(rBF.corePosition(), sBF.corePosition(),
                                                       rP, sP);
                     result += pP.weight() * rP.weight() * qP.weight() * sP.weight()
-                            * electronInteractionIntegral.electronInteractionIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
-                                                                                      qP.xExponent(), qP.yExponent(), qP.zExponent(),
-                                                                                      rP.xExponent(), rP.yExponent(), rP.zExponent(),
-                                                                                      sP.xExponent(), sP.yExponent(), sP.zExponent());
+                            * electronInteractionIntegral.electronInteractionIntegral(pP, qP, rP, sP);
                 }
             }
         }
@@ -56,15 +53,13 @@ double GaussianSystem::uncoupledIntegral(int p, int q)
     for(const GaussianPrimitiveOrbital& pP : pBF.primitiveBasisFunctions()) {
         for(const GaussianPrimitiveOrbital& qP : qBF.primitiveBasisFunctions()) {
             kineticIntegral.set(pBF.corePosition(), qBF.corePosition(), pP, qP);
-            result += pP.weight() * qP.weight() * kineticIntegral.kineticIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
-                                                                                  qP.xExponent(), qP.yExponent(), qP.zExponent());
+            result += pP.weight() * qP.weight() * kineticIntegral.kineticIntegral(pP, qP);
             for(uint i = 0; i < m_cores.size(); i++) {
                 const GaussianCore &core = m_cores.at(i);
                 const rowvec &corePositionC = core.position();
                 coulombIntegral.set(pBF.corePosition(), qBF.corePosition(), corePositionC,
                                     pP, qP);
-                result -= core.charge() * pP.weight() * qP.weight() * coulombIntegral.coloumbAttractionIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
-                                                                                                                qP.xExponent(), qP.yExponent(), qP.zExponent());
+                result -= core.charge() * pP.weight() * qP.weight() * coulombIntegral.coloumbAttractionIntegral(pP, qP);
             }
         }
     }
@@ -79,8 +74,7 @@ double GaussianSystem::overlapIntegral(int p, int q)
     for(const GaussianPrimitiveOrbital& pP : pBF.primitiveBasisFunctions()) {
         for(const GaussianPrimitiveOrbital& qP : qBF.primitiveBasisFunctions()) {
             GaussianOverlapIntegral integrator(pBF.corePosition(), qBF.corePosition(), pP, qP);
-            result += pP.weight() * qP.weight() * integrator.overlapIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
-                                                                             qP.xExponent(), qP.yExponent(), qP.zExponent());
+            result += pP.weight() * qP.weight() * integrator.overlapIntegral(pP, qP);
         }
     }
     return result;
