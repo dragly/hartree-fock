@@ -28,6 +28,8 @@ void GaussianElectronInteractionIntegral::set(const rowvec &corePositionA, const
 void GaussianElectronInteractionIntegral::setAB(const rowvec &corePositionA, const rowvec &corePositionB,
                                                 const GaussianPrimitiveOrbital& primitiveA, const GaussianPrimitiveOrbital& primitiveB)
 {
+    m_primitiveA = &primitiveA;
+    m_primitiveB = &primitiveB;
     double a = primitiveA.exponent();
     double b = primitiveB.exponent();
     double p = a + b;
@@ -43,6 +45,8 @@ void GaussianElectronInteractionIntegral::setAB(const rowvec &corePositionA, con
 void GaussianElectronInteractionIntegral::setCD(const rowvec &corePositionC, const rowvec &corePositionD,
                                                 const GaussianPrimitiveOrbital& primitiveC, const GaussianPrimitiveOrbital& primitiveD)
 {
+    m_primitiveC = &primitiveC;
+    m_primitiveD = &primitiveD;
     double c = primitiveC.exponent();
     double d = primitiveD.exponent();
     double p = m_exponentP;
@@ -53,7 +57,9 @@ void GaussianElectronInteractionIntegral::setCD(const rowvec &corePositionC, con
     m_centerOfMassQ = Q;
     rowvec PQ = P - Q;
     double alpha = p*q/(p+q);
-    m_hermiteIntegral.set(alpha, PQ, primitiveC.exponentMax() + primitiveD.exponentMax() + 1);
+    int hermiteIntegralDimension = m_primitiveA->exponentMax() + m_primitiveB->exponentMax()
+            + m_primitiveC->exponentMax() + m_primitiveD->exponentMax() + 1;
+    m_hermiteIntegral.set(alpha, PQ, hermiteIntegralDimension);
     m_hermiteExpansionCoefficientCD.set(c, d, corePositionC, corePositionD,
                                         primitiveC.xExponent(), primitiveD.xExponent(),
                                         primitiveC.yExponent(), primitiveD.yExponent(),

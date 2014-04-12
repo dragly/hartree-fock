@@ -40,6 +40,11 @@ protected:
     rowvec m_centerOfMassQ;
     double m_exponentP;
     double m_exponentQ;
+
+    const GaussianPrimitiveOrbital *m_primitiveA;
+    const GaussianPrimitiveOrbital *m_primitiveB;
+    const GaussianPrimitiveOrbital *m_primitiveC;
+    const GaussianPrimitiveOrbital *m_primitiveD;
 };
 
 #endif // GAUSSIANTYPEELECTRONINTERACTIONINTEGRAL_H

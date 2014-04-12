@@ -309,4 +309,28 @@ SUITE(GaussianIntegral) {
         // regression test
         CHECK_CLOSE(-6.8145328932903484228e-08, integrator.electronInteractionIntegral(1,0,0,0,1,0,0,1,0,0,1,0), 1e-9);
     }
+
+
+    TEST(GaussianElectronInteractionIntegralTest5)
+    {
+        GaussianElectronInteractionIntegral integrator(2);
+
+        rowvec posA = {1.2,2.3,3.4};
+        rowvec posB = {-1.3,1.4,-2.4};
+        rowvec posC = {2.3,0.9,3.2};
+        rowvec posD = {5.0,1.9,1.2};
+
+        GaussianPrimitiveOrbital primitiveA(1.0, 2, 2, 2, 0.2);
+        GaussianPrimitiveOrbital primitiveB(1.0, 2, 2, 2, 0.3);
+        GaussianPrimitiveOrbital primitiveC(1.0, 2, 2, 2, 0.4);
+        GaussianPrimitiveOrbital primitiveD(1.0, 2, 2, 2, 0.1);
+
+        integrator.set(posA, posB, posC, posD, primitiveA, primitiveB, primitiveC, primitiveD);
+
+        CHECK_CLOSE(1.624848e-01, integrator.electronInteractionIntegral(0,0,0,0,0,0,0,0,0,0,0,0), 1e-5);
+        CHECK_CLOSE(0.2667434785828074, integrator.electronInteractionIntegral(0,0,0, 1,0,0, 0,0,0, 0,0,1), 1e-7);
+        CHECK_CLOSE(0.2681206720738772, integrator.electronInteractionIntegral(0,0,0, 1,0,0, 0,2,0, 0,0,1), 1e-7);
+        CHECK_CLOSE(0.5266872995197744, integrator.electronInteractionIntegral(1,1,0, 2,0,0, 2,0,0, 2,0,0), 1e-7);
+        CHECK_CLOSE(-0.1273045183436938, integrator.electronInteractionIntegral(1,1,0, 0,2,0, 0,2,0, 2,0,0), 1e-7);
+    }
 }
