@@ -30,7 +30,10 @@ void GaussianColoumbAttractionIntegral::set(const rowvec& corePositionA, const r
     rowvec P = (exponentA * corePositionA + exponentB * corePositionB) / (exponentA + exponentB);
     rowvec PC = P - corePositionC;
     m_exponentSum = exponentA + exponentB;
-    m_hermiteIntegral.set(p, PC, primitiveA.exponentMax() + primitiveB.exponentMax() + 1);
+    int t = primitiveA.xExponent() + primitiveB.xExponent();
+    int u = primitiveA.yExponent() + primitiveB.yExponent();
+    int v = primitiveA.zExponent() + primitiveB.zExponent();
+    m_hermiteIntegral.set(p, PC, t, u, v);
     m_hermiteExpansionCoefficient.set(exponentA, exponentB, corePositionA, corePositionB,
                                       primitiveA.xExponent(), primitiveB.xExponent(),
                                       primitiveA.yExponent(), primitiveB.yExponent(),

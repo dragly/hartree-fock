@@ -13,9 +13,8 @@ public:
     HermiteIntegral(double alpha, const rowvec &A, int dimension, bool setupImmediately = true);
 
     void reset(int dimension);
-    void set(double alpha, const rowvec &A, bool setupImmediately = true);
-    void set(double alpha, const rowvec &A, int dimension);
-    void setupR();
+    void set(double alpha, const rowvec &A, int t, int u, int v);
+    void setupR(int t, int u, int v);
 
     const cube &operator [](const uword row) const;
     cube &operator[](const uword row);

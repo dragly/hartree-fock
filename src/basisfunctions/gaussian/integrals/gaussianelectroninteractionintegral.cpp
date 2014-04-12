@@ -5,7 +5,7 @@
 #include <basisfunctions/gaussian/gaussianprimitiveorbital.h>
 
 GaussianElectronInteractionIntegral::GaussianElectronInteractionIntegral(int singleAngularMomentumMax) :
-    m_hermiteIntegral(4*singleAngularMomentumMax+1),
+    m_hermiteIntegral(4 * singleAngularMomentumMax+1),
     m_hermiteExpansionCoefficientAB(singleAngularMomentumMax+1),
     m_hermiteExpansionCoefficientCD(singleAngularMomentumMax+1)
 {
@@ -57,9 +57,10 @@ void GaussianElectronInteractionIntegral::setCD(const rowvec &corePositionC, con
     m_centerOfMassQ = Q;
     rowvec PQ = P - Q;
     double alpha = p*q/(p+q);
-    int hermiteIntegralDimension = m_primitiveA->exponentMax() + m_primitiveB->exponentMax()
-            + m_primitiveC->exponentMax() + m_primitiveD->exponentMax() + 1;
-    m_hermiteIntegral.set(alpha, PQ, hermiteIntegralDimension);
+    int tPlusTau = m_primitiveA->xExponent() + m_primitiveB->xExponent() + m_primitiveC->xExponent() + m_primitiveD->xExponent();
+    int uPlusNu = m_primitiveA->yExponent() + m_primitiveB->yExponent() + m_primitiveC->yExponent() + m_primitiveD->yExponent();
+    int vPlusPhi = m_primitiveA->zExponent() + m_primitiveB->zExponent() + m_primitiveC->zExponent() + m_primitiveD->zExponent();
+    m_hermiteIntegral.set(alpha, PQ, tPlusTau, uPlusNu, vPlusPhi);
     m_hermiteExpansionCoefficientCD.set(c, d, corePositionC, corePositionD,
                                         primitiveC.xExponent(), primitiveD.xExponent(),
                                         primitiveC.yExponent(), primitiveD.yExponent(),

@@ -18,8 +18,8 @@ SUITE(GaussianIntegral) {
         rowvec posA = {1.2,2.3,3.4};
         rowvec posB = {-1.3,1.4,-2.4};
 
-        GaussianPrimitiveOrbital primitiveA(1.0, 3, 3, 3, 0.2);
-        GaussianPrimitiveOrbital primitiveB(1.0, 3, 3, 3, 0.3);
+        GaussianPrimitiveOrbital primitiveA(1.0, 2, 2, 2, 0.2);
+        GaussianPrimitiveOrbital primitiveB(1.0, 2, 2, 2, 0.3);
 
         GaussianOverlapIntegral integrator(posA, posB, primitiveA, primitiveB);
 
@@ -35,8 +35,8 @@ SUITE(GaussianIntegral) {
         rowvec posA = {1.2,2.3,3.4};
         rowvec posB = {-1.3,1.4,-2.4};
 
-        GaussianPrimitiveOrbital primitiveA(1.0, 3, 3, 3, 0.2);
-        GaussianPrimitiveOrbital primitiveB(1.0, 3, 3, 3, 0.3);
+        GaussianPrimitiveOrbital primitiveA(1.0, 2, 2, 2, 0.2);
+        GaussianPrimitiveOrbital primitiveB(1.0, 2, 2, 2, 0.3);
 
         GaussianOverlapIntegral integrator(posA, posB, primitiveA, primitiveB);
 
@@ -49,10 +49,10 @@ SUITE(GaussianIntegral) {
         rowvec posA = {1.2,2.3,3.4};
         rowvec posB = {-1.3,1.4,-2.4};
 
-        GaussianPrimitiveOrbital primitiveA(1.0, 3, 3, 3, 0.2);
-        GaussianPrimitiveOrbital primitiveB(1.0, 3, 3, 3, 0.3);
+        GaussianPrimitiveOrbital primitiveA(1.0, 2, 2, 2, 0.2);
+        GaussianPrimitiveOrbital primitiveB(1.0, 2, 2, 2, 0.3);
 
-        GaussianKineticIntegral integrator(3);
+        GaussianKineticIntegral integrator(2*3);
 
         integrator.set(posA, posB, primitiveA, primitiveB);
 
@@ -80,10 +80,10 @@ SUITE(GaussianIntegral) {
         rowvec posA = {1.2,2.3,3.4};
         rowvec posB = {-1.3,1.4,-2.4};
 
-        GaussianPrimitiveOrbital primitiveA(1.0, 3, 3, 3, 0.2);
-        GaussianPrimitiveOrbital primitiveB(1.0, 3, 3, 3, 0.3);
+        GaussianPrimitiveOrbital primitiveA(1.0, 2, 2, 2, 0.2);
+        GaussianPrimitiveOrbital primitiveB(1.0, 2, 2, 2, 0.3);
 
-        GaussianKineticIntegral integrator(3);
+        GaussianKineticIntegral integrator(2*3);
 
         integrator.set(posA, posB, primitiveA, primitiveB);
 
@@ -118,10 +118,10 @@ SUITE(GaussianIntegral) {
         rowvec posB = {-1.3,1.4,-2.4};
         rowvec posC = {2.3, 0.9, 3.2};
 
-        GaussianColoumbAttractionIntegral integrator(3);
+        GaussianColoumbAttractionIntegral integrator(6);
 
-        GaussianPrimitiveOrbital primitiveA(1.0, 3, 3, 3, 0.2);
-        GaussianPrimitiveOrbital primitiveB(1.0, 3, 3, 3, 0.3);
+        GaussianPrimitiveOrbital primitiveA(1.0, 2, 2, 2, 0.2);
+        GaussianPrimitiveOrbital primitiveB(1.0, 2, 2, 2, 0.3);
 
         integrator.set(posA, posB, posC, primitiveA, primitiveB);
         CHECK_CLOSE(2.788948987251e-02, integrator.coloumbAttractionIntegral(0,0,0,0,0,0), 1e-4);
@@ -236,15 +236,15 @@ SUITE(GaussianIntegral) {
         double c = 13.0077;
         double d = 13.0077;
 
-        GaussianPrimitiveOrbital primitiveA(1.0, 3, 3, 3, a);
-        GaussianPrimitiveOrbital primitiveB(1.0, 3, 3, 3, b);
-        GaussianPrimitiveOrbital primitiveC(1.0, 3, 3, 3, c);
-        GaussianPrimitiveOrbital primitiveD(1.0, 3, 3, 3, d);
+        GaussianPrimitiveOrbital primitiveA(1.0, 0, 0 ,0, a);
+        GaussianPrimitiveOrbital primitiveB(1.0, 0, 0 ,0, b);
+        GaussianPrimitiveOrbital primitiveC(1.0, 0, 0 ,0, c);
+        GaussianPrimitiveOrbital primitiveD(1.0, 0, 0 ,0, d);
 
-        GaussianElectronInteractionIntegral integrator(3);
+        GaussianElectronInteractionIntegral integrator(0);
         integrator.set(posA, posB, posC, posD, primitiveA, primitiveB, primitiveC, primitiveD);
         // regression test
-        CHECK_CLOSE(0.0071666040410096028615, integrator.electronInteractionIntegral(0,0,0,0,0,0,0,0,0,0,0,0), 1e-9);
+        CHECK_CLOSE(0.0071666040410096028615, integrator.electronInteractionIntegral(primitiveA, primitiveB, primitiveC, primitiveD), 1e-9);
     }
 
     TEST(GaussianElectronInteractionIntegralTest2) {
@@ -257,15 +257,15 @@ SUITE(GaussianIntegral) {
         double c = 0.444529;
         double d = 13.0077;
 
-        GaussianPrimitiveOrbital primitiveA(1.0, 3, 3, 3, a);
-        GaussianPrimitiveOrbital primitiveB(1.0, 3, 3, 3, b);
-        GaussianPrimitiveOrbital primitiveC(1.0, 3, 3, 3, c);
-        GaussianPrimitiveOrbital primitiveD(1.0, 3, 3, 3, d);
+        GaussianPrimitiveOrbital primitiveA(1.0, 0, 0 ,0, a);
+        GaussianPrimitiveOrbital primitiveB(1.0, 0, 0 ,0, b);
+        GaussianPrimitiveOrbital primitiveC(1.0, 0, 0 ,0, c);
+        GaussianPrimitiveOrbital primitiveD(1.0, 0, 0 ,0, d);
 
-        GaussianElectronInteractionIntegral integrator(3);
+        GaussianElectronInteractionIntegral integrator(0);
         integrator.set(posA, posB, posC, posD, primitiveA, primitiveB, primitiveC, primitiveD);
         // regression test
-        CHECK_CLOSE(0.022124581472837051566, integrator.electronInteractionIntegral(0,0,0,0,0,0,0,0,0,0,0,0), 1e-9);
+        CHECK_CLOSE(0.022124581472837051566, integrator.electronInteractionIntegral(primitiveA, primitiveB, primitiveC, primitiveD), 1e-9);
     }
 
     TEST(GaussianElectronInteractionIntegralTest3) {
@@ -278,15 +278,15 @@ SUITE(GaussianIntegral) {
         double c = 0.444529;
         double d = 13.0077;
 
-        GaussianPrimitiveOrbital primitiveA(1.0, 3, 3, 3, a);
-        GaussianPrimitiveOrbital primitiveB(1.0, 3, 3, 3, b);
-        GaussianPrimitiveOrbital primitiveC(1.0, 3, 3, 3, c);
-        GaussianPrimitiveOrbital primitiveD(1.0, 3, 3, 3, d);
+        GaussianPrimitiveOrbital primitiveA(1.0, 0, 0 ,0, a);
+        GaussianPrimitiveOrbital primitiveB(1.0, 0, 1 ,0, b);
+        GaussianPrimitiveOrbital primitiveC(1.0, 0, 1 ,0, c);
+        GaussianPrimitiveOrbital primitiveD(1.0, 0, 0 ,0, d);
 
-        GaussianElectronInteractionIntegral integrator(3);
+        GaussianElectronInteractionIntegral integrator(2*3);
         integrator.set(posA, posB, posC, posD, primitiveA, primitiveB, primitiveC, primitiveD);
         // regression test
-        CHECK_CLOSE(0.0001385810300677682, integrator.electronInteractionIntegral(0,0,0,0,1,0,0,1,0,0,0,0), 1e-9);
+        CHECK_CLOSE(0.0001385810300677682, integrator.electronInteractionIntegral(primitiveA, primitiveB, primitiveC, primitiveD), 1e-9);
     }
 
     TEST(GaussianElectronInteractionIntegralTest4) {
@@ -299,38 +299,119 @@ SUITE(GaussianIntegral) {
         double c = 0.444529;
         double d = 10.0077;
 
-        GaussianPrimitiveOrbital primitiveA(1.0, 3, 3, 3, a);
-        GaussianPrimitiveOrbital primitiveB(1.0, 3, 3, 3, b);
-        GaussianPrimitiveOrbital primitiveC(1.0, 3, 3, 3, c);
-        GaussianPrimitiveOrbital primitiveD(1.0, 3, 3, 3, d);
+        GaussianPrimitiveOrbital primitiveA(1.0, 1,0,0, a);
+        GaussianPrimitiveOrbital primitiveB(1.0, 0,1,0, b);
+        GaussianPrimitiveOrbital primitiveC(1.0, 0,1,0, c);
+        GaussianPrimitiveOrbital primitiveD(1.0, 0,1,0, d);
 
-        GaussianElectronInteractionIntegral integrator(3);
+        GaussianElectronInteractionIntegral integrator(1);
         integrator.set(posA, posB, posC, posD, primitiveA, primitiveB, primitiveC, primitiveD);
         // regression test
-        CHECK_CLOSE(-6.8145328932903484228e-08, integrator.electronInteractionIntegral(1,0,0,0,1,0,0,1,0,0,1,0), 1e-9);
+        CHECK_CLOSE(-6.8145328932903484228e-08, integrator.electronInteractionIntegral(primitiveA, primitiveB, primitiveC, primitiveD), 1e-9);
     }
 
 
     TEST(GaussianElectronInteractionIntegralTest5)
     {
-        GaussianElectronInteractionIntegral integrator(2);
 
         rowvec posA = {1.2,2.3,3.4};
         rowvec posB = {-1.3,1.4,-2.4};
         rowvec posC = {2.3,0.9,3.2};
         rowvec posD = {5.0,1.9,1.2};
 
-        GaussianPrimitiveOrbital primitiveA(1.0, 2, 2, 2, 0.2);
-        GaussianPrimitiveOrbital primitiveB(1.0, 2, 2, 2, 0.3);
-        GaussianPrimitiveOrbital primitiveC(1.0, 2, 2, 2, 0.4);
-        GaussianPrimitiveOrbital primitiveD(1.0, 2, 2, 2, 0.1);
+        GaussianPrimitiveOrbital primitiveA(1.0, 0,0,0, 0.2);
+        GaussianPrimitiveOrbital primitiveB(1.0, 0,0,0, 0.3);
+        GaussianPrimitiveOrbital primitiveC(1.0, 0,0,0, 0.4);
+        GaussianPrimitiveOrbital primitiveD(1.0, 0,0,0, 0.1);
+
+        GaussianElectronInteractionIntegral integrator(0);
 
         integrator.set(posA, posB, posC, posD, primitiveA, primitiveB, primitiveC, primitiveD);
 
-        CHECK_CLOSE(1.624848e-01, integrator.electronInteractionIntegral(0,0,0,0,0,0,0,0,0,0,0,0), 1e-5);
-        CHECK_CLOSE(0.2667434785828074, integrator.electronInteractionIntegral(0,0,0, 1,0,0, 0,0,0, 0,0,1), 1e-7);
-        CHECK_CLOSE(0.2681206720738772, integrator.electronInteractionIntegral(0,0,0, 1,0,0, 0,2,0, 0,0,1), 1e-7);
-        CHECK_CLOSE(0.5266872995197744, integrator.electronInteractionIntegral(1,1,0, 2,0,0, 2,0,0, 2,0,0), 1e-7);
-        CHECK_CLOSE(-0.1273045183436938, integrator.electronInteractionIntegral(1,1,0, 0,2,0, 0,2,0, 2,0,0), 1e-7);
+        CHECK_CLOSE(1.624848e-01, integrator.electronInteractionIntegral(primitiveA, primitiveB, primitiveC, primitiveD), 1e-5);
+    }
+
+
+    TEST(GaussianElectronInteractionIntegralTest6)
+    {
+
+        rowvec posA = {1.2,2.3,3.4};
+        rowvec posB = {-1.3,1.4,-2.4};
+        rowvec posC = {2.3,0.9,3.2};
+        rowvec posD = {5.0,1.9,1.2};
+
+        GaussianPrimitiveOrbital primitiveA(1.0, 0,0,0, 0.2);
+        GaussianPrimitiveOrbital primitiveB(1.0, 1,0,0, 0.3);
+        GaussianPrimitiveOrbital primitiveC(1.0, 0,0,0, 0.4);
+        GaussianPrimitiveOrbital primitiveD(1.0, 0,0,1, 0.1);
+
+        GaussianElectronInteractionIntegral integrator(1);
+
+        integrator.set(posA, posB, posC, posD, primitiveA, primitiveB, primitiveC, primitiveD);
+
+        CHECK_CLOSE(0.2667434785828074, integrator.electronInteractionIntegral(primitiveA, primitiveB, primitiveC, primitiveD), 1e-7);
+    }
+
+
+    TEST(GaussianElectronInteractionIntegralTest7)
+    {
+
+        rowvec posA = {1.2,2.3,3.4};
+        rowvec posB = {-1.3,1.4,-2.4};
+        rowvec posC = {2.3,0.9,3.2};
+        rowvec posD = {5.0,1.9,1.2};
+
+        GaussianPrimitiveOrbital primitiveA(1.0, 0,0,0, 0.2);
+        GaussianPrimitiveOrbital primitiveB(1.0, 1,0,0, 0.3);
+        GaussianPrimitiveOrbital primitiveC(1.0, 0,2,0, 0.4);
+        GaussianPrimitiveOrbital primitiveD(1.0, 0,0,1, 0.1);
+
+        GaussianElectronInteractionIntegral integrator(2);
+
+        integrator.set(posA, posB, posC, posD, primitiveA, primitiveB, primitiveC, primitiveD);
+
+        CHECK_CLOSE(0.2681206720738772, integrator.electronInteractionIntegral(primitiveA, primitiveB, primitiveC, primitiveD), 1e-7);
+    }
+
+
+    TEST(GaussianElectronInteractionIntegralTest8)
+    {
+
+        rowvec posA = {1.2,2.3,3.4};
+        rowvec posB = {-1.3,1.4,-2.4};
+        rowvec posC = {2.3,0.9,3.2};
+        rowvec posD = {5.0,1.9,1.2};
+
+        GaussianPrimitiveOrbital primitiveA(1.0, 1,1,0, 0.2);
+        GaussianPrimitiveOrbital primitiveB(1.0, 2,0,0, 0.3);
+        GaussianPrimitiveOrbital primitiveC(1.0, 2,0,0, 0.4);
+        GaussianPrimitiveOrbital primitiveD(1.0, 2,0,0, 0.1);
+
+        GaussianElectronInteractionIntegral integrator(2);
+
+        integrator.set(posA, posB, posC, posD, primitiveA, primitiveB, primitiveC, primitiveD);
+
+        CHECK_CLOSE(0.5266872995197744, integrator.electronInteractionIntegral(primitiveA, primitiveB, primitiveC, primitiveD), 1e-7);
+    }
+
+
+    TEST(GaussianElectronInteractionIntegralTest9)
+    {
+
+        rowvec posA = {1.2,2.3,3.4};
+        rowvec posB = {-1.3,1.4,-2.4};
+        rowvec posC = {2.3,0.9,3.2};
+        rowvec posD = {5.0,1.9,1.2};
+
+        GaussianPrimitiveOrbital primitiveA(1.0, 1,1,0, 0.2);
+        GaussianPrimitiveOrbital primitiveB(1.0, 0,2,0, 0.3);
+        GaussianPrimitiveOrbital primitiveC(1.0, 0,2,0, 0.4);
+        GaussianPrimitiveOrbital primitiveD(1.0, 2,0,0, 0.1);
+
+        GaussianElectronInteractionIntegral integrator(2);
+
+        integrator.set(posA, posB, posC, posD, primitiveA, primitiveB, primitiveC, primitiveD);
+
+        CHECK_CLOSE(-0.1273045183436938, integrator.electronInteractionIntegral(primitiveA, primitiveB, primitiveC, primitiveD), 1e-7);
     }
 }
