@@ -6,6 +6,8 @@
 #include <hermiteintegral.h>
 using namespace arma;
 
+class GaussianPrimitiveOrbital;
+
 class GaussianColoumbAttractionIntegral
 {
 public:
@@ -16,7 +18,7 @@ public:
 
     double coloumbAttractionIntegral(int iA, int jA, int kA, int iB, int jB, int kB);
     void set(const rowvec &corePositionA, const rowvec &corePositionB, const rowvec &corePositionC,
-             double exponentA, double exponentB, int totalAngularMomentum);
+             const GaussianPrimitiveOrbital &primitiveA, const GaussianPrimitiveOrbital &primitiveB);
 protected:
     HermiteExpansionCoefficient m_hermiteExpansionCoefficient;
     HermiteIntegral m_hermiteIntegral;

@@ -9,15 +9,14 @@ using namespace std;
 class HermiteExpansionCoefficient
 {
 public:
-    HermiteExpansionCoefficient(int dimension);
-    explicit HermiteExpansionCoefficient(double a, double b, rowvec A, rowvec B, int angularMomentumMax, bool setupImmediately = true);
+    explicit HermiteExpansionCoefficient(int dimension);
 
     void reset(int dimension);
-    void set(double a, double b, rowvec A, rowvec B, bool setupImmediately = true);
+    void set(double a, double b, rowvec A, rowvec B, int iA, int iB, int jA, int jB, int kA, int kB);
 
     const cube &operator [](const uword row) const;
     cube &operator[](const uword row);
-    void setupE();
+    void setupE(int iA, int iB, int jA, int jB, int kA, int kB);
     bool checkIndexCombinationForE(int iA, int iB, int t);
     double operator ()(int iA, int jA, int kA, int iB, int jB, int kB, const uword t, const uword u, const uword v) const;
 protected:
@@ -25,7 +24,7 @@ protected:
     double m_b;
     rowvec m_A;
     rowvec m_B;
-    int m_dimension;
+    int m_dimensionMax;
     cube m_E[3]; // t, i, j
     rowvec m_AB;
     rowvec m_P;

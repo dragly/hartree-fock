@@ -2,23 +2,28 @@
 
 #include <math/hermiteexpansioncoefficient.h>
 #include <basisfunctions/gaussian/integrals/gaussianoverlapintegral.h>
+#include <basisfunctions/gaussian/gaussianprimitiveorbital.h>
 
 GaussianKineticIntegral::GaussianKineticIntegral(int angularMomentumMax) :
     m_hermiteExpansionCoefficient(angularMomentumMax + 3)
 {
 }
 
-GaussianKineticIntegral::GaussianKineticIntegral(const rowvec& corePositionA, const rowvec& corePositionB, double exponentA, double exponentB, int angularMomentumMax) :
-    GaussianKineticIntegral(angularMomentumMax)
-{
-    set(corePositionA, corePositionB, exponentA, exponentB);
-}
+//GaussianKineticIntegral::GaussianKineticIntegral(const rowvec& corePositionA, const rowvec& corePositionB, double exponentA, double exponentB, int angularMomentumMax) :
+//    GaussianKineticIntegral(angularMomentumMax)
+//{
+//    set(corePositionA, corePositionB, exponentA, exponentB);
+//}
 
-void GaussianKineticIntegral::set(const rowvec& corePositionA, const rowvec& corePositionB, double exponentA, double exponentB)
+void GaussianKineticIntegral::set(const rowvec& corePositionA, const rowvec& corePositionB,
+                                  const GaussianPrimitiveOrbital& primitiveA, const GaussianPrimitiveOrbital& primitiveB)
 {
-    m_exponentB = exponentB;
-    m_exponentSum = exponentA + exponentB;
-    m_hermiteExpansionCoefficient.set(exponentA, exponentB, corePositionA, corePositionB);
+    m_exponentB = primitiveB.exponent();
+    m_exponentSum = primitiveA.exponent() + primitiveB.exponent();
+    m_hermiteExpansionCoefficient.set(primitiveA.exponent(), primitiveB.exponent(), corePositionA, corePositionB,
+                                      primitiveA.xExponent(), primitiveB.xExponent() + 2,
+                                      primitiveA.yExponent(), primitiveB.yExponent() + 2,
+                                      primitiveA.zExponent(), primitiveB.zExponent() + 2);
 }
 
 double GaussianKineticIntegral::kineticIntegral(int dim, int iA, int iB) {

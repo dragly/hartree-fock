@@ -7,6 +7,7 @@
 
 using namespace arma;
 
+class GaussianPrimitiveOrbital;
 
 class GaussianElectronInteractionIntegral
 {
@@ -17,13 +18,14 @@ public:
 
     void reset(int singleAngularMomentumMax);
 
-    void set(const rowvec &corePositionA, const rowvec &corePositionB, const rowvec &corePositionC,
-             const rowvec &corePositionD, double exponentA, double exponentB, double exponentC, double exponentD,
-             int totalAngularMomentum);
+    void set(const rowvec &corePositionA, const rowvec &corePositionB,
+             const rowvec &corePositionC, const rowvec &corePositionD,
+             const GaussianPrimitiveOrbital &primitiveA, const GaussianPrimitiveOrbital &primitiveB,
+             const GaussianPrimitiveOrbital &primitiveC, const GaussianPrimitiveOrbital &primitiveD);
     void setAB(const rowvec &corePositionA, const rowvec &corePositionB,
-               double exponentA, double exponentB);
+               const GaussianPrimitiveOrbital &primitiveA, const GaussianPrimitiveOrbital &primitiveB);
     void setCD(const rowvec &corePositionC, const rowvec &corePositionD,
-               double exponentC, double exponentD, int totalAngularMomentum);
+               const GaussianPrimitiveOrbital &primitiveC, const GaussianPrimitiveOrbital &primitiveD);
     double electronInteractionIntegral(int iA, int jA, int kA,
                                        int iB, int jB, int kB,
                                        int iC, int jC, int kC,

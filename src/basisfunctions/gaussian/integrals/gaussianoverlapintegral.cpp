@@ -1,18 +1,25 @@
 #include "gaussianoverlapintegral.h"
 
 #include <math/hermiteexpansioncoefficient.h>
+#include <basisfunctions/gaussian/gaussianprimitiveorbital.h>
 
 GaussianOverlapIntegral::GaussianOverlapIntegral(rowvec corePositionA, rowvec corePositionB,
-                                                         double exponentA, double exponentB,
-                                                         int angularMomentumMax) :
-    GaussianOverlapIntegral(exponentA + exponentB,
-                                new HermiteExpansionCoefficient(exponentA, exponentB, corePositionA, corePositionB, angularMomentumMax + 1))
+                                                 const GaussianPrimitiveOrbital& primitiveA,
+                                                 const GaussianPrimitiveOrbital& primitiveB) :
+    m_exponentSum(primitiveA.exponent() + primitiveB.exponent()),
+    m_isResponsibleForDeletingHermiteExpansionObject(true)
 {
-    m_isResponsibleForDeletingHermiteExpansionObject = true;
+    m_hermiteExpansionCoefficient = new HermiteExpansionCoefficient(primitiveA.exponentMax() + primitiveB.exponentMax() + 1);
+    m_hermiteExpansionCoefficient->set(primitiveA.exponent(), primitiveB.exponent(),
+                                       corePositionA, corePositionB,
+                                       primitiveA.xExponent(), primitiveB.xExponent(),
+                                       primitiveA.yExponent(), primitiveB.yExponent(),
+                                       primitiveA.zExponent(), primitiveB.zExponent());
+    m_exponentSum = primitiveA.exponent() + primitiveB.exponent();
 }
 
 GaussianOverlapIntegral::GaussianOverlapIntegral(double exponentSum,
-                                                         HermiteExpansionCoefficient* hermiteExpansionCoefficient) :
+                                                 HermiteExpansionCoefficient* hermiteExpansionCoefficient) :
     m_exponentSum(exponentSum),
     m_hermiteExpansionCoefficient(hermiteExpansionCoefficient),
     m_isResponsibleForDeletingHermiteExpansionObject(false)

@@ -2,6 +2,7 @@
 
 #include <hermiteintegral.h>
 #include <math/hermiteexpansioncoefficient.h>
+#include <basisfunctions/gaussian/gaussianprimitiveorbital.h>
 
 GaussianColoumbAttractionIntegral::GaussianColoumbAttractionIntegral(int angularMomentumMax) :
     m_hermiteExpansionCoefficient(angularMomentumMax + 1),
@@ -20,13 +21,18 @@ GaussianColoumbAttractionIntegral::GaussianColoumbAttractionIntegral(int angular
 //}
 
 void GaussianColoumbAttractionIntegral::set(const rowvec& corePositionA, const rowvec& corePositionB, const rowvec& corePositionC,
-                                            double exponentA, double exponentB, int totalAngularMomentum) {
+                                            const GaussianPrimitiveOrbital& primitiveA, const GaussianPrimitiveOrbital& primitiveB) {
+    double exponentA = primitiveA.exponent();
+    double exponentB = primitiveB.exponent();
     double p = exponentA + exponentB;
     rowvec P = (exponentA * corePositionA + exponentB * corePositionB) / (exponentA + exponentB);
     rowvec PC = P - corePositionC;
     m_exponentSum = exponentA + exponentB;
-    m_hermiteExpansionCoefficient.set(exponentA, exponentB, corePositionA, corePositionB);
-    m_hermiteIntegral.set(p, PC, totalAngularMomentum + 1);
+    m_hermiteExpansionCoefficient.set(exponentA, exponentB, corePositionA, corePositionB,
+                                      primitiveA.xExponent(), primitiveB.xExponent(),
+                                      primitiveA.yExponent(), primitiveB.yExponent(),
+                                      primitiveA.zExponent(), primitiveB.zExponent());
+    m_hermiteIntegral.set(p, PC, primitiveA.exponentMax() + primitiveB.exponentMax() + 1);
 }
 
 double GaussianColoumbAttractionIntegral::coloumbAttractionIntegral(int iA, int jA, int kA, int iB, int jB, int kB) {

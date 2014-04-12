@@ -1,5 +1,9 @@
 #include "gaussianprimitiveorbital.h"
 
+#include <algorithm>
+
+using std::max;
+
 GaussianPrimitiveOrbital::GaussianPrimitiveOrbital() :
     m_weight(0),
     m_xExponent(0),
@@ -62,5 +66,15 @@ double GaussianPrimitiveOrbital::weight() const
 void GaussianPrimitiveOrbital::setWeight(double weight)
 {
     m_weight = weight;
+}
+
+int GaussianPrimitiveOrbital::angularMomentum() const
+{
+    return m_xExponent + m_yExponent + m_zExponent;
+}
+
+int GaussianPrimitiveOrbital::exponentMax() const
+{
+    return max(m_xExponent, max(m_yExponent, m_zExponent));
 }
 

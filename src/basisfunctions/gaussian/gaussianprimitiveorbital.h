@@ -22,6 +22,9 @@ public:
     double weight() const;
     void setWeight(double weight);
 
+    int angularMomentum() const;
+    int exponentMax() const;
+
 private:
     double m_weight;
     int m_xExponent;

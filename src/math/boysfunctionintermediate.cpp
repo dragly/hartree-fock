@@ -55,7 +55,7 @@ void BoysFunctionIntermediate::updateResults() {
                    << "_limmax_" << m_limitMax
                    << "_nt" << m_nIntegralValues
                    << ".arma";
-    cout << "Loading Boys file " << fileNameStream.str() << endl;
+//    cout << "Loading Boys file " << fileNameStream.str() << endl;
 //    bool allGood = m_results.load(fileNameStream.str());
     bool allGood = m_results.load("boys_tabulated.dat");
     if(!allGood) {

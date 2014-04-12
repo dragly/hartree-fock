@@ -6,14 +6,14 @@
 using namespace arma;
 
 class HermiteExpansionCoefficient;
+class GaussianPrimitiveOrbital;
 
 class GaussianOverlapIntegral
 {
 public:
-    GaussianOverlapIntegral(double exponentSum, HermiteExpansionCoefficient *hermiteExpansionCoefficient);
     GaussianOverlapIntegral(rowvec corePositionA, rowvec corePositionB,
-                            double exponentA, double exponentB,
-                            int angularMomentumMax);
+                            const GaussianPrimitiveOrbital &primitiveA, const GaussianPrimitiveOrbital &primitiveB);
+    GaussianOverlapIntegral(double exponentSum, HermiteExpansionCoefficient *hermiteExpansionCoefficient);
     virtual ~GaussianOverlapIntegral();
 
 

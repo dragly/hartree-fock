@@ -31,15 +31,11 @@ double GaussianSystem::coupledIntegral(int p, int q, int r, int s)
     const GaussianContractedOrbital& sBF = m_basisFunctions.at(s);
     for(const GaussianPrimitiveOrbital& pP : pBF.primitiveBasisFunctions()) {
         for(const GaussianPrimitiveOrbital& qP : qBF.primitiveBasisFunctions()) {
-            electronInteractionIntegral.setAB(pBF.corePosition(), qBF.corePosition(), pP.exponent(), qP.exponent());
+            electronInteractionIntegral.setAB(pBF.corePosition(), qBF.corePosition(), pP, qP);
             for(const GaussianPrimitiveOrbital& rP : rBF.primitiveBasisFunctions()) {
                 for(const GaussianPrimitiveOrbital& sP : sBF.primitiveBasisFunctions()) {
-                    int totalAngularMomentum = pP.xExponent() + pP.yExponent() + pP.zExponent()
-                            + qP.xExponent() + qP.yExponent() + qP.zExponent()
-                            + rP.xExponent() + rP.yExponent() + rP.zExponent()
-                            + sP.xExponent() + sP.yExponent() + sP.zExponent();
                     electronInteractionIntegral.setCD(rBF.corePosition(), sBF.corePosition(),
-                                                      rP.exponent(), sP.exponent(), totalAngularMomentum);
+                                                      rP, sP);
                     result += pP.weight() * rP.weight() * qP.weight() * sP.weight()
                             * electronInteractionIntegral.electronInteractionIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
                                                                                       qP.xExponent(), qP.yExponent(), qP.zExponent(),
@@ -59,17 +55,14 @@ double GaussianSystem::uncoupledIntegral(int p, int q)
     const GaussianContractedOrbital& qBF = m_basisFunctions.at(q);
     for(const GaussianPrimitiveOrbital& pP : pBF.primitiveBasisFunctions()) {
         for(const GaussianPrimitiveOrbital& qP : qBF.primitiveBasisFunctions()) {
-            kineticIntegral.set(pBF.corePosition(), qBF.corePosition(), pP.exponent(), qP.exponent());
+            kineticIntegral.set(pBF.corePosition(), qBF.corePosition(), pP, qP);
             result += pP.weight() * qP.weight() * kineticIntegral.kineticIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
                                                                                   qP.xExponent(), qP.yExponent(), qP.zExponent());
-
-            int totalAngularMomentum = pP.xExponent() + pP.yExponent() + pP.zExponent()
-                    + qP.xExponent() + qP.yExponent() + qP.zExponent();
             for(uint i = 0; i < m_cores.size(); i++) {
                 const GaussianCore &core = m_cores.at(i);
                 const rowvec &corePositionC = core.position();
                 coulombIntegral.set(pBF.corePosition(), qBF.corePosition(), corePositionC,
-                                    pP.exponent(), qP.exponent(), totalAngularMomentum);
+                                    pP, qP);
                 result -= core.charge() * pP.weight() * qP.weight() * coulombIntegral.coloumbAttractionIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
                                                                                                                 qP.xExponent(), qP.yExponent(), qP.zExponent());
             }
@@ -85,7 +78,7 @@ double GaussianSystem::overlapIntegral(int p, int q)
     const GaussianContractedOrbital& qBF = m_basisFunctions.at(q);
     for(const GaussianPrimitiveOrbital& pP : pBF.primitiveBasisFunctions()) {
         for(const GaussianPrimitiveOrbital& qP : qBF.primitiveBasisFunctions()) {
-            GaussianOverlapIntegral integrator(pBF.corePosition(), qBF.corePosition(),pP.exponent(), qP.exponent(), m_angularMomentumMax);
+            GaussianOverlapIntegral integrator(pBF.corePosition(), qBF.corePosition(), pP, qP);
             result += pP.weight() * qP.weight() * integrator.overlapIntegral(pP.xExponent(), pP.yExponent(), pP.zExponent(),
                                                                              qP.xExponent(), qP.yExponent(), qP.zExponent());
         }

@@ -1,26 +1,20 @@
 #include "hermiteexpansioncoefficient.h"
 
-HermiteExpansionCoefficient::HermiteExpansionCoefficient(int dimension) :
+HermiteExpansionCoefficient::HermiteExpansionCoefficient(int dimensionMax) :
     m_a(0),
     m_b(0),
     m_A(zeros<rowvec>(3)),
     m_B(zeros<rowvec>(3))
 {
-    reset(dimension);
+    reset(dimensionMax);
 }
 
-HermiteExpansionCoefficient::HermiteExpansionCoefficient(double a, double b, rowvec A, rowvec B, int angularMomentumMax, bool setupImmediately) :
-    HermiteExpansionCoefficient(angularMomentumMax)
+void HermiteExpansionCoefficient::reset(int dimensionMax)
 {
-    set(a,b,A,B,setupImmediately);
-}
-
-void HermiteExpansionCoefficient::reset(int dimension)
-{
-    m_dimension = dimension;
-    int maxL = m_dimension;
-    int maxiA = m_dimension;
-    int maxiB = m_dimension;
+    m_dimensionMax = dimensionMax;
+    int maxL = m_dimensionMax;
+    int maxiA = m_dimensionMax;
+    int maxiB = m_dimensionMax;
     // Since we are only going to need E_i_j_0 for the integrals, we cap t to i and j to only have the
     // needed values available for the algorithm.
     int maxt = 2 * maxL;
@@ -30,15 +24,14 @@ void HermiteExpansionCoefficient::reset(int dimension)
     }
 }
 
-void HermiteExpansionCoefficient::set(double a, double b, rowvec A, rowvec B, bool setupImmediately)
+void HermiteExpansionCoefficient::set(double a, double b, rowvec A, rowvec B,
+                                      int iA, int iB, int jA, int jB, int kA, int kB)
 {
     m_a = a;
     m_b = b;
     m_A = A;
     m_B = B;
-    if(setupImmediately) {
-        setupE();
-    }
+    setupE(iA, iB, jA, jB, kA, kB);
 }
 
 bool HermiteExpansionCoefficient::checkIndexCombinationForE(int iA, int iB, int t) {
@@ -49,13 +42,24 @@ bool HermiteExpansionCoefficient::checkIndexCombinationForE(int iA, int iB, int 
     }
 }
 
-void HermiteExpansionCoefficient::setupE() {
-//    int maxL = m_dimension;
-    int maxiA = m_dimension;
-    int maxiB = m_dimension;
+void HermiteExpansionCoefficient::setupE(int iA, int iB, int jA, int jB, int kA, int kB) {
+    int maxiAs[3];
+    maxiAs[0] = iA;
+    maxiAs[1] = jA;
+    maxiAs[2] = kA;
+
+    int maxiBs[3];
+    maxiBs[0] = iB;
+    maxiBs[1] = jB;
+    maxiBs[2] = kB;
+
     // Since we are only going to need E_i_j_0 for the integrals, we cap t to i and j to only have the
     // needed values available for the algorithm.
-    int maxt = 2 * m_dimension - 1;
+    int maxts[3];
+    maxts[0] = iA + iB + 1;
+    maxts[1] = jA + jB + 1;
+    maxts[2] = kA + kB + 1;
+
     double a = m_a;
     double b = m_b;
     double p = a + b;
@@ -65,18 +69,17 @@ void HermiteExpansionCoefficient::setupE() {
     m_PA = m_P - m_A;
     m_PB = m_P - m_B;
     for(int dim = 0; dim < 3; dim++) {
-        cube& dim_E = m_E[dim];
-//        dim_E = zeros(maxiA, maxiB, maxt + 1);
-        double dim_AB = m_AB(dim);
-        double dim_PA = m_PA(dim);
-        double dim_PB = m_PB(dim);
+        cube& E = m_E[dim];
+        double AB = m_AB(dim);
+        double PA = m_PA(dim);
+        double PB = m_PB(dim);
 
-        //    vector<string> performed;
+        int maxiA = maxiAs[dim];
+        int maxiB = maxiBs[dim];
+        int maxt = maxts[dim];
 
         // First row is special
-        dim_E(0,0,0) = exp(-mu * dim_AB * dim_AB);
-//        cout << "KAB=" << dim_E(0,0,0) << endl;
-        //    performed.push_back("000");
+        E(0,0,0) = exp(-mu * AB * AB);
         for(int iB = 0; iB < maxiB; iB++) {
             for(int t = 0; t < maxt; t++) {
                 int iA = 0;
@@ -90,17 +93,17 @@ void HermiteExpansionCoefficient::setupE() {
                 int tn = t + 1;
                 double E_iA_iBp_tp = 0;
                 if(checkIndexCombinationForE(iA, iBp, tp)) {
-                    E_iA_iBp_tp = dim_E(iA, iBp, tp);
+                    E_iA_iBp_tp = E(iA, iBp, tp);
                 }
                 double E_iA_iBp_t = 0;
                 if(checkIndexCombinationForE(iA, iBp, t)) {
-                    E_iA_iBp_t = dim_E(iA, iBp, t);
+                    E_iA_iBp_t = E(iA, iBp, t);
                 }
                 double E_iA_iBp_tn = 0;
                 if(checkIndexCombinationForE(iA, iBp, tn)) {
-                    E_iA_iBp_tn = dim_E(iA, iBp, tn);
+                    E_iA_iBp_tn = E(iA, iBp, tn);
                 }
-                dim_E(iA,iB,t) = 1 / (2*p) * E_iA_iBp_tp + dim_PB * E_iA_iBp_t +  (t + 1)*E_iA_iBp_tn;
+                E(iA,iB,t) = 1 / (2*p) * E_iA_iBp_tp + PB * E_iA_iBp_t +  (t + 1)*E_iA_iBp_tn;
             }
         }
         for(int iA = 1; iA < maxiA; iA++) {
@@ -113,20 +116,19 @@ void HermiteExpansionCoefficient::setupE() {
                     int tn = t + 1;
                     double E_iAp_iB_tp = 0;
                     if(checkIndexCombinationForE(iAp, iB, tp)) {
-                        E_iAp_iB_tp = dim_E(iAp, iB, tp);
+                        E_iAp_iB_tp = E(iAp, iB, tp);
                     }
                     double E_iAp_iB_t = 0;
                     if(checkIndexCombinationForE(iAp, iB, t)) {
-                        E_iAp_iB_t = dim_E(iAp, iB, t);
+                        E_iAp_iB_t = E(iAp, iB, t);
                     }
                     double E_iAp_iB_tn = 0;
                     if(checkIndexCombinationForE(iAp, iB, tn)) {
-                        E_iAp_iB_tn = dim_E(iAp, iB, tn);
+                        E_iAp_iB_tn = E(iAp, iB, tn);
                     }
-                    dim_E(iA,iB,t) = 1 / (2*p) * E_iAp_iB_tp + dim_PA * E_iAp_iB_t +  (t + 1)*E_iAp_iB_tn;
+                    E(iA,iB,t) = 1 / (2*p) * E_iAp_iB_tp + PA * E_iAp_iB_t +  (t + 1)*E_iAp_iB_tn;
                 }
             }
         }
-//        cout << dim_E;
     }
 }
