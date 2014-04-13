@@ -170,7 +170,6 @@ void UnrestrictedHartreeFockSolver::calculateEnergy()
     const mat& h = uncoupledMatrix();
     energy += 0.5 * accu( (Pu + Pd) % h + Fu % Pu + Fd % Pd);
     energy += electronSystem()->additionalEnergyTerms();
-    //        if(energy < currentEnergy) {
     m_energyUHF = energy;
 }
 
