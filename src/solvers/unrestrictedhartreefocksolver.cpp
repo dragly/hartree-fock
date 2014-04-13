@@ -52,7 +52,7 @@ void UnrestrictedHartreeFockSolver::setupFockMatrices() {
     const mat &h = uncoupledMatrix();
     const field<mat> &Q = coupledMatrix();
     for(uint p = 0; p < n; p++) {
-        for(uint q = 0; q < n; q++) {
+        for(uint q = p; q < n; q++) {
             Fu(p,q) = h(p,q);
             Fd(p,q) = h(p,q);
             for(uint r = 0; r < n; r++) {
@@ -66,6 +66,9 @@ void UnrestrictedHartreeFockSolver::setupFockMatrices() {
                     Fd(p,q) += Pdsr * QprqsMinusQprsq + Pusr * Qprqs;
                 }
             }
+            // Symmetry
+            Fu(q,p) = Fu(p,q);
+            Fd(q,p) = Fd(p,q);
         }
     }
 }
