@@ -2,6 +2,7 @@
 #define HERMITEINTEGRAL_H
 
 #include "math/vector3.h"
+#include "math/boysfunction.h"
 
 #include <armadillo>
 
@@ -12,7 +13,6 @@ class HermiteIntegral
 {
 public:
     HermiteIntegral(int dimensionMax);
-    HermiteIntegral(double alpha, const Vector3 &A, int dimension, bool setupImmediately = true);
 
     void reset(int dimension);
     void set(double alpha, const Vector3 &A, int t, int u, int v);
@@ -28,6 +28,7 @@ protected:
     Vector3 m_A;
     field<cube> m_R;
     int m_dimensionMax;
+    BoysFunction boysFunction;
 };
 
 inline const cube &HermiteIntegral::operator()(const uword row) const {

@@ -13,6 +13,24 @@ using std::cout;
 using std::endl;
 
 SUITE(Development) {
+//    TEST(OxygenSix) {
+//        vector<GaussianCore> cores;
+//        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_4-31G.tm"));
+//        cores.push_back(GaussianCore({2.282,0,0}, "atom_8_basis_4-31G.tm"));
+//        GaussianSystem system;
+//        for(const GaussianCore &core : cores) {
+//            system.addCore(core);
+//        }
+//        mat C;
+//        HartreeFockSolver solver(&system);
+//        solver.setConvergenceTreshold(1e-12);
+//        solver.setNIterationsMax(1e4);
+//        solver.setDensityMixFactor(0.5);
+//        solver.solve();
+//        cout << solver.energy() << endl;
+//        cout << solver.iterationsUsed() << endl;
+////        CHECK_CLOSE(-149.5117583638509, solver.energy(), 1e-5);
+//    }
 //    TEST(Water) {
 //        vector<GaussianCore> cores;
 //        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_4-31G.tm"));
@@ -28,6 +46,8 @@ SUITE(Development) {
 //        solver.setNIterationsMax(1e3);
 //        solver.setDensityMixFactor(0.5);
 //        solver.solve();
+//        cout << solver.energy() << endl;
+//        cout << solver.iterationsUsed() << endl;
 //        CHECK_CLOSE(-75.90736859918989, solver.energy(), 1e-6);
 //    }
     TEST(OxygenSixAsterisk) {

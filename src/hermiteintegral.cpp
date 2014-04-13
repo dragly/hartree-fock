@@ -2,7 +2,6 @@
 
 #include "math/vector3.h"
 #include <math/boysfunction.h>
-#include <math/boysfunctionintermediate.h>
 
 HermiteIntegral::HermiteIntegral(int dimensionMax) :
     m_alpha(0),
@@ -39,8 +38,7 @@ void HermiteIntegral::setupR(int tin, int uin, int vin) {
     double boysArg = p * dot(m_A, m_A);
     int tuvSumMax = tin + uin + vin;
     int nMax = tin + uin + vin;
-    BoysFunctionIntermediate &boysFunctionIntermediate = BoysFunctionIntermediate::getInstance();
-    BoysFunction boysFunction(boysArg, nMax, &boysFunctionIntermediate);
+    boysFunction.set(boysArg, nMax);
     // Calculate R0_tuv
     for(int n = 0; n <= nMax; n++) {
         m_R(n)(0,0,0) = pow(-2*p, n) * boysFunction.result(n);

@@ -10,7 +10,10 @@ using namespace arma;
 class BoysFunction
 {
 public:
+    BoysFunction();
     BoysFunction(double arg, int levelMax = 0, BoysFunctionIntermediate* intermediate = 0);
+
+    void set(double arg, int levelMax = 0, BoysFunctionIntermediate* intermediate = 0);
 
     double result(int level = 0) const;
 

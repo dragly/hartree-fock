@@ -4,40 +4,45 @@
 
 using namespace std;
 
+BoysFunction::BoysFunction()
+{
+
+}
+
 BoysFunction::BoysFunction(double arg, int levelMax, BoysFunctionIntermediate *intermediate)
 {
-    cout << setprecision(16);
+    set(arg, levelMax, intermediate);
+}
+
+void BoysFunction::set(double arg, int levelMax, BoysFunctionIntermediate *intermediate)
+{
     double limitMin = 0;
     double limitMax = 50;
     if(intermediate == 0) {
-        m_intermediate = new BoysFunctionIntermediate();
+        m_intermediate = &(BoysFunctionIntermediate::getInstance());
     } else {
         m_intermediate = intermediate;
     }
     double x = arg;
     m_results = zeros(levelMax + 1);
-//    if(levelMax == 0) {
-//        m_results(0) = calculateZeroLevel(arg);
-//    } else {
-        double expmx = exp(-x);
-        if(arg < limitMin || arg > limitMax) {
-            if(arg < limitMin) {
-                m_results(levelMax) = calculateTaylorExpansion(arg, levelMax);
-            } else if(arg > limitMax) {
-                m_results(levelMax) = calculateAsymptopticForm(arg, levelMax);
-            }
-            // Iterate down
-            for(int n = levelMax; n > 0; n--) {
-                double Fn = m_results(n);
-                m_results(n - 1) = (2*x*Fn + expmx) / (2*n - 1);
-            }
-        } else {
-            // Get results from intermediate area
-            for(int n = 0; n < levelMax + 1; n++) {
-                m_results(n) = m_intermediate->result(arg, n);
-            }
+    double expmx = exp(-x);
+    if(arg < limitMin || arg > limitMax) {
+        if(arg < limitMin) {
+            m_results(levelMax) = calculateTaylorExpansion(arg, levelMax);
+        } else if(arg > limitMax) {
+            m_results(levelMax) = calculateAsymptopticForm(arg, levelMax);
         }
-//    }
+        // Iterate down
+        for(int n = levelMax; n > 0; n--) {
+            double Fn = m_results(n);
+            m_results(n - 1) = (2*x*Fn + expmx) / (2*n - 1);
+        }
+    } else {
+        // Get results from intermediate area
+        for(int n = 0; n < levelMax + 1; n++) {
+            m_results(n) = m_intermediate->result(arg, n);
+        }
+    }
 }
 
 double BoysFunction::calculateAsymptopticForm(double arg, int level) {
