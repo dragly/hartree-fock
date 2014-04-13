@@ -13,16 +13,9 @@ HartreeFockSolver::HartreeFockSolver(ElectronSystem *basisFunction) :
     m_electronSystem(basisFunction),
     m_convergenceTreshold(1e-8),
     m_nIterationsMax(1e3),
-    m_densityMixFactor(0.5)
+    m_densityMixFactor(0.5),
+    m_hasBeenSetup(false)
 {
-    cout << setprecision(20);
-    allocateCoupledMatrix();
-    setupUncoupledMatrix();
-    setupOverlapMatrix();
-    setupCoupledMatrix();
-    resetCoefficientMatrix();
-    setupDensityMatrix();
-    resetFockMatrix();
 }
 
 HartreeFockSolver::~HartreeFockSolver()
@@ -30,24 +23,25 @@ HartreeFockSolver::~HartreeFockSolver()
     cleanUpCoupledMatrix();
 }
 
-void HartreeFockSolver::resetFockMatrix() {
-    uint n = electronSystem()->nBasisFunctions();
-    m_fockMatrix = zeros(n,n);
+void HartreeFockSolver::setup()
+{
+    allocateCoupledMatrix();
+    setupIntegralMatrices();
+    m_hasBeenSetup = true;
 }
 
-void HartreeFockSolver::reset() {
+void HartreeFockSolver::advance()
+{
+    if(!m_hasBeenSetup) {
+        setup();
+    }
+}
+
+void HartreeFockSolver::setupIntegralMatrices()
+{
     setupUncoupledMatrix();
     setupOverlapMatrix();
     setupCoupledMatrix();
-    resetCoefficientMatrix();
-    setupDensityMatrix();
-    resetFockMatrix();
-}
-
-void HartreeFockSolver::resetCoefficientMatrix() {
-    ElectronSystem* f = m_electronSystem;
-    m_coefficientMatrix.reset();
-    m_coefficientMatrix = zeros(f->nBasisFunctions(), f->nParticles() / 2);
 }
 
 void HartreeFockSolver::allocateCoupledMatrix() {
@@ -60,16 +54,6 @@ void HartreeFockSolver::allocateCoupledMatrix() {
         }
     }
 }
-double HartreeFockSolver::densityMixFactor() const
-{
-    return m_densityMixFactor;
-}
-
-void HartreeFockSolver::setDensityMixFactor(double densityMixFactor)
-{
-    m_densityMixFactor = densityMixFactor;
-}
-
 
 void HartreeFockSolver::cleanUpCoupledMatrix() {
     m_coupledMatrix.reset();
@@ -131,30 +115,6 @@ void HartreeFockSolver::setupCoupledMatrix() {
     }
 }
 
-void HartreeFockSolver::setupFockMatrix() {
-    ElectronSystem* f = m_electronSystem;
-    uint n = f->nBasisFunctions();
-    mat &F = m_fockMatrix;
-    mat &P = m_densityMatrix;
-    mat &h = m_uncoupledMatrix;
-    for(uint p = 0; p < n; p++) {
-        for(uint q = 0; q < n; q++) {
-            F(p,q) = h(p,q);
-            for(uint r = 0; r < n; r++) {
-                for(uint s = 0; s < n; s++) {
-                    double Qtilde = coupledMatrixTilde(p, q, r, s);
-                    F(p,q) += 0.5 * Qtilde * P(s,r);
-                }
-            }
-        }
-    }
-}
-
-double HartreeFockSolver::coupledMatrixTilde(int p, int q, int r, int s) { // TODO: Find a better name for tilde
-    field<mat>& Q = m_coupledMatrix;
-    return 2 * Q(p,r)(q,s) - Q(p,r)(s,q);
-}
-
 
 void HartreeFockSolver::normalizeCoefficientMatrix(uint nParticles, mat &coefficientMatrix){
     ElectronSystem* f = m_electronSystem;
@@ -175,84 +135,9 @@ void HartreeFockSolver::normalizeCoefficientMatrix(uint nParticles, mat &coeffic
     }
 }
 
-void HartreeFockSolver::advance() {
-    ElectronSystem* f = m_electronSystem;
-    uint no = f->nBasisFunctions();
-    uint nk = f->nParticles() / 2;
-    setupFockMatrix();
-
-    vec s;
-    mat U;
-    eig_sym(s, U, m_overlapMatrix);
-
-    mat V = U*diagmat(1.0/sqrt(s));
-
-    mat &F = m_fockMatrix;
-    F = V.t() * F * V;
-
-    mat Cprime;
-    eig_sym(m_fockEnergies, Cprime, m_fockMatrix);
-
-
-    mat &C = m_coefficientMatrix;
-    C = V*Cprime.submat(0, 0, no - 1, nk - 1);
-    normalizeCoefficientMatrix(nk, C);
-
-    setupDensityMatrix();
-
-    double energy = 0;
-
-    mat& P = m_densityMatrix;
-    mat& h = m_uncoupledMatrix;
-    for(uint p = 0; p < no; p++) {
-        for(uint q = 0; q < no; q++) {
-            energy += P(p,q) * h(p,q);
-        }
-    }
-
-    for(uint p = 0; p < no; p++) {
-        for(uint q = 0; q < no; q++) {
-            for(uint r = 0; r < no; r++) {
-                for(uint s = 0; s < no; s++) {
-                    double Qtilde = coupledMatrixTilde(p, q, r, s);
-                    energy += 0.25 * Qtilde * P(p,q) * P(s,r);
-                }
-            }
-        }
-    }
-    energy += m_electronSystem->additionalEnergyTerms();
-    m_energy = energy;
-}
-
 int HartreeFockSolver::iterationsUsed() const
 {
     return m_iterationsUsed;
-}
-
-void HartreeFockSolver::setupDensityMatrix() {
-    mat &P = m_densityMatrix;
-    mat &C = m_coefficientMatrix;
-    mat tempP = 2 * C * C.t();
-//    P = tempP;
-
-    if(P.n_elem > 0) {
-        P = m_densityMixFactor * P + (1 - m_densityMixFactor) * tempP; // smoothing
-    } else {
-        P = tempP;
-    }
-}
-
-void HartreeFockSolver::solve() {
-    for(int i = 0; i < nIterationsMax(); i++) {
-        vec previousFockEnergies = m_fockEnergies;
-        advance();
-        if(i > 0) {
-            if(sum(abs(m_fockEnergies - previousFockEnergies)) / m_fockEnergies.n_elem < m_convergenceTreshold) {
-                m_iterationsUsed = i;
-                break;
-            }
-        }
-    }
 }
 
 double HartreeFockSolver::convergenceTreshold() const
@@ -273,23 +158,8 @@ ElectronSystem *HartreeFockSolver::electronSystem() {
     return m_electronSystem;
 }
 
-double HartreeFockSolver::energy()
-{
-    return m_energy;
-}
-
-const mat &HartreeFockSolver::coefficientMatrix() const
-{
-    return m_coefficientMatrix;
-}
-
 const mat &HartreeFockSolver::overlapMatrix() const {
     return m_overlapMatrix;
-}
-
-const mat &HartreeFockSolver::densityMatrix() const
-{
-    return m_densityMatrix;
 }
 
 const field<mat> &HartreeFockSolver::coupledMatrix() const
@@ -310,4 +180,14 @@ void HartreeFockSolver::setNIterationsMax(int nIterationsMax)
 const mat &HartreeFockSolver::uncoupledMatrix() const
 {
     return m_uncoupledMatrix;
+}
+
+double HartreeFockSolver::densityMixFactor() const
+{
+    return m_densityMixFactor;
+}
+
+void HartreeFockSolver::setDensityMixFactor(double densityMixFactor)
+{
+    m_densityMixFactor = densityMixFactor;
 }

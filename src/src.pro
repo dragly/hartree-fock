@@ -7,11 +7,10 @@ CONFIG -= qt
 
 TARGET = hartree-fock
 
-SOURCES += hartreesolver.cpp \
+SOURCES += \
     math/vector3.cpp \
     electronsystems/helium/heliumhartree.cpp \
     electronsystems/hydrogen/hydrogenmolecule.cpp \
-    hartreefocksolver.cpp \
     electronsystems/hydrogen/multihydrogen.cpp \
     electronsystems/electronsystem.cpp \
     basisfunctions/gaussiantypeorbital.cpp \
@@ -32,15 +31,16 @@ SOURCES += hartreesolver.cpp \
     parsers/turbomoleparser.cpp \
     electronsystems/gaussian/gaussiancore.cpp \
     hf.cpp \
-    solvers/unrestrictedhartreefocksolver.cpp
+    solvers/unrestrictedhartreefocksolver.cpp \
+    solvers/hartreefocksolver.cpp \
+    solvers/hartreesolver.cpp \
+    solvers/restrictedhartreefocksolver.cpp
 
 HEADERS += \
-    hartreesolver.h \
     math/vector3.h \
     electronsystems/electronsystem.h \
     electronsystems/helium/heliumhartree.h \
     electronsystems/hydrogen/hydrogenmolecule.h \
-    hartreefocksolver.h \
     electronsystems/hydrogen/multihydrogen.h \
     basisfunctions/gaussiantypeorbital.h \
     basisfunctions/atomicbasisfunction.h\
@@ -60,7 +60,10 @@ HEADERS += \
     parsers/turbomoleparser.h \
     electronsystems/gaussian/gaussiancore.h \
     hf.h \
-    solvers/unrestrictedhartreefocksolver.h
+    solvers/unrestrictedhartreefocksolver.h \
+    solvers/restrictedhartreefocksolver.h \
+    solvers/hartreefocksolver.h \
+    solvers/hartreesolver.h
 
 OTHER_FILES += \
     defaults.pri \

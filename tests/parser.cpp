@@ -2,7 +2,7 @@
 
 #include <parsers/turbomoleparser.h>
 #include <electronsystems/gaussian/gaussiancore.h>
-#include <hartreefocksolver.h>
+#include "solvers/restrictedhartreefocksolver.h"
 
 SUITE(Parser) {
     TEST(Parser) {

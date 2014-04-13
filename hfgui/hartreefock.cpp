@@ -5,7 +5,7 @@
 
 #include <electronsystems/gaussian/gaussiancore.h>
 #include <electronsystems/gaussian/gaussiansystem.h>
-#include <hartreefocksolver.h>
+#include "solvers/unrestrictedhartreefocksolver.h"
 
 using namespace std;
 
@@ -89,12 +89,10 @@ void HartreeFock::loadPointsFromFile()
             system.addCore(core);
         }
         mat C;
-        HartreeFockSolver solver(&system);
-        for(int i = 0; i < 100; i++) {
-            solver.advance();
-        }
+        UnrestrictedHartreeFockSolver solver(&system);
+        solver.solve();
         cout << "Energy: " << solver.energy() << endl;
-        C = solver.coefficientMatrix();
+        C = solver.coeffcientMatrixUp() + solver.coeffcientMatrixDown();
         double dx = x(1) - x(0);
         double dy = y(1) - y(0);
         double dz = z(1) - z(0);
