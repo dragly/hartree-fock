@@ -146,6 +146,7 @@ void UnrestrictedHartreeFockSolver::advance() {
 }
 
 void UnrestrictedHartreeFockSolver::solve() {
+    HartreeFockSolver::solve();
     for(int i = 0; i < nIterationsMax(); i++) {
         vec previousFockEnergies = m_fockEnergiesUp;
         advance();

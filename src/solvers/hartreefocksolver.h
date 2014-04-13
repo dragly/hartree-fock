@@ -19,7 +19,7 @@ public:
 
     virtual void setup();
     virtual void advance();
-    virtual void solve() = 0;
+    virtual void solve();
 
     void setElectronSystem(ElectronSystem *electronSystem);
     ElectronSystem *electronSystem();

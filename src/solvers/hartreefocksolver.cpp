@@ -37,6 +37,13 @@ void HartreeFockSolver::advance()
     }
 }
 
+void HartreeFockSolver::solve()
+{
+    if(!m_hasBeenSetup) {
+        setup();
+    }
+}
+
 void HartreeFockSolver::setupIntegralMatrices()
 {
     setupUncoupledMatrix();
