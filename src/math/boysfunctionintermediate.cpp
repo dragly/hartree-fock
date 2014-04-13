@@ -133,10 +133,12 @@ double BoysFunctionIntermediate::result(double arg, int n) const {
 //    double closestArg = m_args[closestIndex];
     double closestArg = closestIndex * dx;
     double difference = arg - closestArg;
-    double sumResult = 0.0;
-    for(int k = 0; k < m_taylorExpansionOrder + 1; k++) {
+    double sumResult = m_results(closestIndex, n);
+    double powResult = 1;
+    for(int k = 1; k < m_taylorExpansionOrder + 1; k++) {
         double F_n_k_x = m_results(closestIndex, n + k);
-        sumResult += F_n_k_x * fastPow(-difference, k) * factorialInverseTable[k];
+        powResult *= -difference;
+        sumResult += F_n_k_x * powResult * factorialInverseTable[k];
     }
     return sumResult;
 }
