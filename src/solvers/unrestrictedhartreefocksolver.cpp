@@ -7,7 +7,8 @@ using std::setprecision;
 using std::fixed;
 
 UnrestrictedHartreeFockSolver::UnrestrictedHartreeFockSolver(ElectronSystem *system) :
-    HartreeFockSolver(system)
+    HartreeFockSolver(system),
+    m_initialCoefficientMatricesSetManually(false)
 {
 }
 
@@ -29,12 +30,24 @@ void UnrestrictedHartreeFockSolver::resetFockMatrices() {
 
 void UnrestrictedHartreeFockSolver::resetCoefficientMatrices() {
     ElectronSystem* f = electronSystem();
-    m_coefficientMatrixUp.reset();
-    m_coefficientMatrixUp = zeros(f->nBasisFunctions(), f->nParticlesUp());
-//    m_coefficientMatrixUp = randn(f->nBasisFunctions(), f->nParticlesUp());
-    m_coefficientMatrixDown.reset();
-    m_coefficientMatrixDown = zeros(f->nBasisFunctions(), f->nParticlesDown());
-//    m_coefficientMatrixDown = randn(f->nBasisFunctions(), f->nParticlesDown());
+
+    if(!m_initialCoefficientMatricesSetManually
+            || m_initialCoefficientMatrixUp.n_rows != f->nBasisFunctions()
+            || m_initialCoefficientMatrixUp.n_cols != f->nParticlesUp()
+            || m_initialCoefficientMatrixDown.n_rows != f->nBasisFunctions()
+            || m_initialCoefficientMatrixDown.n_cols != f->nParticlesDown()) {
+        m_initialCoefficientMatrixUp = zeros(f->nBasisFunctions(), f->nParticlesUp());
+        m_initialCoefficientMatrixDown = zeros(f->nBasisFunctions(), f->nParticlesDown());
+    }
+
+    m_coefficientMatrixUp = m_initialCoefficientMatrixUp;
+    m_coefficientMatrixDown = m_initialCoefficientMatrixDown;
+}
+
+void UnrestrictedHartreeFockSolver::randomizeCoefficientMatrices() {
+    ElectronSystem* f = electronSystem();
+    m_coefficientMatrixUp = randn(f->nBasisFunctions(), f->nParticlesUp());
+    m_coefficientMatrixDown = randn(f->nBasisFunctions(), f->nParticlesDown());
 }
 
 void UnrestrictedHartreeFockSolver::setupFockMatrices() {
@@ -130,20 +143,14 @@ void UnrestrictedHartreeFockSolver::advance() {
 
     setupDensityMatrices();
     setupFockMatrices();
-
-    double energy = 0;
-    mat &Pu = m_densityMatrixUp;
-    mat &Pd = m_densityMatrixDown;
-
-    const mat& h = uncoupledMatrix();
-
-    energy += 0.5 * accu( (Pu + Pd) % h + Fu % Pu + Fd % Pd);
-
-    energy += electronSystem()->additionalEnergyTerms();
-    m_energyUHF = energy;
 }
 
 void UnrestrictedHartreeFockSolver::solve() {
+    //    int nAttempts = 10;
+    //    double currentEnergy = INFINITY;
+    //    for(int a = 0; a < nAttempts; a++) {
+    randomizeCoefficientMatrices();
+    setupDensityMatrices();
     for(int i = 0; i < nIterationsMax(); i++) {
         vec previousFockEnergies = m_fockEnergiesUp;
         advance();
@@ -154,6 +161,20 @@ void UnrestrictedHartreeFockSolver::solve() {
             }
         }
     }
+
+    double energy = 0;
+    mat &Pu = m_densityMatrixUp;
+    mat &Pd = m_densityMatrixDown;
+    mat &Fu = m_fockMatrixUp;
+    mat &Fd = m_fockMatrixDown;
+
+    const mat& h = uncoupledMatrix();
+    energy += 0.5 * accu( (Pu + Pd) % h + Fu % Pu + Fd % Pd);
+    energy += electronSystem()->additionalEnergyTerms();
+    //        if(energy < currentEnergy) {
+    m_energyUHF = energy;
+    //        }
+    //    }
 }
 
 const mat &UnrestrictedHartreeFockSolver::coeffcientMatrixUp()
@@ -164,6 +185,13 @@ const mat &UnrestrictedHartreeFockSolver::coeffcientMatrixUp()
 const mat &UnrestrictedHartreeFockSolver::coeffcientMatrixDown()
 {
     return m_coefficientMatrixDown;
+}
+
+void UnrestrictedHartreeFockSolver::setInitialCoefficientMatrices(const mat &up, const mat &down)
+{
+    m_initialCoefficientMatricesSetManually = true;
+    m_initialCoefficientMatrixUp = up;
+    m_initialCoefficientMatrixDown = down;
 }
 
 double UnrestrictedHartreeFockSolver::energy()

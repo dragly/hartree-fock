@@ -140,6 +140,9 @@ int main(int argc, char* argv[])
 
     H5::Group statesGroup(outFile.openGroup("/states"));
 
+    mat coefficientMatrixUp;
+    mat coefficientMatrixDown;
+
     int nTotal = statesGroup.getNumObjs();
     int currentState = 0;
     for(int stateID = 0; stateID < nTotal; stateID++) {
@@ -173,10 +176,16 @@ int main(int argc, char* argv[])
             system.addCore(GaussianCore({ atoms[i].x, atoms[i].y, atoms[i].z}, fileName));
         }
         UnrestrictedHartreeFockSolver solver(&system);
+        if(stateID != 0) {
+            solver.setInitialCoefficientMatrices(coefficientMatrixUp, coefficientMatrixDown);
+        }
         solver.setNIterationsMax(1e3);
         solver.setDensityMixFactor(0.95);
         solver.setConvergenceTreshold(1e-9);
         solver.solve();
+
+        coefficientMatrixUp = solver.coeffcientMatrixUp();
+        coefficientMatrixDown = solver.coeffcientMatrixDown();
 
         double energy = solver.energy();
 

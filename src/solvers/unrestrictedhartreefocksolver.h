@@ -15,14 +15,23 @@ public:
 
     const mat &coeffcientMatrixUp();
     const mat &coeffcientMatrixDown();
+
+    void setInitialCoefficientMatrices(const mat& up, const mat &down);
 private:
     void resetCoefficientMatrices();
+    void setupFockMatrices();
+    void setupDensityMatrices();
+    void resetFockMatrices();
+    void randomizeCoefficientMatrices();
 
     mat m_fockMatrixUp;
     mat m_fockMatrixDown;
 
     mat m_coefficientMatrixUp;
     mat m_coefficientMatrixDown;
+
+    mat m_initialCoefficientMatrixUp;
+    mat m_initialCoefficientMatrixDown;
 
     mat m_densityMatrixUp;
     mat m_densityMatrixDown;
@@ -31,10 +40,7 @@ private:
     vec m_fockEnergiesDown;
 
     double m_energyUHF;
-
-    void setupFockMatrices();
-    void setupDensityMatrices();
-    void resetFockMatrices();
+    bool m_initialCoefficientMatricesSetManually;
 };
 
 #endif // UNRESTRICTEDHARTREEFOCKSOLVER_H
