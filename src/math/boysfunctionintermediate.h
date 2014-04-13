@@ -22,6 +22,7 @@ public:
 protected:
     const int m_taylorExpansionOrder = 6;
     double m_dx;
+    double m_dxInverse;
 
     uint m_nValues;
     int m_levelMax;

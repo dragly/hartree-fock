@@ -55,6 +55,7 @@ BoysFunctionIntermediate::BoysFunctionIntermediate(int levelMax, int nValues, do
     factorialInverseTable[39] = 4.90246975651e-47;
 
     m_dx = (limitMax - limitMin) / (nValues - 1);
+    m_dxInverse = 1.0 / m_dx;
     updateResults();
 }
 
@@ -99,7 +100,8 @@ void BoysFunctionIntermediate::updateResults() {
 double BoysFunctionIntermediate::result(double arg, int n) const {
     // Linear interpolation
     double dx = m_dx;
-    int closestIndex = (arg - m_limitMin + dx / 2.0) / dx; // + dx / 2.0 always gives the closest index
+    double dxI = m_dxInverse;
+    int closestIndex = (arg - m_limitMin + dx * 0.5) * dxI; // + dx / 2.0 always gives the closest index
     double closestArg = closestIndex * dx;
     double difference = arg - closestArg;
     double sumResult = m_results(closestIndex, n);
