@@ -23,6 +23,7 @@ private:
     void setupDensityMatrices();
     void resetFockMatrices();
     void randomizeCoefficientMatrices();
+    void calculateEnergy();
 
     mat m_fockMatrixUp;
     mat m_fockMatrixDown;

@@ -146,11 +146,6 @@ void UnrestrictedHartreeFockSolver::advance() {
 }
 
 void UnrestrictedHartreeFockSolver::solve() {
-    //    int nAttempts = 10;
-    //    double currentEnergy = INFINITY;
-    //    for(int a = 0; a < nAttempts; a++) {
-    randomizeCoefficientMatrices();
-    setupDensityMatrices();
     for(int i = 0; i < nIterationsMax(); i++) {
         vec previousFockEnergies = m_fockEnergiesUp;
         advance();
@@ -161,7 +156,11 @@ void UnrestrictedHartreeFockSolver::solve() {
             }
         }
     }
+    calculateEnergy();
+}
 
+void UnrestrictedHartreeFockSolver::calculateEnergy()
+{
     double energy = 0;
     mat &Pu = m_densityMatrixUp;
     mat &Pd = m_densityMatrixDown;
@@ -173,9 +172,8 @@ void UnrestrictedHartreeFockSolver::solve() {
     energy += electronSystem()->additionalEnergyTerms();
     //        if(energy < currentEnergy) {
     m_energyUHF = energy;
-    //        }
-    //    }
 }
+
 
 const mat &UnrestrictedHartreeFockSolver::coeffcientMatrixUp()
 {
