@@ -57,8 +57,13 @@ void UnrestrictedHartreeFockSolver::setupFockMatrices() {
             Fd(p,q) = h(p,q);
             for(uint r = 0; r < n; r++) {
                 for(uint s = 0; s < n; s++) {
-                    Fu(p,q) += Pu(s,r) * (Q(p,r)(q,s) - Q(p,r)(s,q)) + Pd(s,r) * Q(p,r)(q,s);
-                    Fd(p,q) += Pd(s,r) * (Q(p,r)(q,s) - Q(p,r)(s,q)) + Pu(s,r) * Q(p,r)(q,s);
+                    double Qprqs = Q(p,r)(q,s);
+                    double Qprsq = Q(p,r)(s,q);
+                    double QprqsMinusQprsq = Qprqs - Qprsq;
+                    double Pusr = Pu(s,r);
+                    double Pdsr = Pd(s,r);
+                    Fu(p,q) += Pusr * QprqsMinusQprsq + Pdsr * Qprqs;
+                    Fd(p,q) += Pdsr * QprqsMinusQprsq + Pusr * Qprqs;
                 }
             }
         }
