@@ -22,11 +22,17 @@ HartreeFockSolver::HartreeFockSolver(ElectronSystem *basisFunction) :
     setupCoupledMatrix();
     resetCoefficientMatrix();
     setupDensityMatrix();
+    resetFockMatrix();
 }
 
 HartreeFockSolver::~HartreeFockSolver()
 {
     cleanUpCoupledMatrix();
+}
+
+void HartreeFockSolver::resetFockMatrix() {
+    uint n = electronSystem()->nBasisFunctions();
+    m_fockMatrix = zeros(n,n);
 }
 
 void HartreeFockSolver::reset() {
@@ -35,6 +41,7 @@ void HartreeFockSolver::reset() {
     setupCoupledMatrix();
     resetCoefficientMatrix();
     setupDensityMatrix();
+    resetFockMatrix();
 }
 
 void HartreeFockSolver::resetCoefficientMatrix() {
@@ -130,7 +137,6 @@ void HartreeFockSolver::setupFockMatrix() {
     mat &F = m_fockMatrix;
     mat &P = m_densityMatrix;
     mat &h = m_uncoupledMatrix;
-    F = zeros(n,n);
     for(uint p = 0; p < n; p++) {
         for(uint q = 0; q < n; q++) {
             F(p,q) = h(p,q);

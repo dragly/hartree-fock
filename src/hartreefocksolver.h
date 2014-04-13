@@ -72,6 +72,7 @@ private:
     double m_previousFockEnergyRMS;
     int m_nIterationsMax;
     double m_densityMixFactor;
+    void resetFockMatrix();
 };
 
 #endif // HARTREEFOCKSOLVER_H
