@@ -40,8 +40,11 @@ void HermiteIntegral::setupR(int tin, int uin, int vin) {
     int nMax = tin + uin + vin;
     boysFunction.set(boysArg, nMax);
     // Calculate R0_tuv
-    for(int n = 0; n <= nMax; n++) {
-        m_R(n)(0,0,0) = pow(-2*p, n) * boysFunction.result(n);
+    double powResult = 1;
+    m_R(0)(0,0,0) = boysFunction.result(0);
+    for(int n = 1; n <= nMax; n++) {
+        powResult *= -2*p;
+        m_R(n)(0,0,0) = powResult * boysFunction.result(n);
     }
     // Iterate over all elements with t + u + v = tuvSum (slide 36)
     for(int tuvSum = 1; tuvSum <= tuvSumMax; tuvSum++) {
