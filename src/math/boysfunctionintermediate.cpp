@@ -59,34 +59,6 @@ BoysFunctionIntermediate::BoysFunctionIntermediate(int levelMax, int nValues, do
 }
 
 void BoysFunctionIntermediate::updateResults() {
-//    cout << "BoysFunctionIntermediate::updateResults(): starting" << endl;
-    //    int nValues = m_nValues;
-    //    vec previousResults = zeros(m_levelMax + 1 + (m_taylorExpansionOrder + 1) * nValues);
-    //    vec nextResults = zeros(m_levelMax + 1 + (m_taylorExpansionOrder + 1) * nValues);
-    //    // Calculate for all n in first x (i = 0)
-    //    for(int n = 0; n < m_levelMax + 1 + m_taylorExpansionOrder * nValues + 1; n++) {
-    //        uint i = 0;
-    //        double x = m_args[i];
-    //        previousResults(n) = BoysFunction::calculateTaylorExpansion(x, n);
-    //    }
-
-    //    for(int i = 0; i < m_nValues - 1; i++) {
-    //        double dx = m_dx;
-    //        for(int n = 0; n < m_levelMax + 1 + m_taylorExpansionOrder * (nValues - i); n++) {
-    //            double sumResult = 0.0;
-    //            for(int k = 0; k < m_taylorExpansionOrder; k++) {
-    //                double F_n_k_x = previousResults(n + k);
-    //                double kFac = BoysFunction::factorial(k);
-
-    //                sumResult += F_n_k_x * pow(-dx, k) / kFac;
-    //            }
-    //            nextResults(n) = sumResult;
-    //        }
-    //        for(int n = 0; n < m_levelMax + 1; n++) {
-    //            m_results(i+1, n) = nextResults(n);
-    //        }
-    //        previousResults = nextResults;
-    //    }
     // Try to load results from file
     stringstream fileNameStream;
     fileNameStream << "boys_function_data"
@@ -96,8 +68,6 @@ void BoysFunctionIntermediate::updateResults() {
                    << "_limmax_" << m_limitMax
                    << "_nt" << m_nIntegralValues
                    << ".arma";
-//    cout << "Loading Boys file " << fileNameStream.str() << endl;
-//    bool allGood = m_results.load(fileNameStream.str());
     bool allGood = m_results.load("boys_tabulated.dat");
     if(!allGood) {
         cout << "BoysFunctionIntermediate::updateResults(): Boys function data file not found. Generating now." << endl;
@@ -130,7 +100,6 @@ double BoysFunctionIntermediate::result(double arg, int n) const {
     // Linear interpolation
     double dx = m_dx;
     int closestIndex = (arg - m_limitMin + dx / 2.0) / dx; // + dx / 2.0 always gives the closest index
-//    double closestArg = m_args[closestIndex];
     double closestArg = closestIndex * dx;
     double difference = arg - closestArg;
     double sumResult = m_results(closestIndex, n);
