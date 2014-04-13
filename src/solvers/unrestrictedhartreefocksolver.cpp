@@ -1,6 +1,6 @@
 #include "unrestrictedhartreefocksolver.h"
+#include "electronsystems/electronsystem.h"
 
-#include <electronsystems/electronsystem.h>
 #include <iomanip>
 
 using std::setprecision;
@@ -9,19 +9,15 @@ using std::fixed;
 UnrestrictedHartreeFockSolver::UnrestrictedHartreeFockSolver(ElectronSystem *system) :
     HartreeFockSolver(system)
 {
-    resetCoefficientMatrices();
-    setupDensityMatrices();
-    m_densityMatrixUp(0,1) = 0.1; // Added asymmetry between the spin up and spin down orbitals
-    resetFockMatrices();
-    setupFockMatrices();
 }
 
-void UnrestrictedHartreeFockSolver::reset() {
-    HartreeFockSolver::reset();
+void UnrestrictedHartreeFockSolver::setup()
+{
+    HartreeFockSolver::setup();
     resetCoefficientMatrices();
+    resetFockMatrices();
     setupDensityMatrices();
     m_densityMatrixUp(0,1) = 0.1; // Added asymmetry between the spin up and spin down orbitals
-    resetFockMatrices();
     setupFockMatrices();
 }
 
@@ -95,6 +91,7 @@ void UnrestrictedHartreeFockSolver::setupDensityMatrices() {
 }
 
 void UnrestrictedHartreeFockSolver::advance() {
+    HartreeFockSolver::advance();
     ElectronSystem* f = electronSystem();
     uint no = f->nBasisFunctions();
     uint nkUp = f->nParticlesUp();
@@ -157,6 +154,16 @@ void UnrestrictedHartreeFockSolver::solve() {
             }
         }
     }
+}
+
+const mat &UnrestrictedHartreeFockSolver::coeffcientMatrixUp()
+{
+    return m_coefficientMatrixUp;
+}
+
+const mat &UnrestrictedHartreeFockSolver::coeffcientMatrixDown()
+{
+    return m_coefficientMatrixDown;
 }
 
 double UnrestrictedHartreeFockSolver::energy()

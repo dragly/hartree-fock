@@ -1,7 +1,7 @@
 #include <unittest++/UnitTest++.h>
 
-#include <hartreesolver.h>
-#include <hartreefocksolver.h>
+#include "solvers/hartreesolver.h"
+#include "solvers/restrictedhartreefocksolver.h"
 
 #include <electronsystems/helium/heliumhartree.h>
 #include <electronsystems/hydrogen/hydrogenmolecule.h>
@@ -48,7 +48,7 @@ SUITE(Hydrogen) {
 
     TEST(HydrogenAdvanceManyHF) {
         HydrogenMolecule basisFunction(1.0);
-        HartreeFockSolver solver(&basisFunction);
+        RestrictedHartreeFockSolver solver(&basisFunction);
         for(int i = 0; i < 100; i++) {
             solver.advance();
         }
@@ -63,7 +63,7 @@ SUITE(Hydrogen) {
         nucleiPositions.reshape(3,3);
         nucleiPositions = nucleiPositions.t();
         MultiHydrogen basisFunction(nucleiPositions);
-        HartreeFockSolver solver(&basisFunction);
+        RestrictedHartreeFockSolver solver(&basisFunction);
         for(int i = 0; i < 100; i++) {
             solver.advance();
         }

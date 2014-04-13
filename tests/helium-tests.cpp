@@ -3,8 +3,8 @@
 #include <unittest++/Test.h>
 #include <unittest++/TestReporterStdout.h>
 #include <unittest++/TestRunner.h>
-#include <hartreesolver.h>
-#include <hartreefocksolver.h>
+#include "solvers/hartreesolver.h"
+#include "solvers/restrictedhartreefocksolver.h"
 #include <electronsystems/helium/heliumhartree.h>
 #include <electronsystems/hydrogen/hydrogenmolecule.h>
 #include <electronsystems/hydrogen/multihydrogen.h>

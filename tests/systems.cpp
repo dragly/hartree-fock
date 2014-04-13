@@ -2,10 +2,14 @@
 
 #include <electronsystems/gaussian/gaussiancore.h>
 #include <electronsystems/gaussian/gaussiansystem.h>
-#include <hartreefocksolver.h>
+#include "solvers/restrictedhartreefocksolver.h"
 #include <solvers/unrestrictedhartreefocksolver.h>
 
 SUITE(Systems) {
+    TEST(Dummy) {
+
+    }
+
     TEST(Water) {
         vector<GaussianCore> cores;
         cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_4-31G.tm"));
@@ -16,7 +20,7 @@ SUITE(Systems) {
             system.addCore(core);
         }
         mat C;
-        HartreeFockSolver solver(&system);
+        RestrictedHartreeFockSolver solver(&system);
         solver.setConvergenceTreshold(1e-12);
         solver.setNIterationsMax(1e3);
         solver.setDensityMixFactor(0.5);
@@ -31,7 +35,7 @@ SUITE(Systems) {
         for(const GaussianCore &core : cores) {
             system.addCore(core);
         }
-        HartreeFockSolver solver(&system);
+        RestrictedHartreeFockSolver solver(&system);
         solver.setConvergenceTreshold(1e-12);
         solver.setNIterationsMax(1e3);
         solver.setDensityMixFactor(0.5);
@@ -46,7 +50,7 @@ SUITE(Systems) {
             system.addCore(core);
         }
         mat C;
-        HartreeFockSolver solver(&system);
+        RestrictedHartreeFockSolver solver(&system);
         solver.setConvergenceTreshold(1e-12);
         solver.setNIterationsMax(1e3);
         solver.setDensityMixFactor(0.5);
@@ -62,7 +66,7 @@ SUITE(Systems) {
             system.addCore(core);
         }
         mat C;
-        HartreeFockSolver solver(&system);
+        RestrictedHartreeFockSolver solver(&system);
         solver.setConvergenceTreshold(1e-12);
         solver.setNIterationsMax(1e4);
         solver.setDensityMixFactor(0.5);

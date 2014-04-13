@@ -1,7 +1,7 @@
 #include <basisfunctions/gaussian/gaussiancontractedorbital.h>
 #include <electronsystems/gaussian/gaussiancore.h>
 #include <electronsystems/gaussian/gaussiansystem.h>
-#include <hartreefocksolver.h>
+#include "solvers/restrictedhartreefocksolver.h"
 
 #include <unittest++/UnitTest++.h>
 #include <unittest++/Test.h>

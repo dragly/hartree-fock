@@ -1,20 +1,23 @@
 #ifndef UNRESTRICTEDHARTREEFOCKSOLVER_H
 #define UNRESTRICTEDHARTREEFOCKSOLVER_H
 
-#include <hartreefocksolver.h>
+#include "solvers/hartreefocksolver.h"
 
 class UnrestrictedHartreeFockSolver : public HartreeFockSolver
 {
 public:
     explicit UnrestrictedHartreeFockSolver(ElectronSystem *system);
 
-    virtual void reset();
+    virtual void setup();
     virtual void advance();
-
     virtual double energy();
     virtual void solve();
+
+    const mat &coeffcientMatrixUp();
+    const mat &coeffcientMatrixDown();
 private:
     void resetCoefficientMatrices();
+
     mat m_fockMatrixUp;
     mat m_fockMatrixDown;
 
