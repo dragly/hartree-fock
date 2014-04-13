@@ -1,11 +1,13 @@
 #include "gaussiancontractedorbital.h"
 
+#include "math/vector3.h"
+
 GaussianContractedOrbital::GaussianContractedOrbital() :
-    GaussianContractedOrbital(rowvec(0,0,0))
+    GaussianContractedOrbital(Vector3::createZeros())
 {
 }
 
-GaussianContractedOrbital::GaussianContractedOrbital(const rowvec& corePosition) :
+GaussianContractedOrbital::GaussianContractedOrbital(const Vector3 &corePosition) :
     m_corePosition(corePosition)
 {
 
@@ -20,12 +22,12 @@ const GaussianPrimitiveOrbital &GaussianContractedOrbital::primitiveBasisFunctio
 {
     return m_primitiveBasisFunctions.at(index);
 }
-rowvec GaussianContractedOrbital::corePosition() const
+Vector3 GaussianContractedOrbital::corePosition() const
 {
     return m_corePosition;
 }
 
-void GaussianContractedOrbital::setCorePosition(const rowvec &corePosition)
+void GaussianContractedOrbital::setCorePosition(const Vector3 &corePosition)
 {
     m_corePosition = corePosition;
 }

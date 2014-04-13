@@ -1,6 +1,7 @@
 #ifndef HERMITEEXPANSIONCOEFFICIENT_H
 #define HERMITEEXPANSIONCOEFFICIENT_H
 
+#include <math/vector3.h>
 #include <armadillo>
 
 using namespace arma;
@@ -12,7 +13,7 @@ public:
     explicit HermiteExpansionCoefficient(int dimension);
 
     void reset(int dimension);
-    void set(double a, double b, rowvec A, rowvec B, int iA, int iB, int jA, int jB, int kA, int kB);
+    void set(double a, double b, const Vector3 &A, const Vector3 &B, int iA, int iB, int jA, int jB, int kA, int kB);
 
     const cube &operator [](const uword row) const;
     cube &operator[](const uword row);
@@ -22,14 +23,14 @@ public:
 protected:
     double m_a;
     double m_b;
-    rowvec m_A;
-    rowvec m_B;
+    Vector3 m_A;
+    Vector3 m_B;
     int m_dimensionMax;
     cube m_E[3]; // t, i, j
-    rowvec m_AB;
-    rowvec m_P;
-    rowvec m_PA;
-    rowvec m_PB;
+    Vector3 m_AB;
+    Vector3 m_P;
+    Vector3 m_PA;
+    Vector3 m_PB;
 };
 
 inline const cube &HermiteExpansionCoefficient::operator[](const uword dimension) const {

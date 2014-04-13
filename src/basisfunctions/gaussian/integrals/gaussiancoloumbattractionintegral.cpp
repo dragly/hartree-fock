@@ -2,7 +2,8 @@
 
 #include <hermiteintegral.h>
 #include <math/hermiteexpansioncoefficient.h>
-#include <basisfunctions/gaussian/gaussianprimitiveorbital.h>
+#include "basisfunctions/gaussian/gaussianprimitiveorbital.h"
+#include "math/vector3.h"
 
 GaussianColoumbAttractionIntegral::GaussianColoumbAttractionIntegral(int angularMomentumMax) :
     m_hermiteExpansionCoefficient(angularMomentumMax + 1),
@@ -11,24 +12,15 @@ GaussianColoumbAttractionIntegral::GaussianColoumbAttractionIntegral(int angular
 
 }
 
-//GaussianColoumbAttractionIntegral::GaussianColoumbAttractionIntegral(const rowvec& corePositionA, const rowvec& corePositionB,
-//                                                                     const rowvec& corePositionC,
-//                                                                     double exponentA, double exponentB,
-//                                                                     int angularMomentumMax) :
-//    GaussianColoumbAttractionIntegral(angularMomentumMax)
-//{
-//    set(corePositionA, corePositionB, corePositionC, exponentA, exponentB);
-//}
-
-void GaussianColoumbAttractionIntegral::set(const rowvec& corePositionA, const rowvec& corePositionB,
-                                            const rowvec& corePositionC,
+void GaussianColoumbAttractionIntegral::set(const Vector3& corePositionA, const Vector3& corePositionB,
+                                            const Vector3& corePositionC,
                                             const GaussianPrimitiveOrbital& primitiveA,
                                             const GaussianPrimitiveOrbital& primitiveB) {
     double exponentA = primitiveA.exponent();
     double exponentB = primitiveB.exponent();
     double p = exponentA + exponentB;
-    rowvec P = (exponentA * corePositionA + exponentB * corePositionB) / (exponentA + exponentB);
-    rowvec PC = P - corePositionC;
+    Vector3 P = (exponentA * corePositionA + exponentB * corePositionB) / (exponentA + exponentB);
+    Vector3 PC = P - corePositionC;
     m_exponentSum = exponentA + exponentB;
     int t = primitiveA.xExponent() + primitiveB.xExponent();
     int u = primitiveA.yExponent() + primitiveB.yExponent();

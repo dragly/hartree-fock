@@ -3,6 +3,7 @@
 #include <electronsystems/gaussian/gaussiancore.h>
 #include <electronsystems/gaussian/gaussiansystem.h>
 #include <hartreefocksolver.h>
+#include <solvers/unrestrictedhartreefocksolver.h>
 
 SUITE(Systems) {
     TEST(Water) {
@@ -67,6 +68,21 @@ SUITE(Systems) {
         solver.setDensityMixFactor(0.5);
         solver.solve();
         CHECK_CLOSE(-149.5117583638509, solver.energy(), 1e-5);
-//        cout << "Oxygen 6-311G: " << solver.energy() << endl;
+    }
+    TEST(OxygenSixAsterisk) {
+        vector<GaussianCore> cores;
+        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_6-31Gs.tm"));
+        cores.push_back(GaussianCore({2.282,0,0}, "atom_8_basis_6-31Gs.tm"));
+        GaussianSystem system;
+        for(const GaussianCore &core : cores) {
+            system.addCore(core);
+        }
+        mat C;
+        UnrestrictedHartreeFockSolver solver(&system);
+        solver.setConvergenceTreshold(1e-8);
+        solver.setNIterationsMax(1e4);
+        solver.setDensityMixFactor(0.5);
+        solver.solve();
+        CHECK_CLOSE(-149.5876095851103, solver.energy(), 1e-5);
     }
 }

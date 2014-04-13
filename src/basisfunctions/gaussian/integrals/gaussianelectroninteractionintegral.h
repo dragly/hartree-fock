@@ -5,6 +5,8 @@
 #include <hermiteintegral.h>
 #include <math/hermiteexpansioncoefficient.h>
 
+class Vector3;
+
 using namespace arma;
 
 class GaussianPrimitiveOrbital;
@@ -18,13 +20,13 @@ public:
 
     void reset(int singleAngularMomentumMax);
 
-    void set(const rowvec &corePositionA, const rowvec &corePositionB,
-             const rowvec &corePositionC, const rowvec &corePositionD,
+    void set(const Vector3 &corePositionA, const Vector3 &corePositionB,
+             const Vector3 &corePositionC, const Vector3 &corePositionD,
              const GaussianPrimitiveOrbital &primitiveA, const GaussianPrimitiveOrbital &primitiveB,
              const GaussianPrimitiveOrbital &primitiveC, const GaussianPrimitiveOrbital &primitiveD);
-    void setAB(const rowvec &corePositionA, const rowvec &corePositionB,
+    void setAB(const Vector3 &corePositionA, const Vector3 &corePositionB,
                const GaussianPrimitiveOrbital &primitiveA, const GaussianPrimitiveOrbital &primitiveB);
-    void setCD(const rowvec &corePositionC, const rowvec &corePositionD,
+    void setCD(const Vector3 &corePositionC, const Vector3 &corePositionD,
                const GaussianPrimitiveOrbital &primitiveC, const GaussianPrimitiveOrbital &primitiveD);
     double electronInteractionIntegral(int iA, int jA, int kA,
                                        int iB, int jB, int kB,
@@ -36,8 +38,8 @@ protected:
     HermiteExpansionCoefficient m_hermiteExpansionCoefficientAB;
     HermiteExpansionCoefficient m_hermiteExpansionCoefficientCD;
     int m_angularMomentumMax;
-    rowvec m_centerOfMassP;
-    rowvec m_centerOfMassQ;
+    Vector3 m_centerOfMassP;
+    Vector3 m_centerOfMassQ;
     double m_exponentP;
     double m_exponentQ;
 

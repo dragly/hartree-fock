@@ -1,5 +1,6 @@
 #include "gaussiansystem.h"
 
+#include "math/vector3.h"
 #include <basisfunctions/gaussian/integrals/gaussianoverlapintegral.h>
 #include <basisfunctions/gaussian/integrals/gaussiankineticintegral.h>
 #include <basisfunctions/gaussian/integrals/gaussiancoloumbattractionintegral.h>
@@ -56,7 +57,7 @@ double GaussianSystem::uncoupledIntegral(int p, int q)
             result += pP.weight() * qP.weight() * kineticIntegral.kineticIntegral(pP, qP);
             for(uint i = 0; i < m_cores.size(); i++) {
                 const GaussianCore &core = m_cores.at(i);
-                const rowvec &corePositionC = core.position();
+                const Vector3 &corePositionC = core.position();
                 coulombIntegral.set(pBF.corePosition(), qBF.corePosition(), corePositionC,
                                     pP, qP);
                 result -= core.charge() * pP.weight() * qP.weight() * coulombIntegral.coloumbAttractionIntegral(pP, qP);

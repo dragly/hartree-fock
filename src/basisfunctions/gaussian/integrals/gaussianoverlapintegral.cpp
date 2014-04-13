@@ -1,9 +1,10 @@
 #include "gaussianoverlapintegral.h"
 
+#include "math/vector3.h"
 #include <math/hermiteexpansioncoefficient.h>
 #include <basisfunctions/gaussian/gaussianprimitiveorbital.h>
 
-GaussianOverlapIntegral::GaussianOverlapIntegral(rowvec corePositionA, rowvec corePositionB,
+GaussianOverlapIntegral::GaussianOverlapIntegral(Vector3 corePositionA, Vector3 corePositionB,
                                                  const GaussianPrimitiveOrbital& primitiveA,
                                                  const GaussianPrimitiveOrbital& primitiveB) :
     m_exponentSum(primitiveA.exponent() + primitiveB.exponent()),

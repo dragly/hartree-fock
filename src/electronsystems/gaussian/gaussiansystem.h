@@ -8,6 +8,8 @@
 #include <basisfunctions/gaussian/integrals/gaussiankineticintegral.h>
 #include <basisfunctions/gaussian/integrals/gaussiancoloumbattractionintegral.h>
 
+class Vector3;
+
 class GaussianSystem : public ElectronSystem
 {
 public:
@@ -35,7 +37,7 @@ private:
 
     vector<GaussianCore> m_cores;
     vector<GaussianContractedOrbital> m_basisFunctions;
-//    vector<rowvec> m_corePositions;
+//    vector<Vector3> m_corePositions;
     GaussianElectronInteractionIntegral electronInteractionIntegral;
     GaussianKineticIntegral kineticIntegral;
     GaussianColoumbAttractionIntegral coulombIntegral;

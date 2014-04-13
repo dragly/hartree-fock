@@ -4,6 +4,8 @@
 #include <armadillo>
 #include <math/hermiteexpansioncoefficient.h>
 
+class Vector3;
+
 using namespace arma;
 
 class HermiteExpansionCoefficient;
@@ -13,7 +15,7 @@ class GaussianKineticIntegral
 {
 public:
     explicit GaussianKineticIntegral(int angularMomentumMax);
-    void set(const rowvec &corePositionA, const rowvec &corePositionB,
+    void set(const Vector3 &corePositionA, const Vector3 &corePositionB,
              const GaussianPrimitiveOrbital &primitiveA, const GaussianPrimitiveOrbital &primitiveB);
     double kineticIntegral(int dim, int iA, int iB);
     double kineticIntegral(int iA, int jA, int kA, int iB, int jB, int kB);

@@ -1,8 +1,9 @@
 #include "gaussiancore.h"
 
+#include "math/vector3.h"
 #include <parsers/turbomoleparser.h>
 
-GaussianCore::GaussianCore(rowvec position, string fileName) :
+GaussianCore::GaussianCore(Vector3 position, string fileName) :
     m_position(position)
 {
     if(fileName != "") {
@@ -23,12 +24,12 @@ void GaussianCore::load(string fileName)
     }
 }
 
-rowvec GaussianCore::position() const
+const Vector3& GaussianCore::position() const
 {
     return m_position;
 }
 
-void GaussianCore::setPosition(const rowvec &position)
+void GaussianCore::setPosition(const Vector3 &position)
 {
     m_position = position;
     for(GaussianContractedOrbital &contracted : m_contractedOrbitals) {

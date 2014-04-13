@@ -7,10 +7,10 @@ SUITE(CoulombIntegrals) {
 //    {
 //        GaussianElectronInteractionIntegral integrator(2);
 
-//        rowvec posA = {1.2,2.3,3.4};
-//        rowvec posB = {-1.3,1.4,-2.4};
-//        rowvec posC = {2.3,0.9,3.2};
-//        rowvec posD = {5.0,1.9,1.2};
+//        Vector3 posA = {1.2,2.3,3.4};
+//        Vector3 posB = {-1.3,1.4,-2.4};
+//        Vector3 posC = {2.3,0.9,3.2};
+//        Vector3 posD = {5.0,1.9,1.2};
 
 //        integrator.setAB(posA, posB, 0.2, 0.3);
 //        integrator.setCD(posC, posD, 0.4, 0.1);

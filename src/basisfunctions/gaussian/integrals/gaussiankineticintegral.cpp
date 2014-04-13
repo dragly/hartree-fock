@@ -1,5 +1,6 @@
 #include "gaussiankineticintegral.h"
 
+#include "math/vector3.h"
 #include <math/hermiteexpansioncoefficient.h>
 #include <basisfunctions/gaussian/integrals/gaussianoverlapintegral.h>
 #include <basisfunctions/gaussian/gaussianprimitiveorbital.h>
@@ -9,13 +10,7 @@ GaussianKineticIntegral::GaussianKineticIntegral(int angularMomentumMax) :
 {
 }
 
-//GaussianKineticIntegral::GaussianKineticIntegral(const rowvec& corePositionA, const rowvec& corePositionB, double exponentA, double exponentB, int angularMomentumMax) :
-//    GaussianKineticIntegral(angularMomentumMax)
-//{
-//    set(corePositionA, corePositionB, exponentA, exponentB);
-//}
-
-void GaussianKineticIntegral::set(const rowvec& corePositionA, const rowvec& corePositionB,
+void GaussianKineticIntegral::set(const Vector3& corePositionA, const Vector3& corePositionB,
                                   const GaussianPrimitiveOrbital& primitiveA, const GaussianPrimitiveOrbital& primitiveB)
 {
     m_exponentB = primitiveB.exponent();

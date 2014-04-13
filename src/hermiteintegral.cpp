@@ -1,11 +1,12 @@
 #include "hermiteintegral.h"
 
+#include "math/vector3.h"
 #include <math/boysfunction.h>
 #include <math/boysfunctionintermediate.h>
 
 HermiteIntegral::HermiteIntegral(int dimensionMax) :
     m_alpha(0),
-    m_A(zeros<rowvec>(3)),
+    m_A(Vector3::createZeros()),
     m_dimensionMax(dimensionMax)
 {
     reset(dimensionMax);
@@ -24,7 +25,7 @@ void HermiteIntegral::reset(int dimension)
     }
 }
 
-void HermiteIntegral::set(double alpha, const rowvec &A,
+void HermiteIntegral::set(double alpha, const Vector3 &A,
                           int t, int u, int v)
 {
     m_alpha = alpha;
@@ -33,7 +34,7 @@ void HermiteIntegral::set(double alpha, const rowvec &A,
 }
 
 void HermiteIntegral::setupR(int tin, int uin, int vin) {
-    const rowvec &PC = m_A;
+    const Vector3 &PC = m_A;
     double p = m_alpha;
     double boysArg = p * dot(m_A, m_A);
     int tuvSumMax = tin + uin + vin;

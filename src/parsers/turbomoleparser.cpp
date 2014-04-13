@@ -149,6 +149,8 @@ HF::AtomType TurboMoleParser::atomType() const
 {
     return m_atomType;
 }
+
+//TODO: Change urowvec to std::array<int, 3>
 double TurboMoleParser::normalizationFactor(double exp, urowvec pows)
 {
     int i = pows.at(0);

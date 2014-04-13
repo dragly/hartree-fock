@@ -1,6 +1,8 @@
 #ifndef HERMITEINTEGRAL_H
 #define HERMITEINTEGRAL_H
 
+#include "math/vector3.h"
+
 #include <armadillo>
 
 using namespace arma;
@@ -10,10 +12,10 @@ class HermiteIntegral
 {
 public:
     HermiteIntegral(int dimensionMax);
-    HermiteIntegral(double alpha, const rowvec &A, int dimension, bool setupImmediately = true);
+    HermiteIntegral(double alpha, const Vector3 &A, int dimension, bool setupImmediately = true);
 
     void reset(int dimension);
-    void set(double alpha, const rowvec &A, int t, int u, int v);
+    void set(double alpha, const Vector3 &A, int t, int u, int v);
     void setupR(int t, int u, int v);
 
     const cube &operator [](const uword row) const;
@@ -23,7 +25,7 @@ public:
     double operator ()(const uword n, const uword t, const uword u, const uword v) const;
 protected:
     double m_alpha;
-    rowvec m_A;
+    Vector3 m_A;
     field<cube> m_R;
     int m_dimensionMax;
 };

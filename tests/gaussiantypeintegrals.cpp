@@ -1,5 +1,6 @@
 #include <unittest++/UnitTest++.h>
 
+#include "math/vector3.h"
 #include <basisfunctions/gaussian/integrals/gaussianoverlapintegral.h>
 #include <basisfunctions/gaussian/integrals/gaussiankineticintegral.h>
 #include <basisfunctions/gaussian/integrals/gaussiancoloumbattractionintegral.h>
@@ -15,8 +16,8 @@ using namespace arma;
 
 SUITE(GaussianIntegral) {
     TEST(GaussianOverlapIntegralTest) {
-        rowvec posA = {1.2,2.3,3.4};
-        rowvec posB = {-1.3,1.4,-2.4};
+        Vector3 posA = {1.2,2.3,3.4};
+        Vector3 posB = {-1.3,1.4,-2.4};
 
         GaussianPrimitiveOrbital primitiveA(1.0, 2, 2, 2, 0.2);
         GaussianPrimitiveOrbital primitiveB(1.0, 2, 2, 2, 0.3);
@@ -32,8 +33,8 @@ SUITE(GaussianIntegral) {
     }
 
     TEST(OverlapNew) {
-        rowvec posA = {1.2,2.3,3.4};
-        rowvec posB = {-1.3,1.4,-2.4};
+        Vector3 posA = {1.2,2.3,3.4};
+        Vector3 posB = {-1.3,1.4,-2.4};
 
         GaussianPrimitiveOrbital primitiveA(1.0, 2, 2, 2, 0.2);
         GaussianPrimitiveOrbital primitiveB(1.0, 2, 2, 2, 0.3);
@@ -46,8 +47,8 @@ SUITE(GaussianIntegral) {
     }
 
     TEST(KineticNew) {
-        rowvec posA = {1.2,2.3,3.4};
-        rowvec posB = {-1.3,1.4,-2.4};
+        Vector3 posA = {1.2,2.3,3.4};
+        Vector3 posB = {-1.3,1.4,-2.4};
 
         GaussianPrimitiveOrbital primitiveA(1.0, 2, 2, 2, 0.2);
         GaussianPrimitiveOrbital primitiveB(1.0, 2, 2, 2, 0.3);
@@ -63,8 +64,8 @@ SUITE(GaussianIntegral) {
     }
 
     TEST(KineticNew2) {
-        rowvec posA = {1.2,2.3,3.4};
-        rowvec posB = {-1.3,1.4,-2.4};
+        Vector3 posA = {1.2,2.3,3.4};
+        Vector3 posB = {-1.3,1.4,-2.4};
 
         GaussianPrimitiveOrbital primitiveA(1.0, 2, 0, 0, 0.2);
         GaussianPrimitiveOrbital primitiveB(1.0, 2, 0, 0, 0.3);
@@ -77,8 +78,8 @@ SUITE(GaussianIntegral) {
     }
 
     TEST(GaussianKineticIntegralTest) {
-        rowvec posA = {1.2,2.3,3.4};
-        rowvec posB = {-1.3,1.4,-2.4};
+        Vector3 posA = {1.2,2.3,3.4};
+        Vector3 posB = {-1.3,1.4,-2.4};
 
         GaussianPrimitiveOrbital primitiveA(1.0, 2, 2, 2, 0.2);
         GaussianPrimitiveOrbital primitiveB(1.0, 2, 2, 2, 0.3);
@@ -114,9 +115,9 @@ SUITE(GaussianIntegral) {
     }
 
     TEST(GaussianColoumbAttractionIntegralTest) {
-        rowvec posA = {1.2,2.3,3.4};
-        rowvec posB = {-1.3,1.4,-2.4};
-        rowvec posC = {2.3, 0.9, 3.2};
+        Vector3 posA = {1.2,2.3,3.4};
+        Vector3 posB = {-1.3,1.4,-2.4};
+        Vector3 posC = {2.3, 0.9, 3.2};
 
         GaussianColoumbAttractionIntegral integrator(6);
 
@@ -227,10 +228,10 @@ SUITE(GaussianIntegral) {
     }
 
     TEST(GaussianElectronInteractionIntegralTest1) {
-        rowvec posA = {-0.5, 0, 0};
-        rowvec posB = {-0.5, 0, 0};
-        rowvec posC = {-0.5, 0, 0};
-        rowvec posD = {-0.5, 0, 0};
+        Vector3 posA = {-0.5, 0, 0};
+        Vector3 posB = {-0.5, 0, 0};
+        Vector3 posC = {-0.5, 0, 0};
+        Vector3 posD = {-0.5, 0, 0};
         double a = 13.0077;
         double b = 13.0077;
         double c = 13.0077;
@@ -248,10 +249,10 @@ SUITE(GaussianIntegral) {
     }
 
     TEST(GaussianElectronInteractionIntegralTest2) {
-        rowvec posA = {0.5, 0, 0};
-        rowvec posB = {-0.5, 0, 0};
-        rowvec posC = {-0.5, 0, 0};
-        rowvec posD = {0.5, 0, 0};
+        Vector3 posA = {0.5, 0, 0};
+        Vector3 posB = {-0.5, 0, 0};
+        Vector3 posC = {-0.5, 0, 0};
+        Vector3 posD = {0.5, 0, 0};
         double a = 13.0077;
         double b = 0.121949;
         double c = 0.444529;
@@ -269,10 +270,10 @@ SUITE(GaussianIntegral) {
     }
 
     TEST(GaussianElectronInteractionIntegralTest3) {
-        rowvec posA = {0.5, 0, 0};
-        rowvec posB = {-0.5, 0, 0};
-        rowvec posC = {-0.5, 0, 0};
-        rowvec posD = {0.5, 0, 0};
+        Vector3 posA = {0.5, 0, 0};
+        Vector3 posB = {-0.5, 0, 0};
+        Vector3 posC = {-0.5, 0, 0};
+        Vector3 posD = {0.5, 0, 0};
         double a = 13.0077;
         double b = 0.121949;
         double c = 0.444529;
@@ -290,10 +291,10 @@ SUITE(GaussianIntegral) {
     }
 
     TEST(GaussianElectronInteractionIntegralTest4) {
-        rowvec posA = {0.55, 1, 3};
-        rowvec posB = {-0.52, 5, 6};
-        rowvec posC = {-0.53, 1, 2};
-        rowvec posD = {0.45, 2, 4};
+        Vector3 posA = {0.55, 1, 3};
+        Vector3 posB = {-0.52, 5, 6};
+        Vector3 posC = {-0.53, 1, 2};
+        Vector3 posD = {0.45, 2, 4};
         double a = 13.0077;
         double b = 0.121949;
         double c = 0.444529;
@@ -314,10 +315,10 @@ SUITE(GaussianIntegral) {
     TEST(GaussianElectronInteractionIntegralTest5)
     {
 
-        rowvec posA = {1.2,2.3,3.4};
-        rowvec posB = {-1.3,1.4,-2.4};
-        rowvec posC = {2.3,0.9,3.2};
-        rowvec posD = {5.0,1.9,1.2};
+        Vector3 posA = {1.2,2.3,3.4};
+        Vector3 posB = {-1.3,1.4,-2.4};
+        Vector3 posC = {2.3,0.9,3.2};
+        Vector3 posD = {5.0,1.9,1.2};
 
         GaussianPrimitiveOrbital primitiveA(1.0, 0,0,0, 0.2);
         GaussianPrimitiveOrbital primitiveB(1.0, 0,0,0, 0.3);
@@ -335,10 +336,10 @@ SUITE(GaussianIntegral) {
     TEST(GaussianElectronInteractionIntegralTest6)
     {
 
-        rowvec posA = {1.2,2.3,3.4};
-        rowvec posB = {-1.3,1.4,-2.4};
-        rowvec posC = {2.3,0.9,3.2};
-        rowvec posD = {5.0,1.9,1.2};
+        Vector3 posA = {1.2,2.3,3.4};
+        Vector3 posB = {-1.3,1.4,-2.4};
+        Vector3 posC = {2.3,0.9,3.2};
+        Vector3 posD = {5.0,1.9,1.2};
 
         GaussianPrimitiveOrbital primitiveA(1.0, 0,0,0, 0.2);
         GaussianPrimitiveOrbital primitiveB(1.0, 1,0,0, 0.3);
@@ -356,10 +357,10 @@ SUITE(GaussianIntegral) {
     TEST(GaussianElectronInteractionIntegralTest7)
     {
 
-        rowvec posA = {1.2,2.3,3.4};
-        rowvec posB = {-1.3,1.4,-2.4};
-        rowvec posC = {2.3,0.9,3.2};
-        rowvec posD = {5.0,1.9,1.2};
+        Vector3 posA = {1.2,2.3,3.4};
+        Vector3 posB = {-1.3,1.4,-2.4};
+        Vector3 posC = {2.3,0.9,3.2};
+        Vector3 posD = {5.0,1.9,1.2};
 
         GaussianPrimitiveOrbital primitiveA(1.0, 0,0,0, 0.2);
         GaussianPrimitiveOrbital primitiveB(1.0, 1,0,0, 0.3);
@@ -377,10 +378,10 @@ SUITE(GaussianIntegral) {
     TEST(GaussianElectronInteractionIntegralTest8)
     {
 
-        rowvec posA = {1.2,2.3,3.4};
-        rowvec posB = {-1.3,1.4,-2.4};
-        rowvec posC = {2.3,0.9,3.2};
-        rowvec posD = {5.0,1.9,1.2};
+        Vector3 posA = {1.2,2.3,3.4};
+        Vector3 posB = {-1.3,1.4,-2.4};
+        Vector3 posC = {2.3,0.9,3.2};
+        Vector3 posD = {5.0,1.9,1.2};
 
         GaussianPrimitiveOrbital primitiveA(1.0, 1,1,0, 0.2);
         GaussianPrimitiveOrbital primitiveB(1.0, 2,0,0, 0.3);
@@ -398,10 +399,10 @@ SUITE(GaussianIntegral) {
     TEST(GaussianElectronInteractionIntegralTest9)
     {
 
-        rowvec posA = {1.2,2.3,3.4};
-        rowvec posB = {-1.3,1.4,-2.4};
-        rowvec posC = {2.3,0.9,3.2};
-        rowvec posD = {5.0,1.9,1.2};
+        Vector3 posA = {1.2,2.3,3.4};
+        Vector3 posB = {-1.3,1.4,-2.4};
+        Vector3 posC = {2.3,0.9,3.2};
+        Vector3 posD = {5.0,1.9,1.2};
 
         GaussianPrimitiveOrbital primitiveA(1.0, 1,1,0, 0.2);
         GaussianPrimitiveOrbital primitiveB(1.0, 0,2,0, 0.3);

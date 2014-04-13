@@ -1,6 +1,7 @@
 #ifndef GAUSSIANCONTRACTEDORBITAL_H
 #define GAUSSIANCONTRACTEDORBITAL_H
 
+#include "math/vector3.h"
 #include <basisfunctions/gaussian/gaussianprimitiveorbital.h>
 
 #include <vector>
@@ -13,13 +14,13 @@ class GaussianContractedOrbital
 {
 public:
     GaussianContractedOrbital();
-    GaussianContractedOrbital(const rowvec &corePosition);
+    GaussianContractedOrbital(const Vector3 &corePosition);
 
     void addPrimitiveBasisFunction(const GaussianPrimitiveOrbital& primitive);
     const GaussianPrimitiveOrbital& primitiveBasisFunction(int index);
 
-    rowvec corePosition() const;
-    void setCorePosition(const rowvec &corePosition);
+    Vector3 corePosition() const;
+    void setCorePosition(const Vector3 &corePosition);
 
     const vector<GaussianPrimitiveOrbital>& primitiveBasisFunctions() const;
     void setPrimitiveBasisFunctions(const vector<GaussianPrimitiveOrbital> &primitiveBasisFunctions);
@@ -27,7 +28,7 @@ public:
     double evaluated(double x, double y, double z) const;
 
 private:
-    rowvec m_corePosition;
+    Vector3 m_corePosition;
     vector<GaussianPrimitiveOrbital> m_primitiveBasisFunctions;
 };
 

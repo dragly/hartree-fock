@@ -31,27 +31,6 @@ SUITE(Development) {
 //        CHECK_CLOSE(-75.90736859918989, solver.energy(), 1e-6);
 //    }
 
-    TEST(OxygenSixAsterix) {
-        vector<GaussianCore> cores;
-        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_6-31Gs.tm"));
-        cores.push_back(GaussianCore({2.282,0,0}, "atom_8_basis_6-31Gs.tm"));
-        GaussianSystem system;
-        for(const GaussianCore &core : cores) {
-            system.addCore(core);
-        }
-        mat C;
-        UnrestrictedHartreeFockSolver solver(&system);
-        solver.setConvergenceTreshold(1e-12);
-        solver.setNIterationsMax(1e4);
-        solver.setDensityMixFactor(0.0);
-        solver.solve();
-        cout << "Used: " << solver.iterationsUsed() << endl;
-        cout << "Energy: " << solver.energy() << endl;
-        //            CHECK_CLOSE(-149.5295405478762, solver.energy(), 1e-5);
-        CHECK_CLOSE(-149.5876095851103, solver.energy(), 1e-5);
-        //        cout << "Oxygen 6-311G: " << solver.energy() << endl;
-    }
-
 //        TEST(CheapOxygen) {
 //            vector<GaussianCore> cores;
 //            cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_cheap.tm"));

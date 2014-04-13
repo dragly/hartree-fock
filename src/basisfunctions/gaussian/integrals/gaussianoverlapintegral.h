@@ -3,15 +3,16 @@
 
 #include <armadillo>
 
-using namespace arma;
-
 class HermiteExpansionCoefficient;
 class GaussianPrimitiveOrbital;
+class Vector3;
+
+using namespace arma;
 
 class GaussianOverlapIntegral
 {
 public:
-    GaussianOverlapIntegral(rowvec corePositionA, rowvec corePositionB,
+    GaussianOverlapIntegral(Vector3 corePositionA, Vector3 corePositionB,
                             const GaussianPrimitiveOrbital &primitiveA, const GaussianPrimitiveOrbital &primitiveB);
     GaussianOverlapIntegral(double exponentSum, HermiteExpansionCoefficient *hermiteExpansionCoefficient);
     virtual ~GaussianOverlapIntegral();

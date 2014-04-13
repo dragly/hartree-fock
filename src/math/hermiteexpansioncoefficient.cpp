@@ -3,8 +3,8 @@
 HermiteExpansionCoefficient::HermiteExpansionCoefficient(int dimensionMax) :
     m_a(0),
     m_b(0),
-    m_A(zeros<rowvec>(3)),
-    m_B(zeros<rowvec>(3))
+    m_A(Vector3::createZeros()),
+    m_B(Vector3::createZeros())
 {
     reset(dimensionMax);
 }
@@ -24,7 +24,7 @@ void HermiteExpansionCoefficient::reset(int dimensionMax)
     }
 }
 
-void HermiteExpansionCoefficient::set(double a, double b, rowvec A, rowvec B,
+void HermiteExpansionCoefficient::set(double a, double b, const Vector3 &A, const Vector3 &B,
                                       int iA, int iB, int jA, int jB, int kA, int kB)
 {
     m_a = a;
