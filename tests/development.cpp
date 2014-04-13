@@ -50,6 +50,7 @@ SUITE(Development) {
 //        cout << solver.iterationsUsed() << endl;
 //        CHECK_CLOSE(-75.90736859918989, solver.energy(), 1e-6);
 //    }
+
     TEST(OxygenSixAsterisk) {
         vector<GaussianCore> cores;
         cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_6-31Gs.tm"));
@@ -64,6 +65,7 @@ SUITE(Development) {
         solver.setNIterationsMax(1e4);
         solver.setDensityMixFactor(0.5);
         solver.solve();
+        cout << solver.iterationsUsed() << endl;
         CHECK_CLOSE(-149.5876095851103, solver.energy(), 1e-5);
     }
 

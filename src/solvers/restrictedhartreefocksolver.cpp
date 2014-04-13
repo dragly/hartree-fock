@@ -100,6 +100,7 @@ void RestrictedHartreeFockSolver::advance() {
 }
 
 void RestrictedHartreeFockSolver::solve() {
+    HartreeFockSolver::solve();
     for(int i = 0; i < nIterationsMax(); i++) {
         vec previousFockEnergies = m_fockEnergies;
         advance();
