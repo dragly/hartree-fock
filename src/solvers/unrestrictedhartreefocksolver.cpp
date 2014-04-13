@@ -53,8 +53,10 @@ void UnrestrictedHartreeFockSolver::setupFockMatrices() {
     const field<mat> &Q = coupledMatrix();
     for(uint p = 0; p < n; p++) {
         for(uint q = p; q < n; q++) {
-            Fu(p,q) = h(p,q);
-            Fd(p,q) = h(p,q);
+            double hpq = h(p,q);
+            double Fupq = hpq;
+            double Fdpq = hpq;
+            // TODO: Apply the symmetry in Q for increased performance
             for(uint r = 0; r < n; r++) {
                 for(uint s = 0; s < n; s++) {
                     double Qprqs = Q(p,r)(q,s);
@@ -62,13 +64,15 @@ void UnrestrictedHartreeFockSolver::setupFockMatrices() {
                     double QprqsMinusQprsq = Qprqs - Qprsq;
                     double Pusr = Pu(s,r);
                     double Pdsr = Pd(s,r);
-                    Fu(p,q) += Pusr * QprqsMinusQprsq + Pdsr * Qprqs;
-                    Fd(p,q) += Pdsr * QprqsMinusQprsq + Pusr * Qprqs;
+                    Fupq += Pusr * QprqsMinusQprsq + Pdsr * Qprqs;
+                    Fdpq += Pdsr * QprqsMinusQprsq + Pusr * Qprqs;
                 }
             }
-            // Symmetry
-            Fu(q,p) = Fu(p,q);
-            Fd(q,p) = Fd(p,q);
+            // Set elements and apply symmetry
+            Fu(p,q) = Fupq;
+            Fu(q,p) = Fupq;
+            Fd(p,q) = Fdpq;
+            Fd(q,p) = Fdpq;
         }
     }
 }
