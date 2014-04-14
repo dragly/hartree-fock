@@ -138,10 +138,47 @@ int main(int argc, char* argv[])
     AtomMetaData atomMetaData[nAtoms];
     atomMeta.read(atomMetaData, atomMetaCompound);
 
-    H5::Group statesGroup(outFile.openGroup("/states"));
-
     mat coefficientMatrixUp;
     mat coefficientMatrixDown;
+
+    // Precalculate ground state
+    DataSet groundStateDataSet(rootGroup.openDataSet("groundState"));
+    hsize_t dims2[1];
+    groundStateDataSet.getSpace().getSimpleExtentDims(dims2);
+    int groundStateNAtoms2 = dims2[0];
+
+    if(nAtoms != groundStateNAtoms2) {
+        cerr << "Error! The number of atoms in the ground state (nAtoms = " << groundStateNAtoms2 << ") does not match "
+             << "the number of atoms in the metadata (= " << nAtoms << ")" << endl;
+        cerr << "Cannot continue" << endl;
+        throw std::logic_error("Mismatching number of atoms");
+    }
+
+    AtomData *groundStateAtoms = new AtomData[groundStateNAtoms2];
+    groundStateDataSet.read(groundStateAtoms, atomCompound);
+
+    GaussianSystem groundStateSystem;
+    for(int i = 0; i < groundStateNAtoms2; i++) {
+        stringstream basisFile;
+        basisFile << "atom_" << atomMetaData[i].type << "_basis_" << atomMetaData[i].basisName << ".tm";
+        string fileName = basisFile.str();
+        groundStateSystem.addCore(GaussianCore({ groundStateAtoms[i].x, groundStateAtoms[i].y, groundStateAtoms[i].z}, fileName));
+    }
+    UnrestrictedHartreeFockSolver groundStateSolver(&groundStateSystem);
+    groundStateSolver.setNIterationsMax(1e3);
+    groundStateSolver.setDensityMixFactor(0.95);
+    groundStateSolver.setConvergenceTreshold(1e-9);
+    groundStateSolver.solve();
+
+    coefficientMatrixUp = groundStateSolver.coeffcientMatrixUp();
+    coefficientMatrixDown = groundStateSolver.coeffcientMatrixDown();
+
+    delete groundStateAtoms;
+    // Done precalculate ground state
+
+    cout << "Done with ground state" << endl;
+
+    H5::Group statesGroup(outFile.openGroup("/states"));
 
     int nTotal = statesGroup.getNumObjs();
     int currentState = 0;
@@ -176,16 +213,14 @@ int main(int argc, char* argv[])
             system.addCore(GaussianCore({ atoms[i].x, atoms[i].y, atoms[i].z}, fileName));
         }
         UnrestrictedHartreeFockSolver solver(&system);
-        if(stateID != 0) {
-            solver.setInitialCoefficientMatrices(coefficientMatrixUp, coefficientMatrixDown);
-        }
+        solver.setInitialCoefficientMatrices(coefficientMatrixUp, coefficientMatrixDown);
         solver.setNIterationsMax(1e3);
         solver.setDensityMixFactor(0.95);
         solver.setConvergenceTreshold(1e-9);
         solver.solve();
 
-        coefficientMatrixUp = solver.coeffcientMatrixUp();
-        coefficientMatrixDown = solver.coeffcientMatrixDown();
+//        coefficientMatrixUp = solver.coeffcientMatrixUp();
+//        coefficientMatrixDown = solver.coeffcientMatrixDown();
 
         double energy = solver.energy();
 
