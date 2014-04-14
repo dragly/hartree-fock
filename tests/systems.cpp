@@ -75,8 +75,8 @@ SUITE(Systems) {
     }
     TEST(OxygenSixAsterisk) {
         vector<GaussianCore> cores;
-        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_6-31Gs.tm"));
-        cores.push_back(GaussianCore({2.282,0,0}, "atom_8_basis_6-31Gs.tm"));
+        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_6-31Gds.tm"));
+        cores.push_back(GaussianCore({2.282,0,0}, "atom_8_basis_6-31Gds.tm"));
         GaussianSystem system;
         for(const GaussianCore &core : cores) {
             system.addCore(core);
