@@ -23,7 +23,6 @@ if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
 config = yaml.load(config_file)
-print config
 
 atom_type_1 = config["type1"]
 atom_type_2 = config["type2"]
@@ -82,3 +81,4 @@ for j in range(len(r12s)):
     stateCounter += 1
     
 f.close()
+print "States saved to:\n", os.path.abspath(file_name)
