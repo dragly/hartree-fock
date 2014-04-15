@@ -5,8 +5,15 @@ from sys import argv
 import os
 import os.path
 
-states_files = argv[1]
+states_files = argv[1:-1]
 
+if len(states_files) == 0:
+    raise Exception("Need at least one input file!")
+
+if len(states_files) == 1:
+    states_files = glob(states_files)
+    
+print "Input was: ", argv
 output_dir = "../../runs"
 if len(argv) > 2:
     output_dir = os.path.join(output_dir, argv[-1])
@@ -21,7 +28,7 @@ energy_max = -inf
 energies = []
 r12s = []
 
-for statesFile in glob(states_files):
+for statesFile in states_files:
     f = h5py.File(statesFile, "r")
     atomsMeta = f.get("atomMeta")
     if len(atomsMeta) != 2:
