@@ -17,6 +17,9 @@ bool TurboMoleParser::load(string fileName)
     setlocale(LC_ALL, "C");
     m_contractedBasisFunctions.clear();
     ifstream dataFile(fileName);
+    if(!dataFile.is_open()) {
+        return false;
+    }
     string line;
 
     vector<int> nValenceOrbitals;

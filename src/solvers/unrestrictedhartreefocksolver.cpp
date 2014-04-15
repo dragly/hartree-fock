@@ -18,7 +18,6 @@ void UnrestrictedHartreeFockSolver::setup()
     resetCoefficientMatrices();
     resetFockMatrices();
     setupDensityMatrices();
-    m_densityMatrixUp(0,1) = 0.1; // Added asymmetry between the spin up and spin down orbitals
     setupFockMatrices();
 }
 
@@ -100,6 +99,9 @@ void UnrestrictedHartreeFockSolver::setupDensityMatrices() {
     } else {
         Pu = tempPu;
         Pd = tempPd;
+    }
+    if(Pu.n_rows > 0 && Pu.n_cols > 1) {
+        m_densityMatrixUp(0,1) = 0.1; // Added asymmetry between the spin up and spin down orbitals
     }
 }
 

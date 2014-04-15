@@ -14,7 +14,11 @@ GaussianCore::GaussianCore(Vector3 position, string fileName) :
 void GaussianCore::load(string fileName)
 {
     TurboMoleParser parser;
-    parser.load(fileName);
+    bool ok = parser.load(fileName);
+    if(!ok) {
+        cerr << "Could not load file " << fileName << endl;
+        throw logic_error("Could not read basis file");
+    }
     m_atomType = parser.atomType();
     m_nElectrons = int(m_atomType);
     m_charge = int(m_atomType);

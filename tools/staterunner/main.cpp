@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
     timer.restart();
     if(argc < 2) {
         cout << "Error: No file provided." << endl;
-        cout << "Usage: programname <filename> <id>" << endl;
+        cout << "Usage: programname <filename> [id]" << endl;
         exit(0);
     }
     stringstream outFileName;
