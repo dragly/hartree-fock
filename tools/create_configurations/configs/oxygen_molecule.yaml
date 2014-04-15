@@ -1,0 +1,7 @@
+type1: 8
+type2: 8
+r12Min: 1.8
+r12Max: 5.5
+n: 100
+r12GroundState: 2.282
+basisName: "6-31Gds"
