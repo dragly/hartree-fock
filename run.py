@@ -33,4 +33,4 @@ lib_path = os.path.join("..", "..", "src")
 
 env = dict(os.environ)
 env['LD_LIBRARY_PATH'] = lib_path
-subprocess.call(["./staterunner", states_file, output_file], cwd=staterunner_path, env=env)
+subprocess.call(["mpirun", "-n", "8", "./staterunner", states_file, output_file], cwd=staterunner_path, env=env)
