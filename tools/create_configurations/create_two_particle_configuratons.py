@@ -5,13 +5,16 @@ from sys import argv
 import os, os.path
 import yaml
 
+print "Input was", argv
+
 output_dir = "../../runs"
 
 if len(argv) < 2:
     raise Exception("No config file provided")
 
 config_file = open(argv[1], "r")
-print config_file
+print config_file.read()
+config_file = open(argv[1], "r")
 
 if len(argv) < 3:
     project_id = "unnamed"
