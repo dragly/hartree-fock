@@ -34,7 +34,13 @@ int main(int argc, char* argv[])
     timer.restart();
     if(argc < 2) {
         cout << "Error: No file provided." << endl;
-        cout << "Usage: programname <filename>" << endl;
+        cout << "Usage: programname <filename> <id>" << endl;
+        exit(0);
+    }
+    if(argc < 3) {
+        cout << "Error: No id provided." << endl;
+        cout << "Usage: programname <filename> <id>" << endl;
+        exit(0);
     }
 
     string inFileName = argv[1];
@@ -97,7 +103,7 @@ int main(int argc, char* argv[])
 
     // Copy HDF5 file
     stringstream outFileName;
-    outFileName << inFileName << ".results." << setfill('0') << setw(4) << world.rank();
+    outFileName << "runs/" << argv[2] << "results." << setfill('0') << setw(4) << world.rank() << ".h5";
 
     // Open outFile for writing
     H5File outFile(outFileName.str(), H5F_ACC_TRUNC);
