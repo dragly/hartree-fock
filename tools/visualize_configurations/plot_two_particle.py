@@ -13,7 +13,6 @@ if len(states_files) == 0:
 if len(states_files) == 1:
     states_files = glob(states_files)
     
-print "Input was: ", argv
 output_dir = "../../runs"
 if len(argv) > 2:
     output_dir = os.path.join(output_dir, argv[-1])
@@ -65,3 +64,5 @@ xlabel(r"$r$")
 ylabel(r"$E$")
 savefig(output_file)
 savefig(output_file + ".png")
+
+print "Results saved to", output_life
