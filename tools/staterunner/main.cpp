@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
     }
     stringstream outFileName;
     if(argc > 2) {
-        outFileName << "runs/" << argv[2];
+        outFileName << "runs/" << argv[2] << "/";
     }
 
     string inFileName = argv[1];
