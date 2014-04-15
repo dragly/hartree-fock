@@ -9,10 +9,11 @@ states_files = argv[1]
 
 output_dir = "../../runs"
 if len(argv) > 2:
-    output_dir = os.path.join(argv[-1])
+    output_dir = os.path.join(output_dir, argv[-1])
 else:
     output_dir = os.path.join(output_dir, "tmp")
 
+output_file = os.path.join(output_dir, "two_particle_plot.pdf")
 
 energy_min = inf
 energy_max = -inf
@@ -55,4 +56,5 @@ title(plot_title)
 plot(r12s, energies)
 xlabel(r"$r$")
 ylabel(r"$E$")
-savefig(os.path.join(output_dir, "two_particle_plot.pdf"))
+savefig(output_file)
+savefig(output_file + ".png")
