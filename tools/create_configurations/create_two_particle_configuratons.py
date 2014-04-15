@@ -5,15 +5,12 @@ from sys import argv
 import os, os.path
 import yaml
 
-print "Input was", argv
-
 output_dir = "../../runs"
 
 if len(argv) < 2:
     raise Exception("No config file provided")
 
 config_file = open(argv[1], "r")
-print config_file.read()
 config_file = open(argv[1], "r")
 
 if len(argv) < 3:
@@ -25,9 +22,8 @@ output_dir = os.path.join(output_dir, project_id)
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
-print output_dir
-
 config = yaml.load(config_file)
+print config
 
 atom_type_1 = config["type1"]
 atom_type_2 = config["type2"]
