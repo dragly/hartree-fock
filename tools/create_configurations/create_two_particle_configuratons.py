@@ -35,7 +35,8 @@ r12_ground_state = config["r12GroundState"]
 
 #f = h5py.File("states_atom_" + str(atom_type_1) + "_atom_" + str(atom_type_2) + "_basis_" + basis_name + ".h5", "w")
 file_name = "states_atom_%d_atom_%d_basis_%s.h5" % (atom_type_1, atom_type_2, basis_name)
-f = h5py.File(os.path.join(output_dir, file_name), "w")
+file_path = os.path.join(output_dir, file_name)
+f = h5py.File(file_path, "w")
 
 atom_type = dtype([("x", float), ("y", float), ("z", float)])
 atoms = zeros(2, dtype=atom_type)
@@ -81,4 +82,4 @@ for j in range(len(r12s)):
     stateCounter += 1
     
 f.close()
-print "States saved to:\n", os.path.abspath(file_name)
+print "States saved to:\n", os.path.abspath(file_path)
