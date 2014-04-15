@@ -2,6 +2,8 @@ import h5py
 from pylab import *
 from glob import glob
 from sys import argv
+import os
+import os.path
 
 states_files = argv[1]
 
