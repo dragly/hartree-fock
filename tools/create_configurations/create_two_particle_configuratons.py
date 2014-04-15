@@ -11,10 +11,9 @@ if len(argv) < 2:
     raise Exception("No config file provided")
 
 config_file = open(argv[1], "r")
-config_file = open(argv[1], "r")
 
 if len(argv) < 3:
-    project_id = "unnamed"
+    project_id = "tmp"
 else:
     project_id = argv[-1]
 
