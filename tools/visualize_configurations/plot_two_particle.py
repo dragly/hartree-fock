@@ -65,4 +65,4 @@ ylabel(r"$E$")
 savefig(output_file)
 savefig(output_file + ".png")
 
-print "Results saved to", output_life
+print "Results saved to", output_file
