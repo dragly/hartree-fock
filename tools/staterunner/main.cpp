@@ -37,10 +37,9 @@ int main(int argc, char* argv[])
         cout << "Usage: programname <filename> <id>" << endl;
         exit(0);
     }
-    if(argc < 3) {
-        cout << "Error: No id provided." << endl;
-        cout << "Usage: programname <filename> <id>" << endl;
-        exit(0);
+    stringstream outFileName;
+    if(argc > 2) {
+        outFileName << "runs/" << argv[2];
     }
 
     string inFileName = argv[1];
@@ -101,9 +100,7 @@ int main(int argc, char* argv[])
     cout << "Rank " << world.rank() << ": I have " << stateIDs.size() << " states to dig!" << endl;
     world.barrier();
 
-    // Copy HDF5 file
-    stringstream outFileName;
-    outFileName << "runs/" << argv[2] << "results." << setfill('0') << setw(4) << world.rank() << ".h5";
+    outFileName << "results." << setfill('0') << setw(4) << world.rank() << ".h5";
 
     // Open outFile for writing
     H5File outFile(outFileName.str(), H5F_ACC_TRUNC);
