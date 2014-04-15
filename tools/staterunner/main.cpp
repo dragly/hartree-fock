@@ -32,17 +32,16 @@ int main(int argc, char* argv[])
     mpi::communicator world;
     mpi::timer timer;
     timer.restart();
-    if(argc < 2) {
+    if(argc < 3) {
         cout << "Error: No file provided." << endl;
-        cout << "Usage: programname <filename> [id]" << endl;
+        cout << "Usage: programname <infile> <outfile>" << endl;
         exit(0);
-    }
-    stringstream outFileName;
-    if(argc > 2) {
-        outFileName << "runs/" << argv[2] << "/";
     }
 
     string inFileName = argv[1];
+
+    stringstream outFileName;
+    outFileName << argv[2];
 
     /* First structure  and dataset*/
     struct AtomData {
@@ -100,7 +99,7 @@ int main(int argc, char* argv[])
     cout << "Rank " << world.rank() << ": I have " << stateIDs.size() << " states to dig!" << endl;
     world.barrier();
 
-    outFileName << "results." << setfill('0') << setw(4) << world.rank() << ".h5";
+    outFileName << "." << setfill('0') << setw(4) << world.rank() << ".h5";
 
     // Open outFile for writing
     H5File outFile(outFileName.str(), H5F_ACC_TRUNC);
