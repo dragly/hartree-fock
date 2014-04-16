@@ -4,20 +4,31 @@ from glob import glob
 from sys import argv
 import os
 import os.path
+from argparse import ArgumentParser
 
-states_files = argv[1:-1]
+try:
+    from sumatra.projects import load_project
+    output_dir = os.path.abspath(load_project().data_store.root)
+except ImportError:
+    output_dir = os.path.abspath("tmp")
 
-if len(states_files) == 0:
-    raise Exception("Need at least one input file!")
+parser = ArgumentParser()
+parser.add_argument("states_files", nargs='+')
+parser.add_argument("project_id", nargs='?', default="tmp")
+args = parser.parse_args()
+
+output_dir = os.path.join(output_dir, args.project_id)
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
+states_files = args.states_files
 
 if len(states_files) == 1:
-    states_files = glob(states_files)
-    
-output_dir = "../../runs"
-if len(argv) > 2:
-    output_dir = os.path.join(output_dir, argv[-1])
-else:
-    output_dir = os.path.join(output_dir, "tmp")
+    if os.path.isdir(states_files[0]):
+        states_files = glob(states_files[0] + "/*.h5")
+    else:
+        states_files = glob(states_files[0])
+
 
 output_file = os.path.join(output_dir, "two_particle_plot.pdf")
 
