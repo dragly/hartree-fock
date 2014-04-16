@@ -65,6 +65,8 @@ r12s, energies = [list(x) for x in zip(*sorted(zip(r12s, energies), key=lambda p
 r12s = array(r12s)
 energies = array(energies)
 
+diffs = abs(diff(energies) / diff(r12s))
+
 print "Plotting", len(r12s), "data points."
 
 #figure()
