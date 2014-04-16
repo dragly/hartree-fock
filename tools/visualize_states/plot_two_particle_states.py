@@ -32,7 +32,7 @@ if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
 
-if args.parent and args.parentproject:
+if args.parentid and args.parentproject:
     from sumatra.projects import load_project
     project = load_project()
     parent_record = project.record_store.get(args.parentproject, args.parentid)
