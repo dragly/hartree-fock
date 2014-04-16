@@ -14,7 +14,7 @@ args = parser.parse_args()
 
 current_path = os.path.dirname(os.path.realpath(__file__))
 
-output_dir = os.path.abspath(os.path.join(current_path, "..", "..", "runs", "staterunner"))
+output_dir = os.path.abspath(os.path.join(current_path, "Data"))
 project_id = args.project_id
     
 output_dir = os.path.join(output_dir, project_id)
