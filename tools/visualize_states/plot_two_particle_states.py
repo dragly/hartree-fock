@@ -8,7 +8,9 @@ import time
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
-parser.add_argument("states_file")
+parser.add_argument("states_file", nargs="?")
+parser.add_argument("--parentid")
+parser.add_argument("--parentproject")
 #parser.add_argument("project_id", nargs='?', default="tmp")
 args = parser.parse_args()
 
@@ -29,13 +31,18 @@ output_dir = os.path.join(output_dir, project_id)
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
-states_file = args.states_file
 
-if os.path.isdir(states_file):
-    states_files = glob(states_file + "/*.h5")
-else:
-    states_files = glob(states_file)
-
+if args.parent and args.parentproject:
+    from sumatra.projects import load_project
+    project = load_project()
+    parent_record = project.record_store.get(args.parentproject, args.parentid)
+    states_files = parent_record.output_data
+else:    
+    states_file = args.states_file
+    if os.path.isdir(states_file):
+        states_files = glob(states_file + "/*.h5")
+    else:
+        states_files = glob(states_file)
 
 output_file = os.path.join(output_dir, "two_particle_plot.pdf")
 
