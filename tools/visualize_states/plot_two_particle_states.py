@@ -9,43 +9,46 @@ from argparse import ArgumentParser
 
 parser = ArgumentParser()
 parser.add_argument("states_file", nargs="?")
-parser.add_argument("--parentid")
-parser.add_argument("--parentproject")
-#parser.add_argument("project_id", nargs='?', default="tmp")
+parser.add_argument("-p", "--parent_record")
+parser.add_argument("-r", "--record", action="store_true")
 args = parser.parse_args()
 
 output_dir = os.path.abspath("tmp")
 project_id = "tmp"
 
-record_run = True
+record_run = args.record
 
 if record_run:
     from sumatra.projects import load_project
     project = load_project()
     output_dir = os.path.abspath(load_project().data_store.root)
-    record = project.new_record(main_file=__file__)
+    record = project.new_record(main_file=os.path.relpath(__file__),
+                                reason=args.parent_record)
     project_id = record.label
     start_time = time.time()
 
-output_dir = os.path.join(output_dir, project_id)
-if not os.path.exists(output_dir):
-    os.makedirs(output_dir)
-
-if args.parentid and args.parentproject:
-    from sumatra.projects import load_project
+if args.parent_record:
+    from sumatra.projects import load_project    
+    parent_split = args.parent_record.split("/")
     project = load_project()
-    parent_record = project.record_store.get(args.parentproject, args.parentid)
+    parent_record = project.record_store.get(*parent_split)
     parent_output_data = parent_record.output_data
     states_files = []
     for key in parent_output_data:
         states_files.append(os.path.join(parent_record.datastore.root, key.path))
-        record.input_data.append(key)
+    if record_run:
+        record.input_data.extend(parent_output_data)
+        record.tags = record.tags.union(parent_record.tags)
 else:    
     states_file = args.states_file
     if os.path.isdir(states_file):
         states_files = glob(states_file + "/*.h5")
     else:
         states_files = glob(states_file)
+
+output_dir = os.path.join(output_dir, project_id)
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
 
 output_file = os.path.join(output_dir, "two_particle_plot.pdf")
 
