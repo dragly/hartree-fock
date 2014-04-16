@@ -6,12 +6,18 @@ import os, os.path
 import yaml
 from argparse import ArgumentParser
 
+try:
+    from sumatra.projects import load_project
+    project = load_project()
+    output_dir = os.path.abspath(project.data_store.root)
+except ImportError:
+    output_dir = os.path.abspath("tmp")
+
 parser = ArgumentParser()
 parser.add_argument("config_filename")
 parser.add_argument("project_id", nargs='?', default="tmp")
 args = parser.parse_args()
 
-output_dir = os.path.abspath("Data")
 config_file = open(args.config_filename, "r")
 output_dir = os.path.join(output_dir, args.project_id)
 
