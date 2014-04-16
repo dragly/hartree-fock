@@ -31,12 +31,14 @@ output_dir = os.path.join(output_dir, project_id)
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
-
 if args.parentid and args.parentproject:
     from sumatra.projects import load_project
     project = load_project()
     parent_record = project.record_store.get(args.parentproject, args.parentid)
-    states_files = parent_record.output_data
+    parent_output_data = parent_record.output_data
+    states_files = []
+    for key in parent_output_data:
+        states_files.append(os.path.join(parent_record.datastore.root, key.path))
 else:    
     states_file = args.states_file
     if os.path.isdir(states_file):
