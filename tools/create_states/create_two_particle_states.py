@@ -4,20 +4,17 @@ from numpy import dtype, zeros, linspace, pi, cos, sin
 from sys import argv
 import os, os.path
 import yaml
+from argparse import ArgumentParser
 
-output_dir = "../../runs"
+parser = ArgumentParser()
+parser.add_argument("config_filename")
+parser.add_argument("project_id", nargs='?', default="tmp")
+args = parser.parse_args()
 
-if len(argv) < 2:
-    raise Exception("No config file provided")
+output_dir = os.path.abspath("Data")
+config_file = open(args.config_filename, "r")
+output_dir = os.path.join(output_dir, args.project_id)
 
-config_file = open(argv[1], "r")
-
-if len(argv) < 3:
-    project_id = "tmp"
-else:
-    project_id = argv[-1]
-
-output_dir = os.path.join(output_dir, project_id)
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
