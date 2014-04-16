@@ -48,4 +48,4 @@ env['LD_LIBRARY_PATH'] = lib_path
 #proc = subprocess.call(["./staterunner", states_file, output_file], cwd=staterunner_path, env=env)
 proc = subprocess.call(["mpirun", "-n", "8", "./staterunner", states_file, output_file], cwd=staterunner_path, env=env)
 
-print "Results saved to:\n", output_file
+print "Results saved to:\n", output_dir
