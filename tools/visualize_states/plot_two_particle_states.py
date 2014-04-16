@@ -4,20 +4,28 @@ from glob import glob
 from sys import argv
 import os
 import os.path
+import time
 from argparse import ArgumentParser
-
-try:
-    from sumatra.projects import load_project
-    output_dir = os.path.abspath(load_project().data_store.root)
-except ImportError:
-    output_dir = os.path.abspath("tmp")
 
 parser = ArgumentParser()
 parser.add_argument("states_file")
-parser.add_argument("project_id", nargs='?', default="tmp")
+#parser.add_argument("project_id", nargs='?', default="tmp")
 args = parser.parse_args()
 
-output_dir = os.path.join(output_dir, args.project_id)
+output_dir = os.path.abspath("tmp")
+project_id = "tmp"
+
+record_run = True
+
+if record_run:
+    from sumatra.projects import load_project
+    project = load_project()
+    output_dir = os.path.abspath(load_project().data_store.root)
+    record = project.new_record(main_file=__file__)
+    project_id = record.label
+    start_time = time.time()
+
+output_dir = os.path.join(output_dir, project_id)
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
@@ -78,3 +86,9 @@ savefig(output_file)
 savefig(output_file + ".png")
 
 print "Results saved to", output_file
+
+if record_run:
+    record.duration = time.time() - start_time
+    record.output_data = record.datastore.find_new_data(record.timestamp)
+    project.add_record(record)
+    project.save()
