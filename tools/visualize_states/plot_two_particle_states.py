@@ -39,6 +39,7 @@ if args.parentid and args.parentproject:
     states_files = []
     for key in parent_output_data:
         states_files.append(os.path.join(parent_record.datastore.root, key.path))
+        record.input_data.append(key)
 else:    
     states_file = args.states_file
     if os.path.isdir(states_file):
