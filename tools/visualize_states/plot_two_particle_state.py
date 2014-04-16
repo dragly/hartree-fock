@@ -13,7 +13,7 @@ except ImportError:
     output_dir = os.path.abspath("tmp")
 
 parser = ArgumentParser()
-parser.add_argument("states_files", nargs='+')
+parser.add_argument("states_file")
 parser.add_argument("project_id", nargs='?', default="tmp")
 args = parser.parse_args()
 
@@ -21,13 +21,12 @@ output_dir = os.path.join(output_dir, args.project_id)
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
-states_files = args.states_files
+states_file = args.states_file
 
-if len(states_files) == 1:
-    if os.path.isdir(states_files[0]):
-        states_files = glob(states_files[0] + "/*.h5")
-    else:
-        states_files = glob(states_files[0])
+if os.path.isdir(states_file):
+    states_files = glob(states_file + "/*.h5")
+else:
+    states_files = glob(states_file)
 
 
 output_file = os.path.join(output_dir, "two_particle_plot.pdf")
