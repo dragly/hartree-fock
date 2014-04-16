@@ -33,7 +33,7 @@ output_file = os.path.join(output_dir, os.path.split(states_file)[-1])
 build_path = os.path.abspath(os.path.join(current_path, "..", "..", "..", "build"))
 project_path = os.path.abspath(os.path.join(current_path, "..", ".."))
 
-print "Building in ", build_path
+print "Building in:\n", build_path
 
 if not os.path.exists(build_path):
     os.makedirs(build_path)
@@ -47,3 +47,5 @@ env = dict(os.environ)
 env['LD_LIBRARY_PATH'] = lib_path
 #proc = subprocess.call(["./staterunner", states_file, output_file], cwd=staterunner_path, env=env)
 proc = subprocess.call(["mpirun", "-n", "8", "./staterunner", states_file, output_file], cwd=staterunner_path, env=env)
+
+print "Results saved to:\n", output_file
