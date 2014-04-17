@@ -13,17 +13,12 @@ args = parser.parse_args()
 
 output_dir = os.path.abspath("tmp")
 
-if args.id:
+if args.id != "tmp":
     try:
         from sumatra.projects import load_project
-        project = load_project()
-        output_dir = os.path.abspath(project.data_store.root)
-        output_dir = os.path.join(output_dir, args.id)
+        output_dir = os.path.join(os.path.abspath(load_project().data_store.root), args.id)
     except ImportError:
         pass
-
-print "ID is ", args.id
-print "Output path is", output_dir
 
 config_file = open(args.config_filename, "r")
 

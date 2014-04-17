@@ -8,45 +8,23 @@ import time
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
-parser.add_argument("states_file", nargs="?")
-parser.add_argument("-p", "--parent_record")
-parser.add_argument("-r", "--record", action="store_true")
+parser.add_argument("states_files", nargs="+")
+parser.add_argument("--id", default="tmp")
 args = parser.parse_args()
 
 output_dir = os.path.abspath("tmp")
-project_id = "tmp"
 
-record_run = args.record
+if args.id != "tmp":
+    try:
+        from sumatra.projects import load_project
+        output_dir = os.path.join(os.path.abspath(load_project().data_store.root), args.id)
+    except ImportError:
+        pass
 
-if record_run:
-    from sumatra.projects import load_project
-    project = load_project()
-    output_dir = os.path.abspath(load_project().data_store.root)
-    record = project.new_record(main_file=os.path.relpath(__file__),
-                                reason=args.parent_record)
-    project_id = record.label
-    start_time = time.time()
+states_files = args.states_files
+if len(states_files) == 1:
+    states_files = glob(states_files[0])
 
-if args.parent_record:
-    from sumatra.projects import load_project    
-    parent_split = args.parent_record.split("/")
-    project = load_project()
-    parent_record = project.record_store.get(*parent_split)
-    parent_output_data = parent_record.output_data
-    states_files = []
-    for key in parent_output_data:
-        states_files.append(os.path.join(parent_record.datastore.root, key.path))
-    if record_run:
-        record.input_data.extend(parent_output_data)
-        record.tags = record.tags.union(parent_record.tags)
-else:    
-    states_file = args.states_file
-    if os.path.isdir(states_file):
-        states_files = glob(states_file + "/*.h5")
-    else:
-        states_files = glob(states_file)
-
-output_dir = os.path.join(output_dir, project_id)
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
@@ -99,9 +77,3 @@ savefig(output_file)
 savefig(output_file + ".png")
 
 print "Results saved to", output_file
-
-if record_run:
-    record.duration = time.time() - start_time
-    record.output_data = record.datastore.find_new_data(record.timestamp)
-    project.add_record(record)
-    project.save()
