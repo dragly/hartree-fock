@@ -2,6 +2,6 @@ type1: 8
 type2: 1
 r12Min: 1.0
 r12Max: 5.0
-n: 100
+n: 4000
 r12GroundState: 1.8
 basisName: "6-31Gds"

@@ -41,7 +41,6 @@ for statesFile in states_files:
     atomsMeta = f.get("atomMeta")
     if len(atomsMeta) != 2:
         raise Exception("Wrong number of atoms in atomsMeta. Found %d, should be 2." % len(atomsMeta))
-    plot_title = "Distance between atom %d and %d" % (atomsMeta[0]["type"], atomsMeta[1]["type"])
     states = f.get("/states")
     for stateName in states:
         atoms = states.get(stateName)
@@ -69,7 +68,6 @@ diffs = abs(diff(energies) / diff(r12s))
 print "Plotting", len(r12s), "data points."
 
 #figure()
-title(plot_title)
 plot(r12s, energies)
 xlabel(r"$r$")
 ylabel(r"$E$")
