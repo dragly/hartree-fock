@@ -20,11 +20,10 @@ if args.id != "tmp":
     except ImportError:
         pass
 
-config_file = open(args.config_filename, "r")
-
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
+config_file = open(args.config_filename, "r")
 config = yaml.load(config_file)
 
 atom_type_1 = config["type1"]

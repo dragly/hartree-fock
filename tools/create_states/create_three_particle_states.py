@@ -1,6 +1,30 @@
 import h5py
 import numpy
+import os
 from numpy import dtype, zeros, linspace, pi, cos, sin, sqrt
+import yaml
+from argparse import ArgumentParser
+
+parser = ArgumentParser()
+parser.add_argument("config_filename")
+parser.add_argument("--id", nargs='?', default="tmp")
+args = parser.parse_args()
+
+output_dir = os.path.abspath("tmp")
+
+if args.id != "tmp":
+    try:
+        from sumatra.projects import load_project
+        output_dir = os.path.join(os.path.abspath(load_project().data_store.root), args.id)
+    except ImportError:
+        pass
+
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
+config_file = open(args.config_filename, "r")
+config = yaml.load(config_file)
+
 f = h5py.File("states.h5", "w")
 
 atomType = dtype([("x", float), ("y", float), ("z", float)])
@@ -9,18 +33,18 @@ atoms = zeros(3, dtype=atomType)
 atomMetaType = dtype([("type", int), ("basisName", "S64")])
 atomMeta = zeros(3, dtype=atomMetaType)
 
-atomMeta[0]["type"] = 8
-atomMeta[0]["basisName"] = "3-21G"
-atomMeta[1]["type"] = 1
-atomMeta[1]["basisName"] = "3-21G"
-atomMeta[2]["type"] = 1
-atomMeta[2]["basisName"] = "3-21G"
+atomMeta[0]["type"] = config["type1"]
+atomMeta[0]["basisName"] = config["basisName"]
+atomMeta[1]["type"] = config["type2"]
+atomMeta[1]["basisName"] = config["basisName"]
+atomMeta[2]["type"] = config["type3"]
+atomMeta[2]["basisName"] = config["basisName"]
 
 dataset2 = f.create_dataset("atomMeta", data=atomMeta)
 
-angles = linspace(pi/50, pi, 25)
-r12s = linspace(1.0, 6.0, 12)
-r13s = linspace(1.0, 6.0, 12)
+angles = linspace(config["angleMin"], config["angleMax"], config["angleCount"])
+r12s = linspace(config["r12Min"], config["r12Max"], config["r12Count"])
+r13s = linspace(config["r13Min"], config["r13Max"], config["r13Count"])
 
 dataset2.attrs["description"] = "H2O with variation of angles and distances"
 dataset2.attrs["angleMin"] = angles.min()
@@ -50,15 +74,6 @@ for j in range(len(r12s)):
             atoms[2]["y"] = sin(angles[i]) * r13s[k]
             atoms[2]["z"] = 0.0
             
-            dx = atoms[2]["x"] - atoms[1]["x"]
-            dy = atoms[2]["y"] - atoms[1]["y"]
-            dz = atoms[2]["z"] - atoms[1]["z"]
-            
-            r23 = sqrt(dx*dx + dy*dy + dz*dz)
-            if r23 < 0.5:
-                skipped += 1
-                continue
-            
             dataset = statesGroup.create_dataset("state%010d" % stateCounter, data=atoms)
 
             dataset.attrs["angle"] = angles[i]
@@ -67,5 +82,4 @@ for j in range(len(r12s)):
             
             stateCounter += 1
 
-print skipped, "states skipped due to low H2 distance"
 f.close()

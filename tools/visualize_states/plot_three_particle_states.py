@@ -1,19 +1,39 @@
 import h5py
-import numpy
-from numpy import dtype, zeros, linspace, pi, cos, sin, arctan, arctan2, sqrt, meshgrid, array, inf
-from pylab import imshow, plot, figure, subplot, title
+from pylab import *
 from glob import glob
 from scipy.interpolate import griddata
 from collections import OrderedDict
+import os
+from argparse import ArgumentParser
+
+parser = ArgumentParser()
+parser.add_argument("states_files", nargs="+")
+parser.add_argument("--id", default="tmp")
+args = parser.parse_args()
+output_dir = os.path.abspath("tmp")
+
+if args.id != "tmp":
+    try:
+        from sumatra.projects import load_project
+        output_dir = os.path.join(os.path.abspath(load_project().data_store.root), args.id)
+    except ImportError:
+        pass
+
+states_files = args.states_files
+if len(states_files) == 1:
+    states_files = glob(states_files[0])
+
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
+output_file = os.path.join(output_dir, "three_particle_plot")
 
 plots = {}
 
 energy_min = inf
 energy_max = -inf
 
-
-
-for statesFile in glob("/home/svenni/Dropbox/studies/master/code/hartree-fock/build-hartree-fock-Desktop_Qt_5_2_1_GCC_64bit-Release/tools/staterunner/results.h5.*"):
+for statesFile in states_files:
     f = h5py.File(statesFile, "r")
     atomsMeta = f.get("atomMeta")
     states = f.get("/states")
@@ -73,4 +93,7 @@ for r12_name in plots:
     colorbar()
     
     plot_counter += 1
+    
+    savefig(output_file + r12_name + ".pdf")
+    savefig(output_file + r12_name + ".png")
     

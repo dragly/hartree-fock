@@ -69,6 +69,7 @@ print "Plotting", len(r12s), "data points."
 
 #figure()
 plot(r12s, energies)
+#plot(r12s, 0.13*((1.41/r12s)**12 - 2*(1.41/r12s)**6) - 1.0)
 xlabel(r"$r$")
 ylabel(r"$E$")
 savefig(output_file)
