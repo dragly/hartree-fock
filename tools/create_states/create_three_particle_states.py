@@ -25,7 +25,9 @@ if not os.path.exists(output_dir):
 config_file = open(args.config_filename, "r")
 config = yaml.load(config_file)
 
-f = h5py.File("states.h5", "w")
+output_file_name = os.path.join(output_dir, "three_particle_states.h5")
+
+f = h5py.File(output_file_name, "w")
 
 atomType = dtype([("x", float), ("y", float), ("z", float)])
 atoms = zeros(3, dtype=atomType)
