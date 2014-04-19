@@ -215,7 +215,7 @@ int main(int argc, char* argv[])
             system.addCore(GaussianCore({ atoms[i].x, atoms[i].y, atoms[i].z}, fileName));
         }
         UnrestrictedHartreeFockSolver solver(&system);
-        solver.setInitialCoefficientMatrices(coefficientMatrixUp, coefficientMatrixDown);
+//        solver.setInitialCoefficientMatrices(coefficientMatrixUp, coefficientMatrixDown);
         solver.setNIterationsMax(1e3);
         solver.setDensityMixFactor(0.95);
         solver.setConvergenceTreshold(1e-9);
