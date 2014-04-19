@@ -85,3 +85,5 @@ for j in range(len(r12s)):
             stateCounter += 1
 
 f.close()
+
+print "State file saved to\n", output_file_name
