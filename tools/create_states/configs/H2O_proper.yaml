@@ -11,3 +11,8 @@ angleMin: 0.3     # = pi / 10
 angleMax: 3.14159 # = pi
 angleCount: 12
 basisName: "3-21G"
+groundState: {
+    r12: 1.8,
+    r13: 1.8,
+    angle: 1.823
+}

@@ -56,14 +56,32 @@ dataset2.attrs["r12Max"] = r12s.max()
 dataset2.attrs["r13Min"] = r13s.min()
 dataset2.attrs["r13Max"] = r13s.max()
 
+# Set up ground state
+ground_state_angle = config["groundState"]["angle"]
+atoms = zeros(3, dtype=atomType)
+atoms[0]["x"] = 0.0
+atoms[0]["y"] = 0.0
+atoms[0]["z"] = 0.0
+
+atoms[1]["x"] = config["groundState"]["r12"]
+atoms[1]["y"] = 0.0
+atoms[1]["z"] = 0.0
+
+atoms[2]["x"] = config["groundState"]["r13"] * cos(ground_state_angle)
+atoms[2]["y"] = config["groundState"]["r13"] * sin(ground_state_angle)
+atoms[2]["z"] = 0.0
+gound_state_dataset = f.create_dataset("groundState", data=atoms)
+gound_state_dataset.attrs["r12"] = config["groundState"]["r12"]
+gound_state_dataset.attrs["r13"] = config["groundState"]["r13"]
+gound_state_dataset.attrs["angle"] = config["groundState"]["angle"]
+
 statesGroup = f.create_group("states")
-
 skipped = 0
-
 stateCounter = 0
 for j in range(len(r12s)):  
     for k in range(len(r13s)):
         for i in range(len(angles)):
+            atoms = zeros(3, dtype=atomType)
             atoms[0]["x"] = 0.0
             atoms[0]["y"] = 0.0
             atoms[0]["z"] = 0.0
