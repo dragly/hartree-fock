@@ -12,7 +12,7 @@ angleMax: 3.14159 # = pi
 angleCount: 20
 basisName: "6-31Gds"
 groundState: {
-    r12: 1.5,
-    r13: 1.5,
-    angle: 1.823
+    r12: 3.5,
+    r13: 3.5,
+    angle: 0.4496
 }
