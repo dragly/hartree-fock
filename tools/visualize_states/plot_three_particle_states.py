@@ -43,18 +43,19 @@ for statesFile in states_files:
         #r13 = sqrt((atoms[2]["x"] - atoms[0]["x"])**2 + (atoms[2]["y"] - atoms[0]["y"])**2)
         #angle = arctan2(atoms[2]["y"], atoms[2]["x"])
         r12 = atoms.attrs["r12"]
-        r12_name = "%.4f" % r12
         r13 = atoms.attrs["r13"]
         angle = atoms.attrs["angle"]
+        plot_name = "%.4f" % angle
         energy = atoms.attrs["energy"]
-        if not plots.has_key(r12_name):
-            plots[r12_name] = {"angles_r13s": [], "energies": []}
-        plots[r12_name]["angles_r13s"].append([angle, r13])
-        plots[r12_name]["energies"].append(energy)
+        if not plots.has_key(plot_name):
+            plots[plot_name] = {"r12s_r13s": [], "energies": []}
+        plots[plot_name]["r12s_r13s"].append([r12, r13])
+        plots[plot_name]["energies"].append(energy)
         
+        r12_min = atomsMeta.attrs["r12Min"]
+        r12_max = atomsMeta.attrs["r12Max"]
         r13_min = atomsMeta.attrs["r13Min"]
         r13_max = atomsMeta.attrs["r13Max"]
-        
         angle_min = atomsMeta.attrs["angleMin"]
         angle_max = atomsMeta.attrs["angleMax"]
         
@@ -65,35 +66,36 @@ for statesFile in states_files:
 print "Angle min:", angle_min, "max:", angle_max
 print "r13 min:", r13_min, "max:", r13_max
 
-angles = linspace(angle_min, angle_max, 100)
 
-r13s = linspace(r13_min, r13_max, 100)
-grid_angles, grid_r13s = meshgrid(angles, r13s)
+r12s = linspace(r12_min, r12_max, 20)
+r13s = linspace(r13_min, r13_max, 20)
+grid_r12s, grid_r13s = meshgrid(r12s, r13s)
 n_plots = len(plots)
 n_plots_per_dim = int(sqrt(n_plots) + 1)
 plot_counter = 1
 plots = OrderedDict(sorted(plots.items()))
 
+energy_max = energy_min + (energy_max - energy_min) * 0.1
 print "vmin,vmax: ", energy_min, energy_max
 
-fig = figure(figsize=(20,20))
-for r12_name in plots:
+fig = figure(figsize=(10,10))
+for plot_name in plots:
     
     ax = fig.add_subplot(n_plots_per_dim, n_plots_per_dim, plot_counter)
-    title(r12_name)
+    title(plot_name)
     
-    values = plots[r12_name]
+    values = plots[plot_name]
     
-    grid_energies = griddata(array(values["angles_r13s"]), array(values["energies"]), (grid_angles, grid_r13s), method="nearest")
+    grid_energies = griddata(array(values["r12s_r13s"]), array(values["energies"]), (grid_r12s, grid_r13s), method="nearest")
     
     img = imshow(grid_energies, origin="lower", vmin=energy_min, vmax=energy_max,
-                 extent=[angle_min,angle_max, r13_min, r13_max], 
+                 extent=[r12_min, r12_max, r13_min, r13_max], 
                          interpolation="nearest", 
-                         aspect=(angle_max - angle_min) / (r13_max - r13_min))
+                         aspect=(r12_max - r12_min) / (r13_max - r13_min))
     colorbar()
     
     plot_counter += 1
     
-    savefig(output_file + r12_name + ".pdf")
-    savefig(output_file + r12_name + ".png")
+    savefig(output_file + plot_name + ".pdf")
+    savefig(output_file + plot_name + ".png")
     
