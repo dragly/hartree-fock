@@ -96,6 +96,7 @@ for plot_name in plots:
     
     plot_counter += 1
     
-    savefig(output_file + plot_name + ".pdf")
-    savefig(output_file + plot_name + ".png")
+fig.tight_layout()
+savefig(output_file + ".pdf")
+savefig(output_file + ".png")
     
