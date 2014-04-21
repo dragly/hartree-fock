@@ -75,8 +75,11 @@ n_plots_per_dim = int(sqrt(n_plots) + 1)
 plot_counter = 1
 plots = OrderedDict(sorted(plots.items()))
 
-energy_max = energy_min + (energy_max - energy_min) * 0.1
-print "vmin,vmax: ", energy_min, energy_max
+#energy_max = energy_min + (energy_max - energy_min) * 0.1
+vmin = energy_min
+#vmax = energy_max
+vmax = energy_min + (energy_max - energy_min) * 0.5
+print "vmin,vmax: ", vmin, vmax
 
 fig = figure(figsize=(10,10))
 for plot_name in plots:
@@ -88,7 +91,7 @@ for plot_name in plots:
     
     grid_energies = griddata(array(values["r12s_r13s"]), array(values["energies"]), (grid_r12s, grid_r13s), method="nearest")
     
-    img = imshow(grid_energies, origin="lower", vmin=energy_min, vmax=energy_max,
+    img = imshow(grid_energies, origin="lower", vmin=vmin, vmax=vmax,
                  extent=[r12_min, r12_max, r13_min, r13_max], 
                          interpolation="nearest", 
                          aspect=(r12_max - r12_min) / (r13_max - r13_min))
