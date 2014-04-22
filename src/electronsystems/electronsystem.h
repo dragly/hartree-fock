@@ -18,10 +18,20 @@ public:
         return nParticles() - nParticlesDown();
     }
     virtual uint nParticlesDown() {
-        return nParticles() / 2;
+        if(m_nParticlesDownSet) {
+            return m_nParticlesDown;
+        } else {
+            return nParticles() / 2;
+        }
     }
 
     virtual double additionalEnergyTerms() = 0;
+
+    void setNParticlesDown(int nParticles);
+
+private:
+    bool m_nParticlesDownSet;
+    int m_nParticlesDown;
 };
 
 #endif // ELECTRONSYSTEM_H
