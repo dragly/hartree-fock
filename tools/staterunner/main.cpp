@@ -32,16 +32,20 @@ int main(int argc, char* argv[])
     mpi::communicator world;
     mpi::timer timer;
     timer.restart();
-    if(argc < 3) {
+    if(argc < 2) {
         cout << "Error: No file provided." << endl;
-        cout << "Usage: programname <infile> <outfile>" << endl;
+        cout << "Usage: programname <infile> [outfile]" << endl;
         exit(0);
     }
 
     string inFileName = argv[1];
 
     stringstream outFileName;
-    outFileName << argv[2];
+    if(argc < 3) {
+        outFileName << "states";
+    } else {
+        outFileName << argv[2];
+    }
 
     /* First structure  and dataset*/
     struct AtomData {
@@ -56,15 +60,15 @@ int main(int argc, char* argv[])
     atomCompound.insertMember("y", HOFFSET(AtomData, y), PredType::NATIVE_DOUBLE);
     atomCompound.insertMember("z", HOFFSET(AtomData, z), PredType::NATIVE_DOUBLE);
 
-
     struct AtomMetaData {
         int    type;
         char basisName[64];
     };
+
     H5::StrType string_type(H5::PredType::C_S1, 64);
     CompType atomMetaCompound( sizeof(AtomMetaData) );
-    atomMetaCompound.insertMember( "type", HOFFSET(AtomMetaData, type), PredType::NATIVE_INT);
-    atomMetaCompound.insertMember( "basisName", HOFFSET(AtomMetaData, basisName), string_type);
+    atomMetaCompound.insertMember("type", HOFFSET(AtomMetaData, type), PredType::NATIVE_INT);
+    atomMetaCompound.insertMember("basisName", HOFFSET(AtomMetaData, basisName), string_type);
 
     vector<int> stateIDs;
     if(world.rank() == 0) {
@@ -143,7 +147,30 @@ int main(int argc, char* argv[])
     mat coefficientMatrixUp;
     mat coefficientMatrixDown;
 
+    // Precalculate energy offset
+    cout << "Calculating energy offset..." << endl;
+    Attribute energyOffsetAttribute = atomMeta.createAttribute("energyOffset", PredType::NATIVE_DOUBLE, H5S_SCALAR);
+    double energyOffset = 0.0;
+    for(int i = 0; i < nAtoms; i++) {
+        GaussianSystem system;
+        stringstream basisFile;
+        basisFile << "atom_" << atomMetaData[i].type << "_basis_" << atomMetaData[i].basisName << ".tm";
+        string fileName = basisFile.str();
+        system.addCore(GaussianCore({0,0,0}, fileName));
+        UnrestrictedHartreeFockSolver solver(&system);
+        solver.setInitialCoefficientMatrices(coefficientMatrixUp, coefficientMatrixDown);
+        solver.setNIterationsMax(1e3);
+        solver.setDensityMixFactor(0.95);
+        solver.setConvergenceTreshold(1e-9);
+        solver.solve();
+        energyOffset += solver.energy();
+    }
+    energyOffsetAttribute.write(PredType::NATIVE_DOUBLE, &energyOffset);
+    cout << "Energy offset: " << energyOffset << endl;
+    // Done precalculating energy offset
+
     // Precalculate ground state
+    cout << "Calculating ground state to get coefficients..." << endl;
     DataSet groundStateDataSet(rootGroup.openDataSet("groundState"));
     hsize_t dims2[1];
     groundStateDataSet.getSpace().getSimpleExtentDims(dims2);
@@ -176,9 +203,8 @@ int main(int argc, char* argv[])
     coefficientMatrixDown = groundStateSolver.coeffcientMatrixDown();
 
     delete groundStateAtoms;
+    cout << "Ground state energy: " << groundStateSolver.energy() << endl;
     // Done precalculate ground state
-
-    cout << "Done with ground state" << endl;
 
     H5::Group statesGroup(outFile.openGroup("/states"));
 
