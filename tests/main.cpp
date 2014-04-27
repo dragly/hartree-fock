@@ -29,6 +29,9 @@ int main(int argc, char* argv[])
         result = runner.RunTestsIf(UnitTest::Test::GetTestList(), "Systems", UnitTest::True(), 0);
         result = runner.RunTestsIf(UnitTest::Test::GetTestList(), "Unrestricted", UnitTest::True(), 0);
     }
+    if(result != 0) {
+        std::cerr << "FAILURE: Some tests failed! See above log for details..." << std::endl;
+    }
     return result;
 }
 

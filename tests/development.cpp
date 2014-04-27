@@ -1,6 +1,7 @@
 #include "electronsystems/gaussian/gaussiancore.h"
 #include "electronsystems/gaussian/gaussiansystem.h"
 #include "solvers/unrestrictedhartreefocksolver.h"
+#include "solvers/restrictedhartreefocksolver.h"
 #include "basisfunctions/gaussian/integrals/gaussianelectroninteractionintegral.h"
 #include "basisfunctions/gaussian/integrals/gaussianoverlapintegral.h"
 #include "math/boysfunction.h"
@@ -16,15 +17,15 @@ using std::endl;
 SUITE(Development) {
     TEST(Dummy) {
     }
-    TEST(OxygenSix) {
+    TEST(WaterSixPlusPlus) {
         vector<GaussianCore> cores;
-        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_6-31Gds.tm"));
-        cores.push_back(GaussianCore({2.281,0,0}, "atom_8_basis_6-31Gds.tm"));
+        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_6-311++G(2d,2p).tm"));
+        cores.push_back(GaussianCore({0, 1.079252144093028, 1.474611055780858}, "atom_1_basis_6-311++G(2d,2p).tm"));
+        cores.push_back(GaussianCore({0, 1.079252144093028, -1.474611055780858}, "atom_1_basis_6-311++G(2d,2p).tm"));
         GaussianSystem system;
         for(const GaussianCore &core : cores) {
             system.addCore(core);
         }
-        system.setNParticlesDown(7);
         mat C;
         UnrestrictedHartreeFockSolver solver(&system);
         solver.setConvergenceTreshold(1e-12);
@@ -34,10 +35,48 @@ SUITE(Development) {
         cout << std::setprecision(20);
         cout << solver.energy() << endl;
         cout << solver.iterationsUsed() << endl;
-
-        // 148.53
         //        CHECK_CLOSE(-149.5117583638509, solver.energy(), 1e-5);
     }
+//    TEST(OxygenSix) {
+//        vector<GaussianCore> cores;
+//        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_6-31Gds.tm"));
+//        cores.push_back(GaussianCore({2.281,0,0}, "atom_8_basis_6-31Gds.tm"));
+//        GaussianSystem system;
+//        for(const GaussianCore &core : cores) {
+//            system.addCore(core);
+//        }
+//        system.setNParticlesDown(7);
+//        mat C;
+//        UnrestrictedHartreeFockSolver solver(&system);
+//        solver.setConvergenceTreshold(1e-12);
+//        solver.setNIterationsMax(1e4);
+//        solver.setDensityMixFactor(0.95);
+//        solver.solve();
+//        cout << std::setprecision(20);
+//        cout << solver.energy() << endl;
+//        cout << solver.iterationsUsed() << endl;
+//        //        CHECK_CLOSE(-149.5117583638509, solver.energy(), 1e-5);
+//    }
+//    TEST(BoronHydrogen) {
+//        vector<GaussianCore> cores;
+//        cores.push_back(GaussianCore({0,0,0}, "atom_5_basis_STO-3G.tm"));
+//        cores.push_back(GaussianCore({1.2,0,0}, "atom_1_basis_STO-3G.tm"));
+//        GaussianSystem system;
+//        for(const GaussianCore &core : cores) {
+//            system.addCore(core);
+//        }
+//        mat C;
+//        system.setNParticlesDown(4);
+//        UnrestrictedHartreeFockSolver solver(&system);
+//        solver.setConvergenceTreshold(1e-12);
+//        solver.setNIterationsMax(1e4);
+//        solver.setDensityMixFactor(0.95);
+//        solver.solve();
+//        cout << std::setprecision(20);
+//        cout << solver.energy() << endl;
+//        cout << solver.iterationsUsed() << endl;
+//        //        CHECK_CLOSE(-149.5117583638509, solver.energy(), 1e-5);
+//    }
     //    TEST(OxygenSix) {
     //        vector<GaussianCore> cores;
     //        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_4-31G.tm"));
