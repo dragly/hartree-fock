@@ -2,6 +2,8 @@
 #define ELECTRONSYSTEM_H
 
 #include <sys/types.h>
+#include <stdexcept>
+#include <iostream>
 
 class ElectronSystem
 {
@@ -14,24 +16,16 @@ public:
 
     virtual uint nBasisFunctions() = 0;
     virtual uint nParticles() = 0;
-    virtual uint nParticlesUp() {
-        return nParticles() - nParticlesDown();
-    }
-    virtual uint nParticlesDown() {
-        if(m_nParticlesDownSet) {
-            return m_nParticlesDown;
-        } else {
-            return nParticles() / 2;
-        }
-    }
+    virtual uint nParticlesUp();
+    virtual uint nParticlesDown();
 
     virtual double additionalEnergyTerms() = 0;
 
-    void setNParticlesDown(int nParticles);
+    void setNParticlesDown(uint nParticlesDown);
 
 private:
     bool m_nParticlesDownSet;
-    int m_nParticlesDown;
+    uint m_nParticlesDown;
 };
 
 #endif // ELECTRONSYSTEM_H
