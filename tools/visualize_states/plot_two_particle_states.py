@@ -39,6 +39,7 @@ r12s = []
 for statesFile in states_files:
     f = h5py.File(statesFile, "r")
     atomsMeta = f.get("atomMeta")
+    energyOffset = atomsMeta.attrs["energyOffset"]
     if len(atomsMeta) != 2:
         raise Exception("Wrong number of atoms in atomsMeta. Found %d, should be 2." % len(atomsMeta))
     states = f.get("/states")
@@ -48,7 +49,7 @@ for statesFile in states_files:
         #r13 = sqrt((atoms[2]["x"] - atoms[0]["x"])**2 + (atoms[2]["y"] - atoms[0]["y"])**2)
         #angle = arctan2(atoms[2]["y"], atoms[2]["x"])
         r12 = atoms.attrs["r12"]
-        energy = atoms.attrs["energy"]
+        energy = atoms.attrs["energy"] - energyOffset
         
         r12s.append(r12)
         energies.append(energy)

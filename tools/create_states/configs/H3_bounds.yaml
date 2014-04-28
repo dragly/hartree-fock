@@ -7,7 +7,7 @@ r12Count: 12
 r13Min: 1.0
 r13Max: 10.0
 r13Count: 12
-angleMin: 0.3     # = pi / 10
+angleMin: 0.2617993877991494     # = pi / 12
 angleMax: 3.14159 # = pi
 angleCount: 12
 basisName: "6-31Gds"
