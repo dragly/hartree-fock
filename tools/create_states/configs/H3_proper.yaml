@@ -3,14 +3,14 @@ type2: 1
 type3: 1
 r12Min: 0.7
 r12Max: 6.0
-r12Count: 25
+r12Count: 20
 r13Min: 0.7
 r13Max: 6.0
-r13Count: 25
+r13Count: 20
 angleMin: 1.0     # only need to parameterize down to pi/3 = 1.05 for equal particles
 angleMax: 3.14159 # = pi
 angleCount: 25
-basisName: "6-311++Gdsds"
+basisName: "6-31Gds"
 groundState: {
     r12: 3.5,
     r13: 3.5,
