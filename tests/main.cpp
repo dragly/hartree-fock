@@ -16,6 +16,7 @@ int main(int argc, char* argv[])
     if(argc > 1 && !strcmp(argv[1], "dev")) {
         UnitTest::TestReporterStdout reporter;
         UnitTest::TestRunner runner(reporter);
+
         result = runner.RunTestsIf(UnitTest::Test::GetTestList(), "Development", UnitTest::True(), 0);
     } else {
         UnitTest::TestReporterStdout reporter;

@@ -1,13 +1,13 @@
 type1: 1
 type2: 1
 type3: 1
-r12Min: 1.0
+r12Min: 0.7
 r12Max: 4.0
 r12Count: 20
-r13Min: 1.0
+r13Min: 0.7
 r13Max: 4.0
 r13Count: 20
-angleMin: 1.0     # to avoid problems with convergence in HF
+angleMin: 1.0     # only need to parameterize down to pi/3 = 1.05 for equal particles
 angleMax: 3.14159 # = pi
 angleCount: 20
 basisName: "6-31Gds"

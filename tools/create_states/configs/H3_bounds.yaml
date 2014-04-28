@@ -1,10 +1,10 @@
 type1: 1
 type2: 1
 type3: 1
-r12Min: 1.0
+r12Min: 0.5
 r12Max: 10.0
 r12Count: 12
-r13Min: 1.0
+r13Min: 0.5
 r13Max: 10.0
 r13Count: 12
 angleMin: 0.2617993877991494     # = pi / 12
