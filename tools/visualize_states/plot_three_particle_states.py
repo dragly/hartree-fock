@@ -78,7 +78,7 @@ plots = OrderedDict(sorted(plots.items()))
 #energy_max = energy_min + (energy_max - energy_min) * 0.1
 vmin = energy_min
 #vmax = energy_max
-vmax = energy_min + (energy_max - energy_min) * 0.1
+vmax = energy_min + (energy_max - energy_min) * 0.5
 print "vmin,vmax: ", vmin, vmax
 
 fig = figure(figsize=(10,10))
