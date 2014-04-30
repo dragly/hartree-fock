@@ -38,7 +38,7 @@ print "Building in:\n", build_path
 if not os.path.exists(build_path):
     os.makedirs(build_path)
 subprocess.call(["qmake", project_path, "CONFIG+=nogui"], cwd=build_path)
-subprocess.call(["make"], cwd=build_path)
+subprocess.call(["make", "-j", "8"], cwd=build_path)
 
 staterunner_path = os.path.join(build_path, "tools", "staterunner")
 lib_path = os.path.join("..", "..", "src")
