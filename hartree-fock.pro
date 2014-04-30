@@ -1,16 +1,18 @@
 TEMPLATE = subdirs
-CONFIG += ordered
-
-SUBDIRS += src
 
 !nogui {
     SUBDIRS += hfgui
+    hfgui.depends = src
 }
 !notools {
     SUBDIRS += tools
+    tools.depends = src
 }
 !notests {
     SUBDIRS += tests
+    tests.depends = src
 }
+
+SUBDIRS += src
 
 BUILD_DIR = $$OUT_PWD

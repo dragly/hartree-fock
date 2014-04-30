@@ -4,6 +4,7 @@
 #include <libconfig.h++>
 
 #include <solvers/unrestrictedhartreefocksolver.h>
+#include <solvers/restrictedhartreefocksolver.h>
 #include <electronsystems/gaussian/gaussiancore.h>
 #include <electronsystems/gaussian/gaussiansystem.h>
 #include <boost/mpi.hpp>
@@ -144,6 +145,12 @@ int main(int argc, char* argv[])
     AtomMetaData atomMetaData[nAtoms];
     atomMeta.read(atomMetaData, atomMetaCompound);
 
+    // Get atommeta attributes
+    string method("");
+    Attribute hartreeFockMethodAttribute = atomMeta.openAttribute("method");
+    hartreeFockMethodAttribute.read(StrType(PredType::C_S1, 256), method);
+    cout << method << endl;
+
     mat coefficientMatrixUp;
     mat coefficientMatrixDown;
 
@@ -157,13 +164,21 @@ int main(int argc, char* argv[])
         basisFile << "atom_" << atomMetaData[i].type << "_basis_" << atomMetaData[i].basisName << ".tm";
         string fileName = basisFile.str();
         system.addCore(GaussianCore({0,0,0}, fileName));
-        UnrestrictedHartreeFockSolver solver(&system);
-        solver.setInitialCoefficientMatrices(coefficientMatrixUp, coefficientMatrixDown);
-        solver.setNIterationsMax(1e3);
-        solver.setDensityMixFactor(0.95);
-        solver.setConvergenceTreshold(1e-9);
-        solver.solve();
-        energyOffset += solver.energy();
+        if(method == "unrestricted") {
+            UnrestrictedHartreeFockSolver solver(&system);
+            solver.setNIterationsMax(1e3);
+            solver.setDensityMixFactor(0.95);
+            solver.setConvergenceTreshold(1e-9);
+            solver.solve();
+            energyOffset += solver.energy();
+        } else {
+            RestrictedHartreeFockSolver solver(&system);
+            solver.setNIterationsMax(1e3);
+            solver.setDensityMixFactor(0.95);
+            solver.setConvergenceTreshold(1e-9);
+            solver.solve();
+            energyOffset += solver.energy();
+        }
     }
     energyOffsetAttribute.write(PredType::NATIVE_DOUBLE, &energyOffset);
     cout << "Energy offset: " << energyOffset << endl;
@@ -193,17 +208,28 @@ int main(int argc, char* argv[])
         string fileName = basisFile.str();
         groundStateSystem.addCore(GaussianCore({ groundStateAtoms[i].x, groundStateAtoms[i].y, groundStateAtoms[i].z}, fileName));
     }
-    UnrestrictedHartreeFockSolver groundStateSolver(&groundStateSystem);
-    groundStateSolver.setNIterationsMax(1e3);
-    groundStateSolver.setDensityMixFactor(0.95);
-    groundStateSolver.setConvergenceTreshold(1e-9);
-    groundStateSolver.solve();
+    if(method == "unrestricted") {
+        UnrestrictedHartreeFockSolver groundStateSolver(&groundStateSystem);
+        groundStateSolver.setNIterationsMax(1e3);
+        groundStateSolver.setDensityMixFactor(0.95);
+        groundStateSolver.setConvergenceTreshold(1e-9);
+        groundStateSolver.solve();
 
-    coefficientMatrixUp = groundStateSolver.coeffcientMatrixUp();
-    coefficientMatrixDown = groundStateSolver.coeffcientMatrixDown();
+        coefficientMatrixUp = groundStateSolver.coeffcientMatrixUp();
+        coefficientMatrixDown = groundStateSolver.coeffcientMatrixDown();
+        cout << "Ground state energy: " << groundStateSolver.energy() << endl;
+    } else {
+        RestrictedHartreeFockSolver groundStateSolver(&groundStateSystem);
+        groundStateSolver.setNIterationsMax(1e3);
+        groundStateSolver.setDensityMixFactor(0.95);
+        groundStateSolver.setConvergenceTreshold(1e-9);
+        groundStateSolver.solve();
+
+        coefficientMatrixUp = groundStateSolver.coefficientMatrix();
+        cout << "Ground state energy: " << groundStateSolver.energy() << endl;
+    }
 
     delete groundStateAtoms;
-    cout << "Ground state energy: " << groundStateSolver.energy() << endl;
     // Done precalculate ground state
 
     H5::Group statesGroup(outFile.openGroup("/states"));
@@ -240,17 +266,24 @@ int main(int argc, char* argv[])
             string fileName = basisFile.str();
             system.addCore(GaussianCore({ atoms[i].x, atoms[i].y, atoms[i].z}, fileName));
         }
-        UnrestrictedHartreeFockSolver solver(&system);
-        solver.setInitialCoefficientMatrices(coefficientMatrixUp, coefficientMatrixDown);
-        solver.setNIterationsMax(1e3);
-        solver.setDensityMixFactor(0.95);
-        solver.setConvergenceTreshold(1e-9);
-        solver.solve();
-
-//        coefficientMatrixUp = solver.coeffcientMatrixUp();
-//        coefficientMatrixDown = solver.coeffcientMatrixDown();
-
-        double energy = solver.energy();
+        double energy;
+        if(method == "unrestricted") {
+            UnrestrictedHartreeFockSolver solver(&system);
+            solver.setInitialCoefficientMatrices(coefficientMatrixUp, coefficientMatrixDown);
+            solver.setNIterationsMax(1e3);
+            solver.setDensityMixFactor(0.95);
+            solver.setConvergenceTreshold(1e-9);
+            solver.solve();
+            energy = solver.energy();
+        } else {
+            RestrictedHartreeFockSolver solver(&system);
+            solver.setInitialCoefficientMatrix(coefficientMatrixUp);
+            solver.setNIterationsMax(1e3);
+            solver.setDensityMixFactor(0.95);
+            solver.setConvergenceTreshold(1e-9);
+            solver.solve();
+            energy = solver.energy();
+        }
 
         Attribute energyAttribute(stateDataSet.createAttribute("energy", PredType::NATIVE_DOUBLE, H5S_SCALAR));
         energyAttribute.write(PredType::NATIVE_DOUBLE, &energy);

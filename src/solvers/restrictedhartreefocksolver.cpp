@@ -3,7 +3,8 @@
 #include <electronsystems/electronsystem.h>
 
 RestrictedHartreeFockSolver::RestrictedHartreeFockSolver(ElectronSystem *electronSystem) :
-    HartreeFockSolver(electronSystem)
+    HartreeFockSolver(electronSystem),
+    m_initialCoefficientMatrixSetManually(false)
 {
 }
 
@@ -20,7 +21,12 @@ void RestrictedHartreeFockSolver::resetFockMatrix() {
 void RestrictedHartreeFockSolver::resetCoefficientMatrix() {
     ElectronSystem* f = electronSystem();
     m_coefficientMatrix.reset();
-    m_coefficientMatrix = zeros(f->nBasisFunctions(), f->nParticles() / 2);
+    if(!m_initialCoefficientMatrixSetManually
+            || m_initialCoefficientMatrix.n_rows != f->nBasisFunctions()
+            || m_initialCoefficientMatrix.n_cols != f->nParticlesUp()) {
+        m_initialCoefficientMatrix = zeros(f->nBasisFunctions(), f->nParticles() / 2);
+    }
+    m_coefficientMatrix = m_initialCoefficientMatrix;
 }
 
 void RestrictedHartreeFockSolver::setupFockMatrix() {
@@ -40,6 +46,12 @@ void RestrictedHartreeFockSolver::setupFockMatrix() {
             }
         }
     }
+}
+
+void RestrictedHartreeFockSolver::setInitialCoefficientMatrix(const mat &coefficients)
+{
+    m_initialCoefficientMatrixSetManually = true;
+    m_initialCoefficientMatrix = coefficients;
 }
 
 void RestrictedHartreeFockSolver::setup() {
