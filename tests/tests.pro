@@ -20,7 +20,7 @@ SOURCES += main.cpp \
     unrestricted.cpp \
     development.cpp
 
-LIBS += -lunittest++ -L../src/libs -lhartree-fock
+LIBS += -lunittest++ -lhartree-fock
 
 HEADERS += \
     basisfunction.h

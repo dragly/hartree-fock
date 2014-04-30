@@ -15,6 +15,8 @@ class GaussianCore
 {
 public:
     GaussianCore(Vector3 position = Vector3::createZeros(), string fileName = "");
+    GaussianCore(Vector3 position, int atomNumber, string basisName);
+    GaussianCore(Vector3 position, string atomAbbreviation, string basisName);
 
     void load(string fileName);
 

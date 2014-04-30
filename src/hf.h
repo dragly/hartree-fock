@@ -6,6 +6,7 @@
 #include <string>
 #include <boost/functional/hash.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/regex.hpp>
 
 struct iequal_to
         : std::binary_function<std::string, std::string, bool>
@@ -166,6 +167,36 @@ public:
         Ununseptium,
         Ununoctium
     };
+
+    static std::string escapeBasis(std::string basisName) {
+        std::string basisNameEscaped = boost::regex_replace(basisName, boost::regex("\\*"), "ds");
+        basisNameEscaped = boost::regex_replace(basisNameEscaped, boost::regex(" "), "_");
+        return basisNameEscaped;
+    }
+
+    static std::string filenameFromAtomAndBasis(AtomType type, std::string basisName) {
+        std::stringstream fileNameBuilder;
+        std::stringstream atomTypeBuilder;
+        atomTypeBuilder << type;
+
+        std::string basisNameEscaped = escapeBasis(basisName);
+
+        std::string atomTypeString = atomTypeBuilder.str();
+        fileNameBuilder << "atom_" << atomTypeString << "_basis_" << basisNameEscaped << ".tm";
+
+        std::string filename = fileNameBuilder.str();
+        return filename;
+    }
+
+    static std::string filenameFromAtomAndBasis(std::string abbreviation, std::string basisName) {
+        HF::AtomType type = HF::abbreviationToAtomType(abbreviation);
+        if(type == HF::Unknown) {
+            std::cerr << "Unknown atom abbreviation " << abbreviation << std::endl;
+            return "";
+        }
+        return filenameFromAtomAndBasis(type, basisName);
+    }
+
     static AtomType abbreviationToAtomType(std::string abbreviation) {
         std::unordered_map<std::string, AtomType, ihash, iequal_to> abbreviationMap {
             {"H",Hydrogen},

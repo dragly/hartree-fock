@@ -2,6 +2,9 @@
 
 #include "math/vector3.h"
 #include <parsers/turbomoleparser.h>
+#include <hf.h>
+
+#include <boost/regex.hpp>
 
 GaussianCore::GaussianCore(Vector3 position, string fileName) :
     m_position(position)
@@ -9,6 +12,22 @@ GaussianCore::GaussianCore(Vector3 position, string fileName) :
     if(fileName != "") {
         load(fileName);
     }
+}
+
+GaussianCore::GaussianCore(Vector3 position, int atomNumber, string basisName) :
+    m_position(position)
+{
+    cout << "Got " << atomNumber << " " << basisName << endl;
+    HF::AtomType type = static_cast<HF::AtomType>(atomNumber);
+    string filename = HF::filenameFromAtomAndBasis(type, basisName);
+    load(filename);
+}
+
+GaussianCore::GaussianCore(Vector3 position, string atomAbbreviation, string basisName) :
+    m_position(position)
+{
+    string filename = HF::filenameFromAtomAndBasis(atomAbbreviation, basisName);
+    load(filename);
 }
 
 void GaussianCore::load(string fileName)

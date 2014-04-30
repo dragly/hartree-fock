@@ -1,0 +1,14 @@
+atoms: [
+    {
+        type: "O",
+        basis: "6-311++G**",
+        position: [0,0,0]
+    },
+    {
+        type: "O",
+        basis: "6-311++G**",
+        position: [2.282,0,0]
+    }
+]
+method: "unrestricted"
+output: ["energy"]
