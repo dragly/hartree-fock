@@ -5,3 +5,4 @@ r12Max: 5.0
 n: 4000
 r12GroundState: 1.8
 basisName: "6-31Gds"
+method: "unrestricted"

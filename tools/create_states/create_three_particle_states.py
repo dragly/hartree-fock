@@ -48,13 +48,14 @@ angles = linspace(config["angleMin"], config["angleMax"], config["angleCount"])
 r12s = linspace(config["r12Min"], config["r12Max"], config["r12Count"])
 r13s = linspace(config["r13Min"], config["r13Max"], config["r13Count"])
 
-dataset2.attrs["description"] = "H2O with variation of angles and distances"
+dataset2.attrs["description"] = "Variation of angles and distances"
 dataset2.attrs["angleMin"] = angles.min()
 dataset2.attrs["angleMax"] = angles.max()
 dataset2.attrs["r12Min"] = r12s.min()
 dataset2.attrs["r12Max"] = r12s.max()
 dataset2.attrs["r13Min"] = r13s.min()
 dataset2.attrs["r13Max"] = r13s.max()
+dataset2.attrs["method"] = config["method"]
 
 # Set up ground state
 ground_state_angle = config["groundState"]["angle"]

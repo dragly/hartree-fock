@@ -54,6 +54,7 @@ atom_meta[1]["basisName"] = basis_name
 atom_meta_dataset = f.create_dataset("atomMeta", data = atom_meta)
 atom_meta_dataset.attrs["r12Min"] = r12_min
 atom_meta_dataset.attrs["r12Max"] = r12_max
+atom_meta_dataset.attrs["method"] = config["method"]
 
 r12s = linspace(r12_min, r12_max, configuration_count)
 

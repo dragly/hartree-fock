@@ -16,3 +16,4 @@ groundState: {
     r13: 1.8,
     angle: 1.823
 }
+method: "unrestricted"
