@@ -11,6 +11,7 @@ SOURCES = main.cpp
 
 LIBS += -lhdf5 -lhdf5_cpp
 LIBS += -lboost_filesystem -lboost_system -lboost_mpi -lboost_serialization
+LIBS += -lyaml-cpp
 LIBS += $$system(mpicxx --showme:link)
 QMAKE_CXXFLAGS += $$system(mpicxx --showme:compile)
 

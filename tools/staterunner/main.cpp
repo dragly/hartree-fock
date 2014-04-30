@@ -2,18 +2,31 @@
 #include <iomanip>
 #include <fstream>
 #include <libconfig.h++>
+#include <string.h>
 
 #include <solvers/unrestrictedhartreefocksolver.h>
 #include <solvers/restrictedhartreefocksolver.h>
 #include <electronsystems/gaussian/gaussiancore.h>
 #include <electronsystems/gaussian/gaussiansystem.h>
 #include <boost/mpi.hpp>
+#include <yaml-cpp/yaml.h>
 
 #include <H5Cpp.h>
 
 using namespace std;
 using namespace H5;
 namespace mpi = boost::mpi;
+
+void operator >> (const YAML::Node& node, Vector3& v)
+{
+    double x;
+    double y;
+    double z;
+    node[0] >> x;
+    node[1] >> y;
+    node[2] >> z;
+    v = Vector3(x,y,z);
+}
 
 int blockLow(int id, int np, int n) {
     return (id * n) / np;
@@ -73,31 +86,94 @@ int main(int argc, char* argv[])
 
     vector<int> stateIDs;
     if(world.rank() == 0) {
-        H5File inFile(inFileName, H5F_ACC_RDONLY );
-        H5::Group statesGroup(inFile.openGroup("/states"));
-        int nStates = statesGroup.getNumObjs();
-        vector<int> allStates;
-        allStates.reserve(nStates);
-        for(int i = 0; i < nStates; i++) {
-            allStates.push_back(i);
-        }
-        random_shuffle(allStates.begin(), allStates.end());
-        for(int p = 0; p < world.size(); p++) {
-            vector<int> states;
-            for(int i = blockLow(p, world.size(), allStates.size());
-                i <= blockHigh(p, world.size(), allStates.size());
-                i++) {
-
-                states.push_back(allStates.at(i));
-
+        if(false) {
+            H5File inFile(inFileName, H5F_ACC_RDONLY );
+            H5::Group statesGroup(inFile.openGroup("/states"));
+            int nStates = statesGroup.getNumObjs();
+            vector<int> allStates;
+            allStates.reserve(nStates);
+            for(int i = 0; i < nStates; i++) {
+                allStates.push_back(i);
             }
-            if(p == 0) {
-                stateIDs = states;
-            } else {
-                world.send(p, 0, states);
+            random_shuffle(allStates.begin(), allStates.end());
+            for(int p = 0; p < world.size(); p++) {
+                vector<int> states;
+                for(int i = blockLow(p, world.size(), allStates.size());
+                    i <= blockHigh(p, world.size(), allStates.size());
+                    i++) {
+
+                    states.push_back(allStates.at(i));
+
+                }
+                if(p == 0) {
+                    stateIDs = states;
+                } else {
+                    world.send(p, 0, states);
+                }
             }
+            inFile.close();
+        } else {
+            inFileName = "file.h5";
+            H5File inFile(inFileName, H5F_ACC_TRUNC);
+            ifstream fin(argv[1]);
+            if(fin.fail()) {
+                cerr << "Could not open the configuration file " << argv[1] << endl;
+                return 1;
+            }
+
+            YAML::Parser parser(fin);
+            YAML::Node rootNode;
+            parser.GetNextDocument(rootNode);
+            unsigned int nAtoms = rootNode["atoms"].size();
+
+            H5::Group rootGroup(inFile.openGroup("/"));
+            string metaInformationName = "atomMeta";
+            hsize_t dim[] = {nAtoms};
+            DataSpace atomMetaSpace(1, dim);
+            DataSet atomMeta(rootGroup.createDataSet(metaInformationName, atomMetaCompound, atomMetaSpace));
+            AtomMetaData atomMetaData[nAtoms];
+
+            H5::Group statesGroup(inFile.createGroup("/states"));
+            DataSpace atomSpace(1, dim);
+            DataSet stateDataSet(statesGroup.createDataSet("state000000", atomCompound, atomSpace));
+            AtomData atoms[nAtoms];
+            for(YAML::Iterator it=rootNode.begin();it!=rootNode.end();++it) {
+                string rootKey;
+                it.first() >> rootKey;
+                if(rootKey == "atoms") {
+                    const YAML::Node &atomsNode = it.second();
+                    int atomCounter = 0;
+                    for(YAML::Iterator it2=atomsNode.begin();it2!=atomsNode.end();++it2) {
+                        const YAML::Node &atomNode = *it2;
+                        string typeAbbreviation;
+                        atomNode["type"] >> typeAbbreviation;
+                        Vector3 position;
+                        atomNode["position"] >> position;
+                        string basis;
+                        atomNode["basis"] >> basis;
+
+                        basis = HF::escapeBasis(basis);
+                        strncpy(atomMetaData[atomCounter].basisName, basis.c_str(), 63);
+                        atomMetaData[atomCounter].type = HF::abbreviationToAtomType(typeAbbreviation);
+                        atoms[atomCounter].x = position.x();
+                        atoms[atomCounter].y = position.y();
+                        atoms[atomCounter].z = position.z();
+                        atomCounter++;
+                    }
+                } else if(rootKey == "method") {
+                    string methodName;
+                    it.second() >> methodName;
+                    Attribute methodAttribute = atomMeta.createAttribute("method", StrType(PredType::C_S1, H5T_VARIABLE), DataSpace());
+                    methodAttribute.write(StrType(PredType::C_S1, H5T_VARIABLE), methodName);
+                } else if(rootKey == "output") {
+                    // TODO implement different types of output
+                }
+            }
+            stateDataSet.write(atoms, atomCompound);
+            atomMeta.write(atomMetaData, atomMetaCompound);
+            stateIDs.push_back(0);
+            inFile.close();
         }
-        inFile.close();
     } else {
         world.recv(0, 0, stateIDs);
     }
@@ -108,7 +184,6 @@ int main(int argc, char* argv[])
 
     // Open outFile for writing
     H5File outFile(outFileName.str(), H5F_ACC_TRUNC);
-
     for(int p = 0; p < world.size(); p++) {
         world.barrier();
         if(p != world.rank()) {
@@ -158,10 +233,7 @@ int main(int argc, char* argv[])
     double energyOffset = 0.0;
     for(int i = 0; i < nAtoms; i++) {
         GaussianSystem system;
-        stringstream basisFile;
-        basisFile << "atom_" << atomMetaData[i].type << "_basis_" << atomMetaData[i].basisName << ".tm";
-        string fileName = basisFile.str();
-        system.addCore(GaussianCore({0,0,0}, fileName));
+        system.addCore(GaussianCore({0,0,0}, atomMetaData[i].type, atomMetaData[i].basisName));
         // Restricted HF cannot be done on one atom currently.
         // Restricted tends to have convergence problems with high distances anyway,
         // so just use the energy offset from UHF in case we want to plot the two together with offset
@@ -178,50 +250,61 @@ int main(int argc, char* argv[])
 
     // Precalculate ground state
     cout << "Calculating ground state to get coefficients..." << endl;
-    DataSet groundStateDataSet(rootGroup.openDataSet("groundState"));
-    hsize_t dims2[1];
-    groundStateDataSet.getSpace().getSimpleExtentDims(dims2);
-    int groundStateNAtoms2 = dims2[0];
 
-    if(nAtoms != groundStateNAtoms2) {
-        cerr << "Error! The number of atoms in the ground state (nAtoms = " << groundStateNAtoms2 << ") does not match "
-             << "the number of atoms in the metadata (= " << nAtoms << ")" << endl;
-        cerr << "Cannot continue" << endl;
-        throw std::logic_error("Mismatching number of atoms");
+    bool foundGroundState = false;
+    DataSet groundStateDataSet;
+    try {
+        groundStateDataSet = rootGroup.openDataSet("groundState");
+        foundGroundState = true;
+    } catch (GroupIException exception) {
+        cout << "Did not find ground state data set, skipping initialization of coefficient matrices." << endl;
     }
 
-    AtomData *groundStateAtoms = new AtomData[groundStateNAtoms2];
-    groundStateDataSet.read(groundStateAtoms, atomCompound);
+    if(foundGroundState) {
+        hsize_t dims2[1];
+        groundStateDataSet.getSpace().getSimpleExtentDims(dims2);
+        int groundStateNAtoms2 = dims2[0];
 
-    GaussianSystem groundStateSystem;
-    for(int i = 0; i < groundStateNAtoms2; i++) {
-        stringstream basisFile;
-        basisFile << "atom_" << atomMetaData[i].type << "_basis_" << atomMetaData[i].basisName << ".tm";
-        string fileName = basisFile.str();
-        groundStateSystem.addCore(GaussianCore({ groundStateAtoms[i].x, groundStateAtoms[i].y, groundStateAtoms[i].z}, fileName));
+        if(nAtoms != groundStateNAtoms2) {
+            cerr << "Error! The number of atoms in the ground state (nAtoms = " << groundStateNAtoms2 << ") does not match "
+                 << "the number of atoms in the metadata (= " << nAtoms << ")" << endl;
+            cerr << "Cannot continue" << endl;
+            throw std::logic_error("Mismatching number of atoms");
+        }
+
+        AtomData *groundStateAtoms = new AtomData[groundStateNAtoms2];
+        groundStateDataSet.read(groundStateAtoms, atomCompound);
+
+        GaussianSystem groundStateSystem;
+        for(int i = 0; i < groundStateNAtoms2; i++) {
+            stringstream basisFile;
+            basisFile << "atom_" << atomMetaData[i].type << "_basis_" << atomMetaData[i].basisName << ".tm";
+            string fileName = basisFile.str();
+            groundStateSystem.addCore(GaussianCore({ groundStateAtoms[i].x, groundStateAtoms[i].y, groundStateAtoms[i].z}, fileName));
+        }
+        if(method == "unrestricted") {
+            UnrestrictedHartreeFockSolver groundStateSolver(&groundStateSystem);
+            groundStateSolver.setNIterationsMax(1e3);
+            groundStateSolver.setDensityMixFactor(0.95);
+            groundStateSolver.setConvergenceTreshold(1e-9);
+            groundStateSolver.solve();
+
+            coefficientMatrixUp = groundStateSolver.coeffcientMatrixUp();
+            coefficientMatrixDown = groundStateSolver.coeffcientMatrixDown();
+            cout << "Ground state energy: " << groundStateSolver.energy() << endl;
+        } else {
+            RestrictedHartreeFockSolver groundStateSolver(&groundStateSystem);
+            groundStateSolver.setNIterationsMax(1e3);
+            groundStateSolver.setDensityMixFactor(0.95);
+            groundStateSolver.setConvergenceTreshold(1e-9);
+            groundStateSolver.solve();
+
+            coefficientMatrixUp = groundStateSolver.coefficientMatrix();
+            cout << "Ground state energy: " << groundStateSolver.energy() << endl;
+        }
+
+        delete groundStateAtoms;
     }
-    if(method == "unrestricted") {
-        UnrestrictedHartreeFockSolver groundStateSolver(&groundStateSystem);
-        groundStateSolver.setNIterationsMax(1e3);
-        groundStateSolver.setDensityMixFactor(0.95);
-        groundStateSolver.setConvergenceTreshold(1e-9);
-        groundStateSolver.solve();
-
-        coefficientMatrixUp = groundStateSolver.coeffcientMatrixUp();
-        coefficientMatrixDown = groundStateSolver.coeffcientMatrixDown();
-        cout << "Ground state energy: " << groundStateSolver.energy() << endl;
-    } else {
-        RestrictedHartreeFockSolver groundStateSolver(&groundStateSystem);
-        groundStateSolver.setNIterationsMax(1e3);
-        groundStateSolver.setDensityMixFactor(0.95);
-        groundStateSolver.setConvergenceTreshold(1e-9);
-        groundStateSolver.solve();
-
-        coefficientMatrixUp = groundStateSolver.coefficientMatrix();
-        cout << "Ground state energy: " << groundStateSolver.energy() << endl;
-    }
-
-    delete groundStateAtoms;
     // Done precalculate ground state
 
     H5::Group statesGroup(outFile.openGroup("/states"));
@@ -230,8 +313,7 @@ int main(int argc, char* argv[])
     int currentState = 0;
     for(int stateID = 0; stateID < nTotal; stateID++) {
         if(world.rank() == 0) {
-            cout << "Rank " << world.rank()
-                 << ", progress: " << fixed << setprecision(2) << double(currentState) / nTotal * 100 << " %"
+            cout << "Progress: " << fixed << setprecision(2) << double(currentState) / nTotal * 100 << " %"
                  << ", time: " << timer.elapsed() << " s"
                  << endl;
         }
@@ -287,7 +369,8 @@ int main(int argc, char* argv[])
     }
     world.barrier();
     if(world.rank() == 0) {
-        cout << "Total time "  << fixed << setprecision(2) << timer.elapsed() << " s" << endl;
+        cout << "Progress: 100 %, time "  << fixed << setprecision(2) << timer.elapsed() << " s" << endl;
+        cout << "Done!" << endl;
     }
     outFile.close();
     return 0;
