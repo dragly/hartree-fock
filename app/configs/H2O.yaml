@@ -1,3 +1,4 @@
+description: "Water molecule, H2O"
 atoms: [
     {
         type: "O",

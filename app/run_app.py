@@ -33,12 +33,11 @@ output_file = os.path.join(output_dir, os.path.split(config_file)[-1])
 build_path = os.path.abspath(os.path.join(current_path, "..", "..", "build-app"))
 project_path = os.path.abspath(os.path.join(current_path, ".."))
 
-print "Building in:\n", build_path
-
 if not os.path.exists(build_path):
     os.makedirs(build_path)
-subprocess.call(["qmake", project_path, "CONFIG+=nogui CONFIG+=notests CONFIG+=notools"], cwd=build_path)
-subprocess.call(["make", "-j", "8"], cwd=build_path)
+devnull = open('/dev/null', 'w')
+subprocess.call(["qmake", project_path, "CONFIG+=nogui CONFIG+=notests CONFIG+=notools"], cwd=build_path, stdout=devnull)
+subprocess.call(["make", "-j", "8"], cwd=build_path, stdout=devnull)
 
 app_path = os.path.join(build_path, "app")
 lib_path = os.path.join(build_path, "src")
@@ -47,5 +46,4 @@ env = dict(os.environ)
 env['LD_LIBRARY_PATH'] = lib_path
 #proc = subprocess.call(["./staterunner", states_file, output_file], cwd=staterunner_path, env=env)
 run_argument = ["./hartree-fock", config_file]
-print " ".join(run_argument)
 proc = subprocess.call(run_argument, cwd=app_path, env=env)
