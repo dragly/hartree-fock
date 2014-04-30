@@ -12,3 +12,4 @@ atoms: [
 ]
 method: "unrestricted"
 output: ["energy"]
+electronsDown: 9

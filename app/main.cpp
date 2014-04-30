@@ -86,6 +86,10 @@ int main(int argc, char* argv[])
                 cerr << "Error: Unknown method name " << methodName << endl;
                 return 1;
             }
+        } else if(rootKey == "electronsDown" || rootKey == "electronsUp") {
+            int electronsDown;
+            it.second() >> electronsDown;
+            system.setNParticlesDown(electronsDown);
         } else if(rootKey == "output") {
             // TODO implement different types of output
         }
