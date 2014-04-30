@@ -145,16 +145,14 @@ int main(int argc, char* argv[])
     AtomMetaData atomMetaData[nAtoms];
     atomMeta.read(atomMetaData, atomMetaCompound);
 
-    // Get atommeta attributes
     string method("");
     Attribute hartreeFockMethodAttribute = atomMeta.openAttribute("method");
-    hartreeFockMethodAttribute.read(StrType(PredType::C_S1, 256), method);
-    cout << method << endl;
+    hartreeFockMethodAttribute.read(hartreeFockMethodAttribute.getDataType(), method);
 
     mat coefficientMatrixUp;
     mat coefficientMatrixDown;
 
-    // Precalculate energy offset
+    // Precalculate energy offset only if using unrestricted.
     cout << "Calculating energy offset..." << endl;
     Attribute energyOffsetAttribute = atomMeta.createAttribute("energyOffset", PredType::NATIVE_DOUBLE, H5S_SCALAR);
     double energyOffset = 0.0;
@@ -164,21 +162,15 @@ int main(int argc, char* argv[])
         basisFile << "atom_" << atomMetaData[i].type << "_basis_" << atomMetaData[i].basisName << ".tm";
         string fileName = basisFile.str();
         system.addCore(GaussianCore({0,0,0}, fileName));
-        if(method == "unrestricted") {
-            UnrestrictedHartreeFockSolver solver(&system);
-            solver.setNIterationsMax(1e3);
-            solver.setDensityMixFactor(0.95);
-            solver.setConvergenceTreshold(1e-9);
-            solver.solve();
-            energyOffset += solver.energy();
-        } else {
-            RestrictedHartreeFockSolver solver(&system);
-            solver.setNIterationsMax(1e3);
-            solver.setDensityMixFactor(0.95);
-            solver.setConvergenceTreshold(1e-9);
-            solver.solve();
-            energyOffset += solver.energy();
-        }
+        // Restricted HF cannot be done on one atom currently.
+        // Restricted tends to have convergence problems with high distances anyway,
+        // so just use the energy offset from UHF in case we want to plot the two together with offset
+        UnrestrictedHartreeFockSolver solver(&system);
+        solver.setNIterationsMax(1e3);
+        solver.setDensityMixFactor(0.95);
+        solver.setConvergenceTreshold(1e-9);
+        solver.solve();
+        energyOffset += solver.energy();
     }
     energyOffsetAttribute.write(PredType::NATIVE_DOUBLE, &energyOffset);
     cout << "Energy offset: " << energyOffset << endl;
