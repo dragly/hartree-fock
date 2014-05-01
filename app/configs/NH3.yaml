@@ -1,0 +1,25 @@
+description: "NH3 molecule with angle approx. 106.75 and bond length approx 1.9049 a0"
+atoms: [
+    {
+        type: "N",
+        basis: "6-311++G**",
+        position: [0.0000,    0.12661165,    0.0000]
+    },
+    {
+        type: "H",
+        basis: "6-311++G**",
+        position: [ 0.82770004, -0.58959455,  1.55902405]
+    },
+    {
+        type: "H",
+        basis: "6-311++G**",
+        position: [ 0.93541443, -0.58959455, -1.49666309]
+    },
+    {
+        type: "H",
+        basis: "6-311++G**",
+        position: [-1.7650042 , -0.58959455, -0.06236096]
+    }
+]
+method: "unrestricted"
+output: ["energy"]

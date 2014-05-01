@@ -18,4 +18,5 @@ OTHER_FILES += \
     configs/H2.yaml \
     configs/O2.yaml \
     configs/CH4.yaml \
-    configs/CO2.yaml
+    configs/CO2.yaml \
+    configs/NH3.yaml
