@@ -61,7 +61,6 @@ int main(int argc, char* argv[])
         outFileName << argv[2];
     }
 
-    /* First structure  and dataset*/
     struct AtomData {
         double x;
         double y;
@@ -86,94 +85,31 @@ int main(int argc, char* argv[])
 
     vector<int> stateIDs;
     if(world.rank() == 0) {
-        if(false) {
-            H5File inFile(inFileName, H5F_ACC_RDONLY );
-            H5::Group statesGroup(inFile.openGroup("/states"));
-            int nStates = statesGroup.getNumObjs();
-            vector<int> allStates;
-            allStates.reserve(nStates);
-            for(int i = 0; i < nStates; i++) {
-                allStates.push_back(i);
-            }
-            random_shuffle(allStates.begin(), allStates.end());
-            for(int p = 0; p < world.size(); p++) {
-                vector<int> states;
-                for(int i = blockLow(p, world.size(), allStates.size());
-                    i <= blockHigh(p, world.size(), allStates.size());
-                    i++) {
-
-                    states.push_back(allStates.at(i));
-
-                }
-                if(p == 0) {
-                    stateIDs = states;
-                } else {
-                    world.send(p, 0, states);
-                }
-            }
-            inFile.close();
-        } else {
-            inFileName = "file.h5";
-            H5File inFile(inFileName, H5F_ACC_TRUNC);
-            ifstream fin(argv[1]);
-            if(fin.fail()) {
-                cerr << "Could not open the configuration file " << argv[1] << endl;
-                return 1;
-            }
-
-            YAML::Parser parser(fin);
-            YAML::Node rootNode;
-            parser.GetNextDocument(rootNode);
-            unsigned int nAtoms = rootNode["atoms"].size();
-
-            H5::Group rootGroup(inFile.openGroup("/"));
-            string metaInformationName = "atomMeta";
-            hsize_t dim[] = {nAtoms};
-            DataSpace atomMetaSpace(1, dim);
-            DataSet atomMeta(rootGroup.createDataSet(metaInformationName, atomMetaCompound, atomMetaSpace));
-            AtomMetaData atomMetaData[nAtoms];
-
-            H5::Group statesGroup(inFile.createGroup("/states"));
-            DataSpace atomSpace(1, dim);
-            DataSet stateDataSet(statesGroup.createDataSet("state000000", atomCompound, atomSpace));
-            AtomData atoms[nAtoms];
-            for(YAML::Iterator it=rootNode.begin();it!=rootNode.end();++it) {
-                string rootKey;
-                it.first() >> rootKey;
-                if(rootKey == "atoms") {
-                    const YAML::Node &atomsNode = it.second();
-                    int atomCounter = 0;
-                    for(YAML::Iterator it2=atomsNode.begin();it2!=atomsNode.end();++it2) {
-                        const YAML::Node &atomNode = *it2;
-                        string typeAbbreviation;
-                        atomNode["type"] >> typeAbbreviation;
-                        Vector3 position;
-                        atomNode["position"] >> position;
-                        string basis;
-                        atomNode["basis"] >> basis;
-
-                        basis = HF::escapeBasis(basis);
-                        strncpy(atomMetaData[atomCounter].basisName, basis.c_str(), 63);
-                        atomMetaData[atomCounter].type = HF::abbreviationToAtomType(typeAbbreviation);
-                        atoms[atomCounter].x = position.x();
-                        atoms[atomCounter].y = position.y();
-                        atoms[atomCounter].z = position.z();
-                        atomCounter++;
-                    }
-                } else if(rootKey == "method") {
-                    string methodName;
-                    it.second() >> methodName;
-                    Attribute methodAttribute = atomMeta.createAttribute("method", StrType(PredType::C_S1, H5T_VARIABLE), DataSpace());
-                    methodAttribute.write(StrType(PredType::C_S1, H5T_VARIABLE), methodName);
-                } else if(rootKey == "output") {
-                    // TODO implement different types of output
-                }
-            }
-            stateDataSet.write(atoms, atomCompound);
-            atomMeta.write(atomMetaData, atomMetaCompound);
-            stateIDs.push_back(0);
-            inFile.close();
+        H5File inFile(inFileName, H5F_ACC_RDONLY );
+        H5::Group statesGroup(inFile.openGroup("/states"));
+        int nStates = statesGroup.getNumObjs();
+        vector<int> allStates;
+        allStates.reserve(nStates);
+        for(int i = 0; i < nStates; i++) {
+            allStates.push_back(i);
         }
+        random_shuffle(allStates.begin(), allStates.end());
+        for(int p = 0; p < world.size(); p++) {
+            vector<int> states;
+            for(int i = blockLow(p, world.size(), allStates.size());
+                i <= blockHigh(p, world.size(), allStates.size());
+                i++) {
+
+                states.push_back(allStates.at(i));
+
+            }
+            if(p == 0) {
+                stateIDs = states;
+            } else {
+                world.send(p, 0, states);
+            }
+        }
+        inFile.close();
     } else {
         world.recv(0, 0, stateIDs);
     }

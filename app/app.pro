@@ -11,6 +11,7 @@ CONFIG -= qt
 SOURCES += main.cpp
 
 LIBS += -lyaml-cpp
+LIBS += -lhdf5_cpp -lhdf5
 
 OTHER_FILES += \
     configs/H2O.yaml \
