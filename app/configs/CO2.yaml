@@ -1,19 +1,17 @@
 atoms: [
     {
         type: "C",
-        basis: "6-311++G**",
         position: [0,0,0]
     },
     {
         type: "O",
-        basis: "6-311++G**",
         position: [-2.19208,0,0]
     },
     {
         type: "O",
-        basis: "6-311++G**",
         position: [2.19208,0,0]
     }
 ]
+basis: "6-311++G**"
 method: "unrestricted"
 output: ["energy"]

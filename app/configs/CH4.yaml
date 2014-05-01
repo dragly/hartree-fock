@@ -4,29 +4,25 @@ bondLength: 1.118
 atoms: [
     {
         type: "C",
-        basis: "6-311++G**",
         position: [4.59959339, -1.8443727 ,  2.95742138]
     },
     {
         type: "H",
-        basis: "6-311++G**",
         position: [3.37883031, -0.62360962,  4.17629474]
     },
     {
         type: "H",
-        basis: "6-311++G**",
         position: [3.37883031, -3.06513577,  1.73665831]
     },
     {
         type: "H",
-        basis: "6-311++G**",
         position: [5.82035646, -0.62360962,  1.73665831]
     },
     {
         type: "H",
-        basis: "6-311++G**",
         position: [ 5.82035646, -3.06513577,  4.17629474]
     }
 ]
+basis: "6-311++G**"
 method: "unrestricted"
 output: ["energy"]

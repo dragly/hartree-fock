@@ -1,14 +1,13 @@
 atoms: [
     {
         type: "H",
-        basis: "6-311++G**",
         position: [0,0,0]
     },
     {
         type: "H",
-        basis: "6-311++G**",
         position: [1.4,0,0]
     }
 ]
+basis: "6-311++G**"
 method: "unrestricted"
 output: ["energy"]

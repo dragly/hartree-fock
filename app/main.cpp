@@ -60,6 +60,13 @@ int main(int argc, char* argv[])
     YAML::Node rootNode;
     parser.GetNextDocument(rootNode);
     unsigned int nAtoms = rootNode["atoms"].size();
+    string defaultBasis = "3-21G";
+    try {
+        rootNode["basis"] >> defaultBasis;
+        cout << "Using basis " << defaultBasis << endl;
+    } catch( YAML::TypedKeyNotFound<std::string> ) {
+        cout << "Default basis not found, expecting atom to have basis name or assuming " << defaultBasis << endl;
+    }
 
     struct AtomData {
         double x;
@@ -106,7 +113,12 @@ int main(int argc, char* argv[])
                 Vector3 position;
                 atomNode["position"] >> position;
                 string basis;
-                atomNode["basis"] >> basis;
+                try {
+                    atomNode["basis"] >> basis;
+                } catch( YAML::TypedKeyNotFound<std::string> ) {
+                    basis = defaultBasis;
+                }
+
                 basis = HF::escapeBasis(basis);
 
                 strncpy(atomsMeta[atomCounter].basisName, basis.c_str(), 63);
