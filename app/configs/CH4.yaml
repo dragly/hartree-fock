@@ -1,28 +1,31 @@
+description: "CH4 molecule with angle approx. 109.45 deg and bond length approx. 1.118 a0"
+angle: 1.910268
+bondLength: 1.118
 atoms: [
     {
         type: "C",
         basis: "6-311++G**",
-        position: [0,0,0]
+        position: [2.434,  -0.976,   1.565]
     },
     {
         type: "H",
         basis: "6-311++G**",
-        position: [1,0,0]
+        position: [1.788,  -0.330,  2.210]
     },
     {
         type: "H",
         basis: "6-311++G**",
-        position: [-1,0,0]
+        position: [1.788,  -1.622,   0.919]
     },
     {
         type: "H",
         basis: "6-311++G**",
-        position: [0,1,0]
+        position: [3.080,  -0.330,   0.919]
     },
     {
         type: "H",
         basis: "6-311++G**",
-        position: [0,-1,0]
+        position: [3.080,  -1.622,   2.210]
     }
 ]
 method: "unrestricted"
