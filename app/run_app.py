@@ -3,6 +3,7 @@ import subprocess
 import os
 import os.path
 import signal
+import shutil
 from sys import argv
 from argparse import ArgumentParser
 
@@ -47,3 +48,4 @@ env['LD_LIBRARY_PATH'] = lib_path
 #proc = subprocess.call(["./staterunner", states_file, output_file], cwd=staterunner_path, env=env)
 run_argument = ["./hartree-fock", config_file]
 proc = subprocess.call(run_argument, cwd=app_path, env=env)
+shutil.copyfile(os.path.join(app_path, "results.h5"), os.path.join(output_dir, "results.h5"))
