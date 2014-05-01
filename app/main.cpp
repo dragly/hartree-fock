@@ -171,7 +171,7 @@ int main(int argc, char* argv[])
     cout << "Writing requested output to file:" << endl;
     for(Output::OutputName output : outputs) {
         if(output == Output::Energy) {
-            cout << "Energy..." << endl;
+            cout << "Writing energy..." << endl;
             H5::Attribute energyAttribute(stateDataSet.createAttribute("energy", H5::PredType::NATIVE_DOUBLE, H5S_SCALAR));
             energyAttribute.write(H5::PredType::NATIVE_DOUBLE, &energy);
         }
