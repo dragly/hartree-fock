@@ -1,0 +1,8 @@
+type1: 18
+type2: 18
+r12Min: 6.6
+r12Max: 15.0
+n: 200
+r12GroundState: 7.2
+basisName: "6-311++Gdsds"
+method: "unrestricted"
