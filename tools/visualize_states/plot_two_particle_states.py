@@ -49,7 +49,7 @@ for statesFile in states_files:
         #r13 = sqrt((atoms[2]["x"] - atoms[0]["x"])**2 + (atoms[2]["y"] - atoms[0]["y"])**2)
         #angle = arctan2(atoms[2]["y"], atoms[2]["x"])
         r12 = atoms.attrs["r12"]
-        energy = atoms.attrs["energy"] - energyOffset
+        energy = atoms.attrs["energy"]
         
         r12s.append(r12)
         energies.append(energy)
