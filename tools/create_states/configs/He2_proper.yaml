@@ -1,0 +1,8 @@
+type1: 2
+type2: 2
+r12Min: 0.5
+r12Max: 4.0
+n: 5000
+r12GroundState: 1.4
+basisName: "6-31Gds"
+method: "unrestricted"
