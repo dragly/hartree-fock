@@ -17,13 +17,9 @@ using std::endl;
 SUITE(Development) {
     TEST(Dummy) {
     }
-    TEST(Water431G) {
+    TEST(OxygenSix) {
         vector<GaussianCore> cores;
-//        1) O: [0, 0, 0]    H: [1.7961, 0, 0]    H: [-0.6506, 1.6742, 0]
-//        2) O: [0, 0, 0]    H: [1.7970, 0, 0]    H: [-0.6509, 1.6750, 0]
-        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_4-31G.tm"));
-        cores.push_back(GaussianCore({1.7970, 0, 0}, "atom_1_basis_4-31G.tm"));
-        cores.push_back(GaussianCore({-0.448, 1.740, 0.0}, "atom_1_basis_4-31G.tm"));
+        cores.push_back(GaussianCore({0,0,0}, "atom_6_basis_6-311++Gdsds.tm"));
         GaussianSystem system;
         for(const GaussianCore &core : cores) {
             system.addCore(core);
@@ -39,6 +35,28 @@ SUITE(Development) {
         cout << solver.iterationsUsed() << endl;
         //        CHECK_CLOSE(-149.5117583638509, solver.energy(), 1e-5);
     }
+//    TEST(Water431G) {
+//        vector<GaussianCore> cores;
+////        1) O: [0, 0, 0]    H: [1.7961, 0, 0]    H: [-0.6506, 1.6742, 0]
+////        2) O: [0, 0, 0]    H: [1.7970, 0, 0]    H: [-0.6509, 1.6750, 0]
+//        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_4-31G.tm"));
+//        cores.push_back(GaussianCore({1.7970, 0, 0}, "atom_1_basis_4-31G.tm"));
+//        cores.push_back(GaussianCore({-0.448, 1.740, 0.0}, "atom_1_basis_4-31G.tm"));
+//        GaussianSystem system;
+//        for(const GaussianCore &core : cores) {
+//            system.addCore(core);
+//        }
+//        mat C;
+//        UnrestrictedHartreeFockSolver solver(&system);
+//        solver.setConvergenceTreshold(1e-12);
+//        solver.setNIterationsMax(1e4);
+//        solver.setDensityMixFactor(0.95);
+//        solver.solve();
+//        cout << std::setprecision(20);
+//        cout << solver.energy() << endl;
+//        cout << solver.iterationsUsed() << endl;
+//        //        CHECK_CLOSE(-149.5117583638509, solver.energy(), 1e-5);
+//    }
 //    TEST(WaterSixPlusPlus) {
 //        vector<GaussianCore> cores;
 //        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_6-311++Gdsds.tm"));

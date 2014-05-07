@@ -69,7 +69,9 @@ diffs = abs(diff(energies) / diff(r12s))
 print "Plotting", len(r12s), "data points."
 
 #figure()
+#plot(r12s, energies - energyOffset)
 plot(r12s, energies)
+#plot(r12s[:-1], diffs)
 #plot(r12s, 0.13*((1.41/r12s)**12 - 2*(1.41/r12s)**6) - 1.0)
 xlabel(r"$r$")
 ylabel(r"$E$")
