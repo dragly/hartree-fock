@@ -53,14 +53,13 @@ for statesFile in states_files:
         #r13 = sqrt((atoms[2]["x"] - atoms[0]["x"])**2 + (atoms[2]["y"] - atoms[0]["y"])**2)
         #angle = arctan2(atoms[2]["y"], atoms[2]["x"])
         r12 = atoms.attrs["r12"]
-        if r12 > 5.0:
-            energy = atoms.attrs["energy"]
-            
-            r12s.append(r12)
-            energies.append(energy)
-            
-            energy_min = min(energy_min, energy)
-            energy_max = max(energy_max, energy)
+        energy = atoms.attrs["energy"]
+        
+        r12s.append(r12)
+        energies.append(energy)
+        
+        energy_min = min(energy_min, energy)
+        energy_max = max(energy_max, energy)
     f.close()
 
 # Sort r12 and energies by r12
@@ -77,8 +76,8 @@ print "Plotting", len(r12s), "data points."
 #plot(r12s, energies)
 grid()
 plot(r12s, energies - energyOffset)
-popt,errs = curve_fit(shifted_lennard_jones, r12s, energies - energyOffset, p0=(0.01938786,  1.93348366, -0.65246251))
-plot(r12s, shifted_lennard_jones(r12s, *popt))
+#popt,errs = curve_fit(shifted_lennard_jones, r12s, energies - energyOffset, p0=(0.01938786,  1.93348366, -0.65246251))
+#plot(r12s, shifted_lennard_jones(r12s, *popt))
 #plot(r12s[:-1], diffs)
 #plot(r12s, 0.13*((1.41/r12s)**12 - 2*(1.41/r12s)**6) - 1.0)
 xlabel(r"$r$")
