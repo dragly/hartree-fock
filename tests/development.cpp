@@ -19,9 +19,9 @@ SUITE(Development) {
     }
     TEST(LinearHydrogen) {
         vector<GaussianCore> cores;
-        cores.push_back(GaussianCore({0,0,0}, "atom_1_basis_6-311++Gdsds.tm"));
-        cores.push_back(GaussianCore({12,0,0}, "atom_1_basis_6-311++Gdsds.tm"));
-        cores.push_back(GaussianCore({34,0,0}, "atom_1_basis_6-311++Gdsds.tm"));
+        cores.push_back(GaussianCore({0,0,0}, "atom_1_basis_6-31Gdsds.tm"));
+        cores.push_back(GaussianCore({12,0,0}, "atom_1_basis_6-31Gdsds.tm"));
+        cores.push_back(GaussianCore({24,0,0}, "atom_1_basis_6-31Gdsds.tm"));
         GaussianSystem system;
         for(const GaussianCore &core : cores) {
             system.addCore(core);
@@ -31,8 +31,8 @@ SUITE(Development) {
         mat coefficientsUp = randn(system.nBasisFunctions(), system.nParticlesUp());
         mat coefficientsDown = randn(system.nBasisFunctions(), system.nParticlesDown());
         solver.setInitialCoefficientMatrices(coefficientsUp, coefficientsDown);
-        solver.setConvergenceTreshold(1e-12);
-        solver.setNIterationsMax(1e4);
+        solver.setConvergenceTreshold(1e-9);
+        solver.setNIterationsMax(1e3);
         solver.setDensityMixFactor(0.95);
         solver.solve();
         cout << std::setprecision(20);
