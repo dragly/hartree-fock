@@ -1,0 +1,19 @@
+type1: 8
+type2: 8
+type3: 8
+r12Min: 2.0
+r12Max: 12.0
+r12Count: 12
+r13Min: 2.0
+r13Max: 12.0
+r13Count: 12
+angleMin: 1.0     # only need to parameterize down to pi/3 = 1.05 for equal particles
+angleMax: 3.14159 # = pi
+angleCount: 12
+basisName: "6-311++Gdsds"
+groundState: {
+    r12: 4.5,
+    r13: 4.5,
+    angle: 1.4496
+}
+method: "unrestricted"
