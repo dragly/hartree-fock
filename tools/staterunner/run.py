@@ -9,6 +9,7 @@ from argparse import ArgumentParser
 
 parser = ArgumentParser()
 parser.add_argument("states_file")
+parser.add_argument("--no_mpi", action="store_true")
 parser.add_argument("--id", nargs='?', default="tmp")
 args = parser.parse_args()
 
@@ -46,7 +47,10 @@ lib_path = os.path.join("..", "..", "src")
 env = dict(os.environ)
 env['LD_LIBRARY_PATH'] = lib_path
 #proc = subprocess.call(["./staterunner", states_file, output_file], cwd=staterunner_path, env=env)
-run_argument = ["mpirun", "-n", "8", "./staterunner", states_file, output_file]
+if args.no_mpi:
+    run_argument = ["./staterunner", states_file, output_file]
+else:
+    run_argument = ["mpirun", "-n", "8", "./staterunner", states_file, output_file]
 print " ".join(run_argument)
 proc = subprocess.call(run_argument, cwd=staterunner_path, env=env)
 
