@@ -1,0 +1,19 @@
+type1: 1
+type2: 8
+type3: 8
+r12Min: 1.0
+r12Max: 8.0
+r12Count: 12
+r13Min: 1.0
+r13Max: 8.0
+r13Count: 12
+angleMin: 1.0     # = pi / 10
+angleMax: 3.14159 # = pi
+angleCount: 12
+basisName: "6-311++Gdsds"
+groundState: {
+    r12: 2.5,
+    r13: 2.5,
+    angle: 1.823
+}
+method: "unrestricted"
