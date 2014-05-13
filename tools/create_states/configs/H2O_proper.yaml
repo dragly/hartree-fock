@@ -2,15 +2,15 @@ type1: 8
 type2: 1
 type3: 1
 r12Min: 1.0
-r12Max: 5.0
+r12Max: 8.0
 r12Count: 12
 r13Min: 1.0
-r13Max: 5.0
+r13Max: 8.0
 r13Count: 12
-angleMin: 0.3     # = pi / 10
+angleMin: 1.0     # = pi / 10
 angleMax: 3.14159 # = pi
 angleCount: 12
-basisName: "6-31Gds"
+basisName: "6-311++Gdsds"
 groundState: {
     r12: 1.8,
     r13: 1.8,
