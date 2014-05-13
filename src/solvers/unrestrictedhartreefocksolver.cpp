@@ -149,12 +149,14 @@ void UnrestrictedHartreeFockSolver::advance() {
 
 void UnrestrictedHartreeFockSolver::solve() {
     HartreeFockSolver::solve();
+    m_noConvergenceCounter = 0;
     for(int i = 0; i < nIterationsMax(); i++) {
+        m_iterationsUsed = i + 1;
         vec previousFockEnergies = m_fockEnergiesUp;
         advance();
         if(i > 0) {
-            if(sum(abs(m_fockEnergiesUp - previousFockEnergies)) / m_fockEnergiesUp.n_elem < convergenceTreshold()) {
-                m_iterationsUsed = i;
+            double stdDeviation = sum(abs(m_fockEnergiesUp - previousFockEnergies)) / m_fockEnergiesUp.n_elem;
+            if(stdDeviation < convergenceTreshold()) {
                 break;
             }
         }
