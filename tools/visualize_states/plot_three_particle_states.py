@@ -33,10 +33,12 @@ plots = {}
 energy_min = inf
 energy_max = -inf
 
+print "Reading", len(states_files), "files..."
 for statesFile in states_files:
     f = h5py.File(statesFile, "r")
     atomsMeta = f.get("atomMeta")
     states = f.get("/states")
+    print "Reading", len(states), "states..."
     for stateName in states:
         atoms = states.get(stateName)
         #r12 = atoms[1]["x"] - atoms[0]["x"]

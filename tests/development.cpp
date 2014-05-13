@@ -17,24 +17,47 @@ using std::endl;
 SUITE(Development) {
     TEST(Dummy) {
     }
-    TEST(OxygenSix) {
+    TEST(LinearHydrogen) {
         vector<GaussianCore> cores;
-        cores.push_back(GaussianCore({0,0,0}, "atom_6_basis_6-311++Gdsds.tm"));
+        cores.push_back(GaussianCore({0,0,0}, "atom_1_basis_6-311++Gdsds.tm"));
+        cores.push_back(GaussianCore({12,0,0}, "atom_1_basis_6-311++Gdsds.tm"));
+        cores.push_back(GaussianCore({34,0,0}, "atom_1_basis_6-311++Gdsds.tm"));
         GaussianSystem system;
         for(const GaussianCore &core : cores) {
             system.addCore(core);
         }
         mat C;
         UnrestrictedHartreeFockSolver solver(&system);
+        mat coefficientsUp = randn(system.nBasisFunctions(), system.nParticlesUp());
+        mat coefficientsDown = randn(system.nBasisFunctions(), system.nParticlesDown());
+        solver.setInitialCoefficientMatrices(coefficientsUp, coefficientsDown);
         solver.setConvergenceTreshold(1e-12);
         solver.setNIterationsMax(1e4);
         solver.setDensityMixFactor(0.95);
         solver.solve();
         cout << std::setprecision(20);
-        cout << solver.energy() << endl;
-        cout << solver.iterationsUsed() << endl;
+        cout << "Energy: " << solver.energy() << endl;
+        cout << "Iterations: " << solver.iterationsUsed() << endl;
         //        CHECK_CLOSE(-149.5117583638509, solver.energy(), 1e-5);
     }
+//    TEST(OxygenSix) {
+//        vector<GaussianCore> cores;
+//        cores.push_back(GaussianCore({0,0,0}, "atom_6_basis_6-311++Gdsds.tm"));
+//        GaussianSystem system;
+//        for(const GaussianCore &core : cores) {
+//            system.addCore(core);
+//        }
+//        mat C;
+//        UnrestrictedHartreeFockSolver solver(&system);
+//        solver.setConvergenceTreshold(1e-12);
+//        solver.setNIterationsMax(1e4);
+//        solver.setDensityMixFactor(0.95);
+//        solver.solve();
+//        cout << std::setprecision(20);
+//        cout << solver.energy() << endl;
+//        cout << solver.iterationsUsed() << endl;
+//        //        CHECK_CLOSE(-149.5117583638509, solver.energy(), 1e-5);
+//    }
 //    TEST(Water431G) {
 //        vector<GaussianCore> cores;
 ////        1) O: [0, 0, 0]    H: [1.7961, 0, 0]    H: [-0.6506, 1.6742, 0]
@@ -259,25 +282,5 @@ SUITE(Development) {
     //        solver.solve();
     //        CHECK_CLOSE(-75.90736859918989, solver.energy() , 1e-6);
     //    }
-    //    TEST(HydrogenMolecule) {
-    //            vector<GaussianCore> cores;
-    ////            cores.push_back(GaussianCore({0,0,0}, "atom_1_basis_STO-3G.tm"));
-    ////            cores.push_back(GaussianCore({1.4,0,0}, "atom_1_basis_STO-3G.tm"));
-    //            cores.push_back(GaussianCore({-0.7,0,0}, "atom_1_basis_3-21G.tm"));
-    //            cores.push_back(GaussianCore({ 0.7,0,0}, "atom_1_basis_3-21G.tm"));
-    //            GaussianSystem system;
-    //            for(const GaussianCore &core : cores) {
-    //                system.addCore(core);
-    //            }
-    //            HartreeFockSolver solver(&system);
-    ////            solver.setConvergenceTreshold(1e-9);
-    ////            solver.setNIterationsMax(1e3);
-    ////            solver.advance();
-    ////            cout << "----" << endl;
-    ////            solver.advance();
-    //            solver.setDensityMixFactor(0.0);
-    //            solver.solve();
-    //            cout << "Number of iterations: " << solver.iterationsUsed() << endl;
-    //            cout << "Energy: " << solver.energy() << endl;
-    //        }
+
 }
