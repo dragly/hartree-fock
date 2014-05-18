@@ -151,6 +151,8 @@ int main(int argc, char* argv[])
                 *it2 >> outputName;
                 if(outputName == "energy") {
                     outputs.push_back(Output::Energy);
+                } else if(outputName == "density") {
+                    outputs.push_back(Output::Density);
                 }
             }
         }
@@ -159,6 +161,9 @@ int main(int argc, char* argv[])
     atomMetaDataSet.write(atomsMeta, atomMetaCompound);
 
     double energy = 0.0;
+    mat coefficientsUp;
+    mat coefficientsDown;
+    mat densityMatrix;
     if(method == Method::Unrestricted) {
         cout << "Setting up the unrestricted Hartree-Fock solver..." << endl;
         UnrestrictedHartreeFockSolver solver(&system);
@@ -169,6 +174,9 @@ int main(int argc, char* argv[])
         solver.solve();
         energy = solver.energy();
         cout << "Energy: " << setprecision(16) << solver.energy() << endl;
+
+        coefficientsUp = solver.coeffcientMatrixUp();
+        coefficientsDown = solver.coeffcientMatrixDown();
     } else {
         cout << "Setting up the restricted Hartree-Fock solver..." << endl;
         RestrictedHartreeFockSolver solver(&system);
@@ -179,6 +187,8 @@ int main(int argc, char* argv[])
         solver.solve();
         energy = solver.energy();
         cout << "Energy: " << setprecision(16) << solver.energy() << endl;
+
+        coefficientsUp = solver.coefficientMatrix();
     }
     cout << "Writing requested output to file:" << endl;
     for(Output::OutputName output : outputs) {
@@ -186,6 +196,43 @@ int main(int argc, char* argv[])
             cout << "Writing energy..." << endl;
             H5::Attribute energyAttribute(stateDataSet.createAttribute("energy", H5::PredType::NATIVE_DOUBLE, H5S_SCALAR));
             energyAttribute.write(H5::PredType::NATIVE_DOUBLE, &energy);
+        } else if(output == Output::Density) {
+            cout << "Calculating density..." << endl;
+            if(method == Method::Unrestricted) {
+
+                vec x = linspace(-5, 5, 100);
+                vec y = linspace(-5, 5, 100);
+                vec z = linspace(-5, 5, 100);
+                cube totalDensityVoxels = cube(x.n_elem, y.n_elem, z.n_elem);
+                cube orbitalDensityVoxels = cube(x.n_elem, y.n_elem, z.n_elem);
+                string upDownString;
+                for(int upDown = 0; upDown < 2; upDown++) {
+                    mat *coefficients;
+                    if(upDown) {
+                        upDownString = "up";
+                        coefficients = &coefficientsUp;
+                    } else {
+                        upDownString = "dn";
+                        coefficients = &coefficientsDown;
+                    }
+                    for(int orbital = 0; orbital < coefficients->n_cols; orbital++) {
+                        cout << "Calculating density for orbital " << orbital << endl;
+                        for(uint i = 0; i < x.n_elem; i++) {
+                            for(uint j = 0; j < y.n_elem; j++) {
+                                for(uint k = 0; k < z.n_elem; k++) {
+                                    double density = system.orbitalDensity(orbital, *coefficients, x(i), y(j), z(k));
+                                    orbitalDensityVoxels(i,j,k) = density;
+                                    totalDensityVoxels(i,j,k) += density;
+                                }
+                            }
+                        }
+                        string orbitalDensityFileName;
+                        orbitalDensityFileName = "orbital_density_" + upDownString + "_" + to_string(orbital) + ".h5";
+                        orbitalDensityVoxels.save(orbitalDensityFileName, hdf5_binary);
+                    }
+                }
+                totalDensityVoxels.save("density.h5", hdf5_binary);
+            }
         }
     }
     outFile.close();

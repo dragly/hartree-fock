@@ -178,14 +178,24 @@ void UnrestrictedHartreeFockSolver::calculateEnergy()
 }
 
 
-const mat &UnrestrictedHartreeFockSolver::coeffcientMatrixUp()
+const mat &UnrestrictedHartreeFockSolver::coeffcientMatrixUp() const
 {
     return m_coefficientMatrixUp;
 }
 
-const mat &UnrestrictedHartreeFockSolver::coeffcientMatrixDown()
+const mat &UnrestrictedHartreeFockSolver::coeffcientMatrixDown() const
 {
     return m_coefficientMatrixDown;
+}
+
+const mat &UnrestrictedHartreeFockSolver::densityMatrixUp() const
+{
+    return m_densityMatrixUp;
+}
+
+const mat &UnrestrictedHartreeFockSolver::densityMatrixDown() const
+{
+    return m_densityMatrixDown;
 }
 
 void UnrestrictedHartreeFockSolver::setInitialCoefficientMatrices(const mat &up, const mat &down)

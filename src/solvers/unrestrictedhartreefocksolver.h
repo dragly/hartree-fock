@@ -13,8 +13,11 @@ public:
     virtual double energy();
     virtual void solve();
 
-    const mat &coeffcientMatrixUp();
-    const mat &coeffcientMatrixDown();
+    const mat &coeffcientMatrixUp() const;
+    const mat &coeffcientMatrixDown() const;
+
+    const mat &densityMatrixUp() const;
+    const mat &densityMatrixDown() const;
 
     void setInitialCoefficientMatrices(const mat& up, const mat &down);
 private:

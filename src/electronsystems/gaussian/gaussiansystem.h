@@ -25,8 +25,9 @@ public:
     virtual double additionalEnergyTerms();
 
 //    double particleDensity(double x, double y, double z);
-    double particleDensity(const mat &C, double x, double y, double z) const;
+    double electronDensity(const mat &C, double x, double y, double z) const;
     void addCore(const GaussianCore& core);
+    double orbitalDensity(uint orbital, const mat &C, double x, double y, double z) const;
 protected:
     void setAngularMomentumMax(int angularMomentumMax);
 private:

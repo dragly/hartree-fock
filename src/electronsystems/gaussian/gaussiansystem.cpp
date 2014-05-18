@@ -104,23 +104,27 @@ double GaussianSystem::additionalEnergyTerms()
     return result;
 }
 
-double GaussianSystem::particleDensity(const mat& C, double x, double y, double z) const {
+double GaussianSystem::orbitalDensity(uint orbital, const mat& C, double x, double y, double z) const
+{
+    double innerResult = 0;
+    for(int j = 0; j < int(m_basisFunctions.size()); j++) {
+        const GaussianContractedOrbital &bf = m_basisFunctions.at(j);
+        double evaluation = bf.evaluated(x,y,z);
+        innerResult += C(j,orbital) * C(j,orbital) * evaluation * evaluation;
+    }
+    return innerResult * innerResult;
+}
+
+double GaussianSystem::electronDensity(const mat& C, double x, double y, double z) const {
     if(C.n_rows < m_basisFunctions.size() || C.n_cols < m_nParticles / 2) {
         cout << "C matrix has the wrong dimensions" << endl;
         throw exception();
     }
     double result = 0;
 
-    int nk = m_nParticles / 2;
-    nk = max(nk, 1);
+    int nk = C.n_cols;
     for(int i = 0; i < nk; i++) {
-        double innerResult = 0;
-        for(int j = 0; j < int(m_basisFunctions.size()); j++) {
-            const GaussianContractedOrbital &bf = m_basisFunctions.at(j);
-            double evaluation = bf.evaluated(x,y,z);
-            innerResult += C(j,i) * C(j,i) * evaluation * evaluation;
-        }
-        result += innerResult * innerResult;
+        result += orbitalDensity(i, C, x, y, z);
     }
     return result;
 }
