@@ -20,4 +20,7 @@ OTHER_FILES += \
     configs/CH4.yaml \
     configs/CO2.yaml \
     configs/NH3.yaml \
-    configs/FH.yaml
+    configs/FH.yaml \
+    configs/H2_distance.yaml
+
+DEFINES += ARMA_USE_HDF5
