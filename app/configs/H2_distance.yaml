@@ -1,11 +1,11 @@
 atoms: [
     {
         type: "H",
-        position: [-1.15,0,0]
+        position: [-1.4,0,0]
     },
     {
         type: "H",
-        position: [1.15,0,0]
+        position: [1.4,0,0]
     }
 ]
 basis: "6-311++G**"

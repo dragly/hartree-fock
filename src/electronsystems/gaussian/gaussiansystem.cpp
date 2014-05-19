@@ -104,15 +104,33 @@ double GaussianSystem::additionalEnergyTerms()
     return result;
 }
 
+double GaussianSystem::corePotential(double x, double y, double z) const
+{
+    double potential = 0;
+    for(const GaussianCore &core : m_cores) {
+        Vector3 position(x,y,z);
+        Vector3 diff = position - core.position();
+        double distance = sqrt(dot(diff, diff));
+        potential += core.charge() / distance;
+    }
+    return potential;
+}
+
 double GaussianSystem::orbitalDensity(uint orbital, const mat& C, double x, double y, double z) const
 {
-    double innerResult = 0;
-    for(int j = 0; j < int(m_basisFunctions.size()); j++) {
-        const GaussianContractedOrbital &bf = m_basisFunctions.at(j);
-        double evaluation = bf.evaluated(x,y,z);
-        innerResult += C(j,orbital) * C(j,orbital) * evaluation * evaluation;
+    double innerProduct = 0;
+    for(uint p = 0; p < (m_basisFunctions.size()); p++) {
+        const GaussianContractedOrbital &bfp = m_basisFunctions.at(p);
+        double evaluationp = bfp.evaluated(x,y,z);
+        double Cp = C(p,orbital);
+        innerProduct += C(p,orbital) * C(p,orbital) * evaluationp * evaluationp;
+        for(uint q = p+1; q < (m_basisFunctions.size()); q++) {
+            const GaussianContractedOrbital &bfq = m_basisFunctions.at(q);
+            double evaluationq = bfq.evaluated(x,y,z);
+            innerProduct += 2.0 * Cp * C(q,orbital) * evaluationp * evaluationq;
+        }
     }
-    return innerResult * innerResult;
+    return innerProduct * innerProduct;
 }
 
 double GaussianSystem::electronDensity(const mat& C, double x, double y, double z) const {

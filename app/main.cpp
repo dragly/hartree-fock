@@ -163,7 +163,6 @@ int main(int argc, char* argv[])
     double energy = 0.0;
     mat coefficientsUp;
     mat coefficientsDown;
-    mat densityMatrix;
     if(method == Method::Unrestricted) {
         cout << "Setting up the unrestricted Hartree-Fock solver..." << endl;
         UnrestrictedHartreeFockSolver solver(&system);
@@ -177,6 +176,7 @@ int main(int argc, char* argv[])
 
         coefficientsUp = solver.coeffcientMatrixUp();
         coefficientsDown = solver.coeffcientMatrixDown();
+
     } else {
         cout << "Setting up the restricted Hartree-Fock solver..." << endl;
         RestrictedHartreeFockSolver solver(&system);
@@ -200,11 +200,12 @@ int main(int argc, char* argv[])
             cout << "Calculating density..." << endl;
             if(method == Method::Unrestricted) {
 
-                vec x = linspace(-5, 5, 100);
-                vec y = linspace(-5, 5, 100);
-                vec z = linspace(-5, 5, 100);
-                cube totalDensityVoxels = cube(x.n_elem, y.n_elem, z.n_elem);
-                cube orbitalDensityVoxels = cube(x.n_elem, y.n_elem, z.n_elem);
+                vec x = linspace(-5, 5, 40);
+                vec y = linspace(-5, 5, 40);
+                vec z = linspace(-5, 5, 40);
+                cube totalDensityVoxels = zeros(x.n_elem, y.n_elem, z.n_elem);
+                cube electroStaticPotential = zeros(x.n_elem, y.n_elem, z.n_elem);
+                cube orbitalDensityVoxels = zeros(x.n_elem, y.n_elem, z.n_elem);
                 string upDownString;
                 for(int upDown = 0; upDown < 2; upDown++) {
                     mat *coefficients;
@@ -215,14 +216,16 @@ int main(int argc, char* argv[])
                         upDownString = "dn";
                         coefficients = &coefficientsDown;
                     }
-                    for(int orbital = 0; orbital < coefficients->n_cols; orbital++) {
-                        cout << "Calculating density for orbital " << orbital << endl;
+                    for(uint orbital = 0; orbital < coefficients->n_cols; orbital++) {
+                        cout << "Calculating density for orbital " << orbital << " with spin " << upDown << endl;
                         for(uint i = 0; i < x.n_elem; i++) {
                             for(uint j = 0; j < y.n_elem; j++) {
                                 for(uint k = 0; k < z.n_elem; k++) {
                                     double density = system.orbitalDensity(orbital, *coefficients, x(i), y(j), z(k));
-                                    orbitalDensityVoxels(i,j,k) = density;
-                                    totalDensityVoxels(i,j,k) += density;
+                                    orbitalDensityVoxels(k,j,i) = density;
+                                    totalDensityVoxels(k,j,i) += density;
+
+                                    electroStaticPotential(k,j,i) = density - system.corePotential(x(i), y(j), z(k));
                                 }
                             }
                         }
@@ -231,6 +234,7 @@ int main(int argc, char* argv[])
                         orbitalDensityVoxels.save(orbitalDensityFileName, hdf5_binary);
                     }
                 }
+                electroStaticPotential.save("electrostatic_potential.h5", hdf5_binary);
                 totalDensityVoxels.save("density.h5", hdf5_binary);
             }
         }
