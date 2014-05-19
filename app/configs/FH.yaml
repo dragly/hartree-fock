@@ -10,4 +10,4 @@ atoms: [
 ]
 basis: "6-311++G**"
 method: "unrestricted"
-output: ["energy"]
+output: ["energy", "electrostatic_potential"]

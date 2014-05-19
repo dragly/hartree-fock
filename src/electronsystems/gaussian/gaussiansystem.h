@@ -27,8 +27,9 @@ public:
 //    double particleDensity(double x, double y, double z);
     double corePotential(const Vector3 &position);
     double electronDensity(const mat &C, const Vector3 &position) const;
+    rowvec orbitalDensities(const mat &C, const Vector3 &position) const;
     void addCore(const GaussianCore& core);
-    double orbitalDensity(uint orbital, const mat &C, double x, double y, double z) const;
+//    double orbitalDensity(uint orbital, const mat &C, double x, double y, double z) const;
     double electronPotential(const mat &C, const Vector3 position);
     double electronPotential(uint p, uint q, const Vector3 &position);
     double electrostaticPotential(const Vector3 &position);

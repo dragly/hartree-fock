@@ -173,23 +173,43 @@ double GaussianSystem::electronPotential(uint p, uint q, const Vector3 &position
 //    return innerProduct * innerProduct;
 //}
 
-double GaussianSystem::electronDensity(const mat& C, const Vector3 &position) const
+rowvec GaussianSystem::orbitalDensities(const mat& C, const Vector3 &position) const
 {
-    double result = 0;
+    rowvec result = zeros(C.n_cols);
     for(uint p = 0; p < (m_basisFunctions.size()); p++) {
         const GaussianContractedOrbital &bfp = m_basisFunctions.at(p);
         double evaluationp = bfp.evaluated(position);
         for(uint orbital = 0; orbital < C.n_cols; orbital++) {
-            result += C(p,orbital) * C(p,orbital) * evaluationp * evaluationp;
+            result(orbital) += C(p,orbital) * C(p,orbital) * evaluationp * evaluationp;
         }
         for(uint q = p+1; q < (m_basisFunctions.size()); q++) {
             const GaussianContractedOrbital &bfq = m_basisFunctions.at(q);
             double evaluationq = bfq.evaluated(position);
             for(uint orbital = 0; orbital < C.n_cols; orbital++) {
-                result += 2.0 * C(p,orbital) * C(q,orbital) * evaluationp * evaluationq;
+                result(orbital) += 2.0 * C(p,orbital) * C(q,orbital) * evaluationp * evaluationq;
             }
         }
     }
+    return result;
+}
+
+double GaussianSystem::electronDensity(const mat& C, const Vector3 &position) const
+{
+    double result = sum(orbitalDensities(C, position));
+//    for(uint p = 0; p < (m_basisFunctions.size()); p++) {
+//        const GaussianContractedOrbital &bfp = m_basisFunctions.at(p);
+//        double evaluationp = bfp.evaluated(position);
+//        for(uint orbital = 0; orbital < C.n_cols; orbital++) {
+//            result += C(p,orbital) * C(p,orbital) * evaluationp * evaluationp;
+//        }
+//        for(uint q = p+1; q < (m_basisFunctions.size()); q++) {
+//            const GaussianContractedOrbital &bfq = m_basisFunctions.at(q);
+//            double evaluationq = bfq.evaluated(position);
+//            for(uint orbital = 0; orbital < C.n_cols; orbital++) {
+//                result += 2.0 * C(p,orbital) * C(q,orbital) * evaluationp * evaluationq;
+//            }
+//        }
+//    }
     return result;
 }
 

@@ -17,6 +17,6 @@ atoms: [
         position: [-1.7650042 , -0.58959455, -0.06236096]
     }
 ]
-basis: "6-311++G**"
+basis: "STO-3G"
 method: "unrestricted"
-output: ["energy"]
+output: ["energy", "electrostatic_potential"]

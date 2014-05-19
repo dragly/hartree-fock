@@ -207,14 +207,28 @@ int main(int argc, char* argv[])
                 vec y = linspace(-3, 3, 50);
                 vec z = linspace(-3, 3, 50);
                 cube totalDensity = zeros(x.n_elem, y.n_elem, z.n_elem);
+                field<cube> orbitalDensities;
+                orbitalDensities.set_size(system.nParticles());
+                for(cube& orbitalDensity : orbitalDensities) {
+                    orbitalDensity = zeros(x.n_elem, y.n_elem, z.n_elem);
+                }
                 mat coefficientsAll = join_rows(coefficientsUp, coefficientsDown);
                 for(uint i = 0; i < x.n_elem; i++) {
                     for(uint j = 0; j < y.n_elem; j++) {
                         for(uint k = 0; k < z.n_elem; k++) {
                             Vector3 position(x(i), y(j), z(k));
-                            totalDensity(k,j,i) = system.electronDensity(coefficientsAll, position);
+                            rowvec density = system.orbitalDensities(coefficientsAll, position);
+                            for(uint orbital = 0; orbital < orbitalDensities.size(); orbital++) {
+                                cube &orbitalDensity = orbitalDensities(orbital);
+                                orbitalDensity(k,j,i) = density(orbital);
+                            }
+                            totalDensity(k,j,i) = sum(density);
                         }
                     }
+                }
+                for(uint orbital = 0; orbital < orbitalDensities.size(); orbital++) {
+                    cube &orbitalDensity = orbitalDensities(orbital);
+                    orbitalDensity.save("orbital_density_" + to_string(orbital) + ".h5", hdf5_binary);
                 }
                 totalDensity.save("density.h5", hdf5_binary);
             }
@@ -222,9 +236,9 @@ int main(int argc, char* argv[])
             cout << "Calculating electrostatic potential..." << endl;
             if(method == Method::Unrestricted) {
 
-                vec x = linspace(-3, 3, 50);
-                vec y = linspace(-3, 3, 50);
-                vec z = linspace(-3, 3, 50);
+                vec x = linspace(-5, 5, 50);
+                vec y = linspace(-5, 5, 50);
+                vec z = linspace(-5, 5, 50);
                 cube electrostaticPotential = zeros(x.n_elem, y.n_elem, z.n_elem);
                 mat coefficientsAll = join_rows(coefficientsUp, coefficientsDown);
                 for(uint i = 0; i < x.n_elem; i++) {
