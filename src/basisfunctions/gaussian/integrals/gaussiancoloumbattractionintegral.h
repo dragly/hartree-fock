@@ -16,10 +16,10 @@ class GaussianColoumbAttractionIntegral
 public:
     GaussianColoumbAttractionIntegral(int angularMomentumMax);
 
-    double coloumbAttractionIntegral(int iA, int jA, int kA, int iB, int jB, int kB);
+    double coloumbAttractionIntegral(int iA, int jA, int kA, int iB, int jB, int kB) const;
     void set(const Vector3 &corePositionA, const Vector3 &corePositionB, const Vector3 &corePositionC,
              const GaussianPrimitiveOrbital &primitiveA, const GaussianPrimitiveOrbital &primitiveB);
-    double coloumbAttractionIntegral(const GaussianPrimitiveOrbital &primitiveA, const GaussianPrimitiveOrbital &primitiveB);
+    double coloumbAttractionIntegral(const GaussianPrimitiveOrbital &primitiveA, const GaussianPrimitiveOrbital &primitiveB) const;
 protected:
     HermiteExpansionCoefficient m_hermiteExpansionCoefficient;
     HermiteIntegral m_hermiteIntegral;

@@ -25,7 +25,7 @@ public:
     const vector<GaussianPrimitiveOrbital>& primitiveBasisFunctions() const;
     void setPrimitiveBasisFunctions(const vector<GaussianPrimitiveOrbital> &primitiveBasisFunctions);
 
-    double evaluated(double x, double y, double z) const;
+    double evaluated(const Vector3 &position) const;
 
 private:
     Vector3 m_corePosition;

@@ -33,12 +33,14 @@ void GaussianColoumbAttractionIntegral::set(const Vector3& corePositionA, const 
 }
 
 double GaussianColoumbAttractionIntegral::coloumbAttractionIntegral(const GaussianPrimitiveOrbital& primitiveA,
-                                                                    const GaussianPrimitiveOrbital& primitiveB) {
+                                                                    const GaussianPrimitiveOrbital& primitiveB) const
+{
     return coloumbAttractionIntegral(primitiveA.xExponent(), primitiveA.yExponent(), primitiveA.zExponent(),
                                      primitiveB.xExponent(), primitiveB.yExponent(), primitiveB.zExponent());
 }
 
-double GaussianColoumbAttractionIntegral::coloumbAttractionIntegral(int iA, int jA, int kA, int iB, int jB, int kB) {
+double GaussianColoumbAttractionIntegral::coloumbAttractionIntegral(int iA, int jA, int kA, int iB, int jB, int kB) const
+{
     double result = 0;
     //    const cube &E_x = (*m_hermiteExpansionCoefficient)[0];
     //    const cube &E_y = (*m_hermiteExpansionCoefficient)[1];
