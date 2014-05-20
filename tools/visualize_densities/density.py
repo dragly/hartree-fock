@@ -10,6 +10,7 @@ import os.path
 
 parser = ArgumentParser()
 parser.add_argument("results_path")
+parser.add_argument("--contours", nargs="+", type=float)
 parser.add_argument("--id", nargs='?', default="tmp")
 args = parser.parse_args()
 
@@ -62,11 +63,10 @@ mlab.figure(2, bgcolor=(0, 0, 0), size=(1280, 720))
 mlab.clf()
 n_electrons = draw_atoms(atoms, atom_meta)
 data_max_min_diff = (data.max() - data.min())
-levels = [0.0003, 0.008]
-contours = []
-for level in levels:
-    contours.append(data.min() + level * data_max_min_diff)
-contours = [0.05, 0.4]
+if args.contours:
+    contours = args.contours
+else:
+    contours = [0.05, 0.4]
 iso = mlab.contour3d(X, Y, Z, data, vmin=contours[0], vmax=contours[-1], opacity=0.5, contours=contours)
 
 mlab.savefig(os.path.join(output_dir, "density.png"))
