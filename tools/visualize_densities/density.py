@@ -66,4 +66,5 @@ for level in levels:
 contours = [0.005, 0.05, 0.1]
 iso = mlab.contour3d(X, Y, Z, data, vmin=contours[0], vmax=contours[-1], opacity=0.5, contours=contours)
 
+mlab.savefig(os.path.join(output_dir, "density.png"))
 mlab.savefig(os.path.join(output_dir, "density.x3d"))
