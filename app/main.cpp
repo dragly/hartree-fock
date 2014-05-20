@@ -51,6 +51,12 @@ int main(int argc, char* argv[])
         cerr << "Usage: hartree-fock <config.yaml>" << endl;
         return 1;
     }
+    string outputPath = "";
+    if(argc >= 3) {
+        outputPath = argv[2];
+        outputPath += "/";
+        cout << "Output will be written to " << outputPath << endl;
+    }
     ifstream fin(argv[1]);
     if(fin.fail()) {
         cerr << "Could not open the configuration file " << argv[1] << endl;
@@ -90,7 +96,7 @@ int main(int argc, char* argv[])
     atomMetaCompound.insertMember("type", HOFFSET(AtomMetaData, type), H5::PredType::NATIVE_INT);
     atomMetaCompound.insertMember("basisName", HOFFSET(AtomMetaData, basisName), H5::StrType(H5::PredType::C_S1, 64));
 
-    H5::H5File outFile("results.h5", H5F_ACC_TRUNC);
+    H5::H5File outFile(outputPath + "results.h5", H5F_ACC_TRUNC);
     hsize_t dim[] = {nAtoms};
     H5::DataSet stateDataSet = outFile.createDataSet("state", atomCompound, H5::DataSpace(1, dim));
     H5::DataSet atomMetaDataSet(outFile.createDataSet("atomMeta", atomMetaCompound, H5::DataSpace(1, dim)));
@@ -228,9 +234,9 @@ int main(int argc, char* argv[])
                 }
                 for(uint orbital = 0; orbital < orbitalDensities.size(); orbital++) {
                     cube &orbitalDensity = orbitalDensities(orbital);
-                    orbitalDensity.save("orbital_density_" + to_string(orbital) + ".h5", hdf5_binary);
+                    orbitalDensity.save(outputPath + "orbital_density_" + to_string(orbital) + ".h5", hdf5_binary);
                 }
-                totalDensity.save("density.h5", hdf5_binary);
+                totalDensity.save(outputPath + "density.h5", hdf5_binary);
             }
         } else if(output == Output::ElectrostaticPotential) {
             cout << "Calculating electrostatic potential..." << endl;
@@ -249,7 +255,7 @@ int main(int argc, char* argv[])
                         }
                     }
                 }
-                electrostaticPotential.save("electrostatic_potential.h5", hdf5_binary);
+                electrostaticPotential.save(outputPath + "electrostatic_potential.h5", hdf5_binary);
             }
         }
     }

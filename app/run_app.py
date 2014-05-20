@@ -46,6 +46,6 @@ lib_path = os.path.join(build_path, "src")
 env = dict(os.environ)
 env['LD_LIBRARY_PATH'] = lib_path
 #proc = subprocess.call(["./staterunner", states_file, output_file], cwd=staterunner_path, env=env)
-run_argument = ["./hartree-fock", config_file]
+run_argument = ["./hartree-fock", config_file, output_dir]
 proc = subprocess.call(run_argument, cwd=app_path, env=env)
-shutil.copyfile(os.path.join(app_path, "results.h5"), os.path.join(output_dir, "results.h5"))
+#shutil.copyfile(os.path.join(app_path, "results.h5"), os.path.join(output_dir, "results.h5"))
