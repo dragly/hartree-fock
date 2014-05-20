@@ -5,6 +5,8 @@ from os.path import join
 import h5py
 from argparse import ArgumentParser
 from glob import glob
+import os
+import os.path
 
 parser = ArgumentParser()
 parser.add_argument("results_path")
@@ -68,5 +70,6 @@ for density_file_name in glob(os.path.join(args.results_path, "orbital_density_*
     contours = [0.01]
     iso = mlab.contour3d(X, Y, Z, data, vmin=contours[0], vmax=contours[-1], opacity=0.5, contours=contours)
     
+    mlab.savefig(os.path.join(output_dir, "orbital_density_" + str(counter) + ".png"))
     mlab.savefig(os.path.join(output_dir, "orbital_density_" + str(counter) + ".x3d"))
     counter += 1

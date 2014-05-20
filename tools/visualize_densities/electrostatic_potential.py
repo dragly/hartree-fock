@@ -3,6 +3,27 @@ from pylab import *
 from mayavi import mlab
 from os.path import join
 import h5py
+from argparse import ArgumentParser
+from glob import glob
+import os
+import os.path
+
+parser = ArgumentParser()
+parser.add_argument("results_path")
+parser.add_argument("--id", nargs='?', default="tmp")
+args = parser.parse_args()
+
+output_dir = "tmp"
+
+if args.id != "tmp":
+    try:
+        from sumatra.projects import load_project
+        output_dir = os.path.join(os.path.abspath(load_project().data_store.root), args.id)
+    except ImportError:
+        pass
+    
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
 
 def draw_atoms(atoms, atom_meta):
     n_electrons = 0

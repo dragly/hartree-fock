@@ -4,6 +4,9 @@ from mayavi import mlab
 from os.path import join
 import h5py
 from argparse import ArgumentParser
+from glob import glob
+import os
+import os.path
 
 parser = ArgumentParser()
 parser.add_argument("results_path")
