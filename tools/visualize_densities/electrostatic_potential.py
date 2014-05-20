@@ -22,7 +22,8 @@ def draw_atoms(atoms, atom_meta):
         counter += 1
     return n_electrons
 
-path_name = "/home/svenni/Dropbox/projects/programming/hartree-fock/build-hartree-fock-Desktop_Qt_5_2_1_GCC_64bit-Release/app"
+#path_name = "/home/svenni/Dropbox/projects/programming/hartree-fock/build-hartree-fock-Desktop_Qt_5_2_1_GCC_64bit-Release/app"
+path_name = "/home/svenni/Dropbox/projects/programming/hartree-fock/build-hartree-fock-stan-Desktop_Qt_5_2_1_GCC_64bit-Release/app"
 
 atoms_data_file = h5py.File(join(path_name, "results.h5"))
 atom_meta = atoms_data_file.get("atomMeta")[:]
@@ -46,7 +47,7 @@ levels = [0.0003, 0.008]
 contours = []
 for level in levels:
     contours.append(data.min() + level * data_max_min_diff)
-contours = [-0.01, 0.5]
+contours = [-0.03, 0.7]
 iso = mlab.contour3d(X, Y, Z, data, vmin=contours[0], vmax=contours[-1], opacity=0.5, contours=contours)
 
 mlab.savefig("ch4-volume.x3d")

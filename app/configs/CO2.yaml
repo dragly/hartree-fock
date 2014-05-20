@@ -12,6 +12,6 @@ atoms: [
         position: [2.19208,0,0]
     }
 ]
-basis: "6-311++G**"
+basis: "3-21G"
 method: "unrestricted"
-output: ["energy"]
+output: ["energy", "density", "electrostatic_potential"]

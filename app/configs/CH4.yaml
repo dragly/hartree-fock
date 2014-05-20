@@ -23,6 +23,6 @@ atoms: [
         position: [ 0.        , -1.67381799,  1.18356805]
     }
 ]
-basis: "STO-3G"
+basis: "3-21G"
 method: "unrestricted"
 output: ["energy", "density", "electrostatic_potential"]

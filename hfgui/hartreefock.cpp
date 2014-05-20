@@ -102,7 +102,7 @@ void HartreeFock::loadPointsFromFile()
             cout << "Calculating density for x = " << x(i) << endl;
             for(uint j = 0; j < y.n_elem; j++) {
                 for(uint k = 0; k < z.n_elem; k++) {
-                    double density = system.electronDensity(C, x(i), y(j), z(k));
+                    double density = system.electronDensity(C, Vector3(x(i), y(j), z(k)));
                     densitySum += density * dx * dy * dz;
                     m_densityVoxels(i,j,k) = density;
                 }
