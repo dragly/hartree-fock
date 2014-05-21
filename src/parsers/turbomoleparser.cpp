@@ -26,12 +26,12 @@ bool TurboMoleParser::load(string fileName)
     string atomTypeAbbreviation;
     while (getline(dataFile, line))
     {
-        bool skipComments = false;
-        skipComments |= regex_match(line, regex("#.*"));
-        skipComments |= regex_match(line, regex("$basis.*"));
-        skipComments |= regex_match(line, regex("$end.*"));
-        skipComments |= regex_match(line, regex("\\*.*"));
-        if(skipComments) {
+        bool ignoredLine = false;
+        ignoredLine |= regex_match(line, regex("#.*"));
+        ignoredLine |= regex_match(line, regex("$basis.*"));
+        ignoredLine |= regex_match(line, regex("$end.*"));
+        ignoredLine |= regex_match(line, regex("\\*.*"));
+        if(ignoredLine) {
             continue;
         }
         smatch what;
