@@ -6,7 +6,7 @@
 #include <basisfunctions/gaussian/gaussianprimitiveorbital.h>
 
 GaussianKineticIntegral::GaussianKineticIntegral(int angularMomentumMax) :
-    m_hermiteExpansionCoefficient(angularMomentumMax + 3)
+    m_overlapIntegral(angularMomentumMax + 2)
 {
 }
 
@@ -15,20 +15,16 @@ void GaussianKineticIntegral::set(const Vector3& corePositionA, const Vector3& c
 {
     m_exponentB = primitiveB.exponent();
     m_exponentSum = primitiveA.exponent() + primitiveB.exponent();
-    m_hermiteExpansionCoefficient.set(primitiveA.exponent(), primitiveB.exponent(), corePositionA, corePositionB,
-                                      primitiveA.xExponent(), primitiveB.xExponent() + 2,
-                                      primitiveA.yExponent(), primitiveB.yExponent() + 2,
-                                      primitiveA.zExponent(), primitiveB.zExponent() + 2);
+    m_overlapIntegral.set(corePositionA, corePositionB, primitiveA, primitiveB, true);
 }
 
 double GaussianKineticIntegral::kineticIntegral(int dim, int iA, int iB) {
-    GaussianOverlapIntegral overlapIntegral(m_exponentSum, &m_hermiteExpansionCoefficient);
     double b = m_exponentB;
-    double S_iA_iBnn = overlapIntegral.overlapIntegral(dim, iA, iB + 2);
-    double S_iA_iB = overlapIntegral.overlapIntegral(dim, iA, iB);
+    double S_iA_iBnn = m_overlapIntegral.overlapIntegral(dim, iA, iB + 2);
+    double S_iA_iB = m_overlapIntegral.overlapIntegral(dim, iA, iB);
     double S_iA_iBpp;
     if(iB - 2 >= 0) {
-        S_iA_iBpp= overlapIntegral.overlapIntegral(dim, iA, iB - 2);
+        S_iA_iBpp= m_overlapIntegral.overlapIntegral(dim, iA, iB - 2);
     } else {
         S_iA_iBpp = 0;
     }
@@ -42,14 +38,13 @@ double GaussianKineticIntegral::kineticIntegral(const GaussianPrimitiveOrbital& 
 }
 
 double GaussianKineticIntegral::kineticIntegral(int iA, int jA, int kA, int iB, int jB, int kB) {
-    GaussianOverlapIntegral overlapIntegral(m_exponentSum, &m_hermiteExpansionCoefficient);
     double T_iA_iB = kineticIntegral(0, iA, iB);
     double T_jA_jB = kineticIntegral(1, jA, jB);
     double T_kA_kB = kineticIntegral(2, kA, kB);
 
-    double S_iA_iB = overlapIntegral.overlapIntegral(0, iA, iB);
-    double S_jA_jB = overlapIntegral.overlapIntegral(1, jA, jB);
-    double S_kA_kB = overlapIntegral.overlapIntegral(2, kA, kB);
+    double S_iA_iB = m_overlapIntegral.overlapIntegral(0, iA, iB);
+    double S_jA_jB = m_overlapIntegral.overlapIntegral(1, jA, jB);
+    double S_kA_kB = m_overlapIntegral.overlapIntegral(2, kA, kB);
 
     double result = T_iA_iB * S_jA_jB * S_kA_kB + S_iA_iB * T_jA_jB * S_kA_kB + S_iA_iB * S_jA_jB * T_kA_kB;
     result *= -0.5;

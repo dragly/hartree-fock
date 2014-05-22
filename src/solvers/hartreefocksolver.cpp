@@ -72,7 +72,7 @@ void HartreeFockSolver::setupOverlapMatrix() {
     m_overlapMatrix.reset();
     m_overlapMatrix = zeros(nOrbitals,nOrbitals);
     for(uint p = 0; p < nOrbitals; p++) {
-        for(uint q = 0; q < nOrbitals; q++) {
+        for(uint q = 0; q < nOrbitals; q++) { // TODO: Optimize by symmetry and start from q = p
             m_overlapMatrix(p,q) = f->overlapIntegral(p, q);
         }
     }
@@ -84,7 +84,7 @@ void HartreeFockSolver::setupUncoupledMatrix() {
     m_uncoupledMatrix.reset();
     m_uncoupledMatrix = zeros(nOrbitals,nOrbitals);
     for(uint p = 0; p < nOrbitals; p++) {
-        for(uint q = 0; q < nOrbitals; q++) {
+        for(uint q = 0; q < nOrbitals; q++) { // TODO: Optimize by symmetry and start from q = p
             m_uncoupledMatrix(p,q) = f->uncoupledIntegral(p,q);
         }
     }

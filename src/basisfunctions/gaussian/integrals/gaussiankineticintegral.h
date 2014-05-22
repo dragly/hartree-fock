@@ -2,13 +2,13 @@
 #define GAUSSIANTYPEKINETICINTEGRAL_H
 
 #include <armadillo>
-#include <math/hermiteexpansioncoefficient.h>
+//#include <math/hermiteexpansioncoefficient.h>
+#include <basisfunctions/gaussian/integrals/gaussianoverlapintegral.h>
 
 class Vector3;
 
 using namespace arma;
 
-class HermiteExpansionCoefficient;
 class GaussianPrimitiveOrbital;
 
 class GaussianKineticIntegral
@@ -24,7 +24,8 @@ protected:
     double m_exponentB;
     double m_exponentSum;
 
-    HermiteExpansionCoefficient m_hermiteExpansionCoefficient;
+//    HermiteExpansionCoefficient m_hermiteExpansionCoefficient;
+    GaussianOverlapIntegral m_overlapIntegral;
 };
 
 #endif // GAUSSIANTYPEKINETICINTEGRAL_H

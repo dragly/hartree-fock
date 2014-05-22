@@ -22,7 +22,8 @@ SUITE(GaussianIntegral) {
         GaussianPrimitiveOrbital primitiveA(1.0, 2, 2, 2, 0.2);
         GaussianPrimitiveOrbital primitiveB(1.0, 2, 2, 2, 0.3);
 
-        GaussianOverlapIntegral integrator(posA, posB, primitiveA, primitiveB);
+        GaussianOverlapIntegral integrator(2);
+        integrator.set(posA, posB, primitiveA, primitiveB);
 
         CHECK_CLOSE(integrator.overlapIntegral(0,0,0,0,0,0), 0.119172363580852, 0.00001);
         CHECK_CLOSE(integrator.overlapIntegral(0,0,0,0,0,1), 0.276479883507577, 0.00001);
@@ -39,7 +40,8 @@ SUITE(GaussianIntegral) {
         GaussianPrimitiveOrbital primitiveA(1.0, 2, 2, 2, 0.2);
         GaussianPrimitiveOrbital primitiveB(1.0, 2, 2, 2, 0.3);
 
-        GaussianOverlapIntegral integrator(posA, posB, primitiveA, primitiveB);
+        GaussianOverlapIntegral integrator(2);
+        integrator.set(posA, posB, primitiveA, primitiveB);
 
         CHECK_CLOSE(2.979309089521e-01, integrator.overlapIntegral(2,0,0,2,0,0), 1e-7);
         CHECK_CLOSE(1.072551272228e-02, integrator.overlapIntegral(2,0,0,1,1,0), 1e-7);

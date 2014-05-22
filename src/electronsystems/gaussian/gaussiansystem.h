@@ -6,6 +6,7 @@
 #include <basisfunctions/gaussian/gaussiancontractedorbital.h>
 #include <basisfunctions/gaussian/integrals/gaussianelectroninteractionintegral.h>
 #include <basisfunctions/gaussian/integrals/gaussiankineticintegral.h>
+#include <basisfunctions/gaussian/integrals/gaussianoverlapintegral.h>
 #include <basisfunctions/gaussian/integrals/gaussiancoloumbattractionintegral.h>
 
 class Vector3;
@@ -45,9 +46,10 @@ private:
     vector<GaussianCore> m_cores;
     vector<GaussianContractedOrbital> m_basisFunctions;
 //    vector<Vector3> m_corePositions;
-    GaussianElectronInteractionIntegral electronInteractionIntegral;
-    GaussianKineticIntegral kineticIntegral;
-    GaussianColoumbAttractionIntegral coulombIntegral;
+    GaussianOverlapIntegral m_overlapIntegral;
+    GaussianKineticIntegral m_kineticIntegral;
+    GaussianColoumbAttractionIntegral m_coulombIntegral;
+    GaussianElectronInteractionIntegral m_electronInteractionIntegral;
 };
 
 #endif // GAUSSIANSYSTEM_H
