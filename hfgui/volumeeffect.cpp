@@ -286,7 +286,7 @@ bool VolumeShaderProgramEffect::create
 void VolumeShaderProgramEffect::afterLink()
 {
     // Texture3D stuff
-    qDebug() << "After link!";
+//    qDebug() << "After link!";
 //    qDebug() << program()->uniformLocation("myTexture3D");
     m_texture3DuniformValue = program()->uniformLocation("myTexture3D");
     m_eyePositionUniformLocation = program()->uniformLocation("ve_eyePosition");
@@ -298,11 +298,11 @@ void VolumeShaderProgramEffect::afterLink()
 //                      value.stride(), value.data());
 
     GLuint g_volTexObj;
-    GLushort *data = parent.data()->texture3Ddata().data;
+    GLuint *data = parent.data()->texture3Ddata().data;
     GLuint w = parent.data()->texture3Ddata().width;
     GLuint h = parent.data()->texture3Ddata().height;
     GLuint d = parent.data()->texture3Ddata().depth;
-    qDebug() << "w " << w << " " << h << " " << d;
+//    qDebug() << "w " << w << " " << h << " " << d;
 
     glGenTextures(1, &g_volTexObj);
     // bind 3D texture target
@@ -314,7 +314,7 @@ void VolumeShaderProgramEffect::afterLink()
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT);
     // pixel transfer happens here from client to OpenGL server
     glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-    glTexImage3D(GL_TEXTURE_3D, 0, GL_INTENSITY, w, h, d, 0, GL_LUMINANCE, GL_UNSIGNED_SHORT,data);
+    glTexImage3D(GL_TEXTURE_3D, 0, GL_INTENSITY, w, h, d, 0, GL_LUMINANCE, GL_UNSIGNED_INT, data);
 
     program()->setUniformValue(m_texture3DuniformValue, g_volTexObj);
     // End Texture3D stuff
@@ -965,7 +965,6 @@ void VolumeShaderProgram::setFragmentShaderSource(QUrl arg)
 void VolumeShaderProgram::setPositionReader(HartreeFock *arg)
 {
     if (m_positionReader != arg) {
-        qDebug() << "Position reader set!";
         m_positionReader = arg;
         connect(m_positionReader, SIGNAL(dataChanged()), this, SLOT(forceUpdate()));
         forceUpdate();
@@ -975,12 +974,12 @@ void VolumeShaderProgram::setPositionReader(HartreeFock *arg)
 
 void VolumeShaderProgram::forceUpdate()
 {
-    qDebug() << "Update forced!";
     m_texture3Ddata.data = m_positionReader->voxelData();
     m_texture3Ddata.width = m_positionReader->voxelDataWidth();
     m_texture3Ddata.height = m_positionReader->voxelDataHeight();
     m_texture3Ddata.depth = m_positionReader->voxelDataDepth();
     d->regenerate = true;
+    emit effectChanged();
 }
 
 /*!

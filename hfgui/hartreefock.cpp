@@ -14,7 +14,8 @@ HartreeFock::HartreeFock(QQuickItem *parent) :
     m_nSampleSteps(0),
     m_voxelData(0),
     m_voxelEdgeMin(0),
-    m_voxelEdgeMax(0)
+    m_voxelEdgeMax(0),
+    m_orbital(0)
 {
     loadPointsFromFile();
 }
@@ -44,19 +45,19 @@ void HartreeFock::generateRandomPoints() {
     emit dataChanged();
 }
 
-int HartreeFock::voxelDataWidth()
+uint HartreeFock::voxelDataWidth()
 {
-    return m_densityVoxels.n_rows;
+    return m_orbitalDensities(0).n_rows;
 }
 
-int HartreeFock::voxelDataHeight()
+uint HartreeFock::voxelDataHeight()
 {
-    return m_densityVoxels.n_cols;
+    return m_orbitalDensities(0).n_cols;
 }
 
-int HartreeFock::voxelDataDepth()
+uint HartreeFock::voxelDataDepth()
 {
-    return m_densityVoxels.n_slices;
+    return m_orbitalDensities(0).n_slices;
 }
 
 const cube &HartreeFock::positions() const
@@ -67,58 +68,53 @@ const cube &HartreeFock::positions() const
 
 void HartreeFock::loadPointsFromFile()
 {
-    bool recalc = false;
-    vec x = linspace(-5, 5, 100);
-    vec y = linspace(-5, 5, 100);
-    vec z = linspace(-5, 5, 100);
-    if(recalc) {
-        cout << "Setting up Hartree Fock!" << endl;
-        vector<GaussianCore> cores;
-            cores.push_back(GaussianCore({0,0,0}, "oxygen431g.tm"));
-            cores.push_back(GaussianCore({-1.43,1.108,0}, "hydrogen431g.tm"));
-            cores.push_back(GaussianCore({1.43,1.108,0}, "hydrogen431g.tm"));
-        //    cores.push_back(GaussianCore({0.0,-1.81,0}, "hydrogen431g.tm"));
-
-
-        //    cores.push_back(GaussianCore({-1.0715,0,0}, "nitrogen431g.tm"));
-//        cores.push_back(GaussianCore({0,0,0}, "silicon321g.tm"));
-//        cores.push_back(GaussianCore({2.735589103989223,0.9956730070350279,0}, "oxygen431g.tm"));
-//        cores.push_back(GaussianCore({-2.735589103989223,0.9956730070350279,0}, "oxygen431g.tm"));
-        GaussianSystem system;
-        for(const GaussianCore &core : cores) {
-            system.addCore(core);
-        }
-        mat C;
-        UnrestrictedHartreeFockSolver solver(&system);
-        solver.solve();
-        cout << "Energy: " << solver.energy() << endl;
-        C = solver.coeffcientMatrixUp() + solver.coeffcientMatrixDown();
-        double dx = x(1) - x(0);
-        double dy = y(1) - y(0);
-        double dz = z(1) - z(0);
-        double densitySum = 0;
-        m_densityVoxels = cube(x.n_elem, y.n_elem, z.n_elem);
-        for(uint i = 0; i < x.n_elem; i++) {
-            cout << "Calculating density for x = " << x(i) << endl;
-            for(uint j = 0; j < y.n_elem; j++) {
-                for(uint k = 0; k < z.n_elem; k++) {
-                    double density = system.electronDensity(C, Vector3(x(i), y(j), z(k)));
-                    densitySum += density * dx * dy * dz;
-                    m_densityVoxels(i,j,k) = density;
+    vec x = linspace(-3, 3, 100);
+    vec y = linspace(-3, 3, 100);
+    vec z = linspace(-3, 3, 100);
+    cout << "Solving system with Hartree-Fock..." << endl;
+    vector<GaussianCore> cores;
+    cores.push_back(GaussianCore({ 0.000, 0.000, 0.000}, "atom_8_basis_3-21G.tm"));
+    cores.push_back(GaussianCore({-1.430, 1.108, 0.000}, "atom_1_basis_3-21G.tm"));
+    cores.push_back(GaussianCore({ 1.430, 1.108, 0.000}, "atom_1_basis_3-21G.tm"));
+    GaussianSystem system;
+    for(const GaussianCore &core : cores) {
+        system.addCore(core);
+    }
+    mat C;
+    UnrestrictedHartreeFockSolver solver(&system);
+    solver.solve();
+    cout << "Energy: " << solver.energy() << endl;
+    C = join_rows(solver.coeffcientMatrixUp(), solver.coeffcientMatrixDown());
+    m_orbitalDensities.set_size(C.n_cols);
+    m_totalDensity = zeros(x.n_elem, y.n_elem, z.n_elem);
+    for(cube& orbitalDensity : m_orbitalDensities) {
+        orbitalDensity = zeros(x.n_elem, y.n_elem, z.n_elem);
+    }
+    cout << "Calculating density..." << endl;
+    double maxDensity = 0.0;
+    double densitySum = 0.0;
+    for(uint i = 0; i < x.n_elem; i++) {
+        for(uint j = 0; j < y.n_elem; j++) {
+            for(uint k = 0; k < z.n_elem; k++) {
+                rowvec orbitalDensities = system.orbitalDensities(C, Vector3(x(i), y(j), z(k)));
+                for(uint orbital = 0; orbital < orbitalDensities.n_elem; orbital++) {
+                    double density = orbitalDensities(orbital);
+                    densitySum += density;
+                    m_totalDensity(i,j,k) += density;
+                    m_orbitalDensities(orbital)(i,j,k) = density;
+                    maxDensity = fmax(maxDensity, density);
                 }
             }
         }
-        cout << "Density sum: " << densitySum << endl;
-        m_densityVoxels -= m_densityVoxels.min();
-        m_densityVoxels += 1e-6;
-        m_densityVoxels = sqrt(m_densityVoxels);
-        m_densityVoxels.save("density.dat");
-        m_energy = solver.energy();
-        emit energyChanged(m_energy);
-    } else {
-        bool loadOK = m_densityVoxels.load("density.dat");
-        cout << "loadOK: " << loadOK << endl;
     }
+    int elementCount = x.n_elem * y.n_elem * z.n_elem;
+    double meanDensity = (densitySum / elementCount);
+    m_totalDensity /= (meanDensity * m_orbitalDensities.n_elem);
+    for(cube& orbitalDensity : m_orbitalDensities) {
+        orbitalDensity /= meanDensity; // Normalize densities to the mean
+    }
+    m_energy = solver.energy();
+    emit energyChanged(m_energy);
     double minValue = x.min();
     double maxValue = x.max();
     double mostMaxValue = max(-minValue, maxValue);
@@ -130,28 +126,53 @@ void HartreeFock::loadPointsFromFile()
     emit voxelEdgeMinChanged(m_voxelEdgeMin);
     emit voxelEdgeMaxChanged(m_voxelEdgeMax);
     emit nSampleStepsChanged(m_nSampleSteps);
-    emit dataChanged();
+    emit orbitalCountChanged(m_orbitalDensities.n_elem);
 }
 
 void HartreeFock::setupVoxelData() {
-    uint nElements = m_densityVoxels.n_rows * m_densityVoxels.n_cols * m_densityVoxels.n_slices;
+    if(m_orbitalDensities.n_elem < 1) {
+        return;
+    }
     if(m_voxelData) {
         delete[] m_voxelData;
     }
-    m_voxelData = new GLushort[nElements];
-    for(int i = 0; i < int(m_densityVoxels.n_rows); i++) {
-        for(int j = 0; j < int(m_densityVoxels.n_cols); j++) {
-            for(int k = 0; k < int(m_densityVoxels.n_slices); k++) {
+    uint nElements = m_orbitalDensities(0).n_rows * m_orbitalDensities(0).n_cols * m_orbitalDensities(0).n_slices;
+    m_voxelData = new GLuint[nElements];
+    cube *densityPointer = &m_totalDensity;
+    if(m_orbital != -1) {
+        densityPointer = &(m_orbitalDensities(m_orbital));
+    }
+    cube &density = *densityPointer;
+    uint rowCount = density.n_rows;
+    uint colCount = density.n_rows;
+    uint sliceCount = density.n_rows;
+
+    for(uint i = 0; i < (rowCount); i++) {
+        for(uint j = 0; j < (colCount); j++) {
+            for(uint k = 0; k < (sliceCount); k++) {
                 int index = i
-                        + j * m_densityVoxels.n_rows
-                        + k * m_densityVoxels.n_cols * m_densityVoxels.n_rows;
-                m_voxelData[index] = m_densityVoxels(i,j,k) * 65534;
+                        + j * rowCount
+                        + k * colCount * rowCount;
+                double value = density(i,j,k);
+//                double value = pow(value / m_contrast, m_contrast);
+                value = fmin(1.0, value);
+                m_voxelData[index] = value * 2147483647;
             }
         }
     }
+    emit dataChanged();
 }
 
-GLushort *HartreeFock::voxelData() const
+GLuint *HartreeFock::voxelData() const
 {
     return m_voxelData;
+}
+
+void HartreeFock::setOrbital(int arg)
+{
+    if (m_orbital != arg) {
+        m_orbital = arg;
+        setupVoxelData();
+        emit orbitalChanged(arg);
+    }
 }

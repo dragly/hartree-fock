@@ -17,6 +17,9 @@ class HartreeFock : public QQuickItem
     Q_PROPERTY(double voxelEdgeMax READ voxelEdgeMax WRITE setVoxelEdgeMax NOTIFY voxelEdgeMaxChanged)
     Q_PROPERTY(double energy READ energy NOTIFY energyChanged)
     Q_PROPERTY(QVector3D center READ center WRITE setCenter NOTIFY centerChanged)
+    Q_PROPERTY(int orbital READ orbital WRITE setOrbital NOTIFY orbitalChanged)
+    Q_PROPERTY(int orbitalCount READ orbitalCount NOTIFY orbitalCountChanged)
+    Q_PROPERTY(double contrast READ contrast WRITE setContrast NOTIFY contrastChanged)
 public:
     HartreeFock(QQuickItem* parent = 0);
     virtual ~HartreeFock();
@@ -26,11 +29,11 @@ public:
     {
         return m_nSampleSteps;
     }
-    int voxelDataWidth();
-    int voxelDataHeight();
-    int voxelDataDepth();
+    uint voxelDataWidth();
+    uint voxelDataHeight();
+    uint voxelDataDepth();
 
-    GLushort *voxelData() const;
+    GLuint *voxelData() const;
 
     double voxelEdgeMax() const
     {
@@ -50,6 +53,21 @@ public:
     double energy() const
     {
         return m_energy;
+    }
+
+    int orbital() const
+    {
+        return m_orbital;
+    }
+
+    int orbitalCount() const
+    {
+        return m_orbitalDensities.n_elem;
+    }
+
+    double contrast() const
+    {
+        return m_contrast;
     }
 
 public slots:
@@ -77,6 +95,22 @@ public slots:
         }
     }
 
+    void setOrbital(int arg);
+
+    void setContrast(double arg)
+    {
+        if (m_contrast != arg) {
+            m_contrast = arg;
+            if(arg != 0) {
+                m_contrastInverse = 1.0 / arg;
+            } else {
+                m_contrastInverse = 1e9;
+            }
+//            setupVoxelData();
+            emit contrastChanged(arg);
+        }
+    }
+
 signals:
     void nSampleStepsChanged(int arg);
     void dataChanged();
@@ -89,18 +123,28 @@ signals:
 
     void energyChanged(double arg);
 
+    void orbitalChanged(int arg);
+
+    void orbitalCountChanged(int arg);
+
+    void contrastChanged(double arg);
+
 protected:
     void loadPointsFromFile();
     void setupVoxelData();
 private:
     cube m_filePositions;
-    cube m_densityVoxels;
+    field<cube> m_orbitalDensities;
+    cube m_totalDensity;
     int m_nSampleSteps;
-    GLushort *m_voxelData;
+    GLuint *m_voxelData;
     double m_voxelEdgeMin;
     double m_voxelEdgeMax;
     QVector3D m_center;
     double m_energy;
+    int m_orbital;
+    double m_contrast;
+    double m_contrastInverse;
 };
 
 #endif // POSITIONREADER_H

@@ -65,7 +65,7 @@ public:
     int width;
     int height;
     int depth;
-    GLushort* data;
+    GLuint* data;
 };
 
 class VolumeShaderProgram : public QQuickEffect

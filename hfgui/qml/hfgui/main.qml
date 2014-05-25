@@ -16,13 +16,13 @@ Rectangle {
         Viewport {
             id: mainViewport
             property alias multiplier: mainDensityPlotter.multiplier
-            property alias useSquareRootDensity: mainDensityPlotter.useSquareRootDensity
+//            property alias useSquareRootDensity: mainDensityPlotter.useSquareRootDensity
             property alias volumeShaderQuality: mainDensityPlotter.quality
             fillColor: "black"
             fovzoom: false
             camera: Camera {
                 center: Qt.vector3d(0,0,0)
-                eye: Qt.vector3d(20, 0, 0)
+                eye: Qt.vector3d(10, 0, 0)
                 nearPlane: 0.5
                 farPlane: 100
                 fieldOfView: 60
@@ -33,6 +33,7 @@ Rectangle {
 
             HartreeFock {
                 id: hartreeFock
+                orbital: allOrbitalsCheckBox.checked ? -1 : orbitalSlider.value - 1
             }
 
             Item3D {
@@ -45,9 +46,11 @@ Rectangle {
                 }
                 effect: VolumeShaderProgram {
                     id: mainDensityPlotter
-                    property real multiplier: densityMultiplierSlider.value
-                    property bool useSquareRootDensity: useSquareRootDensityCheckBox.checked
+                    property real multiplier: densityMultiplierSlider.expValue
+//                    property bool useSquareRootDensity: useSquareRootDensityCheckBox.checked
+                    property real contrast: densityContrastSlider.expValue
                     property real quality: volumeShaderQualitySlider.value
+//                    onEffectChanged:
                     blending: true
                     vertexShaderSource: "scalarvolume.vert"
                     fragmentShaderSource: "scalarvolume.frag"
@@ -56,30 +59,61 @@ Rectangle {
             }
         }
         ColumnLayout {
+            Layout.minimumWidth: 200
+            spacing: 5
+            Label {
+                text: qsTr("Orbital:") + " " + orbitalSlider.value
+            }
+            Slider {
+                id: orbitalSlider
+                Layout.preferredWidth: parent.width
+                minimumValue: 1
+                maximumValue: hartreeFock.orbitalCount
+                stepSize: 1
+                enabled: !allOrbitalsCheckBox.checked
+                opacity: allOrbitalsCheckBox.checked ? 0.3 : 1.0
+            }
+            CheckBox {
+                id: allOrbitalsCheckBox
+                text: "All"
+            }
+
             Label {
                 text: qsTr("Density multiplier:")
             }
             Slider {
                 id: densityMultiplierSlider
-                Layout.minimumWidth: 200
-                minimumValue: 1e-6
-                maximumValue: 1000.0
-                value: 30
+                property real expValue: Math.exp(value * densityContrastSlider.expValue*maximumValue) // Makes the slider scale logarithmic
+                Layout.preferredWidth: parent.width
+                minimumValue: -3
+                maximumValue: 3
+                value: 1e0
             }
-            CheckBox {
-                id: useSquareRootDensityCheckBox
-                checked: false
-                text: "Use sqrt(densityValue)"
+            Label {
+                text: qsTr("Density contrast:")
             }
+            Slider {
+                id: densityContrastSlider
+                property real expValue: Math.exp(value)
+                Layout.preferredWidth: parent.width
+                minimumValue: -3
+                maximumValue: 3
+                value: 0
+            }
+//            CheckBox {
+//                id: useSquareRootDensityCheckBox
+//                checked: false
+//                text: "Use sqrt(densityValue)"
+//            }
             Label {
                 text: qsTr("Volume shader quality:")
             }
             Slider {
                 id: volumeShaderQualitySlider
-                Layout.minimumWidth: 200
-                minimumValue: 10
-                maximumValue: 1000
-                value: 100
+                Layout.preferredWidth: parent.width
+                minimumValue: 1e1
+                maximumValue: 1e3
+                value: 3e2
             }
             Label {
                 text: qsTr("Energy:") + " " + hartreeFock.energy.toFixed(2)
