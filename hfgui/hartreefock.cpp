@@ -73,13 +73,13 @@ void HartreeFock::loadPointsFromFile()
     vec z = linspace(-3, 3, 50);
     cout << "Solving system with Hartree-Fock..." << endl;
     vector<GaussianCore> cores;
-    cores.push_back(GaussianCore({ 0.000, 0.000, 0.000}, "atom_8_basis_3-21G.tm"));
-    cores.push_back(GaussianCore({-1.430, 1.108, 0.000}, "atom_1_basis_3-21G.tm"));
-    cores.push_back(GaussianCore({ 1.430, 1.108, 0.000}, "atom_1_basis_3-21G.tm"));
+    cores.push_back(GaussianCore({ -2.282 / 2,    0.0,    0.0000}, "atom_8_basis_3-21G.tm"));
+    cores.push_back(GaussianCore({ 2.282 / 2,    0.0,    0.0000}, "atom_8_basis_3-21G.tm"));
     GaussianSystem system;
     for(const GaussianCore &core : cores) {
         system.addCore(core);
     }
+    system.setNParticlesDown(9);
     mat C;
     UnrestrictedHartreeFockSolver solver(&system);
     solver.solve();
