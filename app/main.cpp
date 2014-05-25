@@ -209,9 +209,9 @@ int main(int argc, char* argv[])
             cout << "Calculating density..." << endl;
             if(method == Method::Unrestricted) {
 
-                vec x = linspace(-3, 3, 50);
-                vec y = linspace(-3, 3, 50);
-                vec z = linspace(-3, 3, 50);
+                vec x = linspace(-3, 3, 100);
+                vec y = linspace(-3, 3, 100);
+                vec z = linspace(-3, 3, 100);
                 cube totalDensity = zeros(x.n_elem, y.n_elem, z.n_elem);
                 field<cube> orbitalDensities;
                 orbitalDensities.set_size(system.nParticles());

@@ -18,7 +18,7 @@ Rectangle {
             property alias multiplier: mainDensityPlotter.multiplier
 //            property alias useSquareRootDensity: mainDensityPlotter.useSquareRootDensity
             property alias volumeShaderQuality: mainDensityPlotter.quality
-            fillColor: "black"
+            fillColor: backgroundColorPicker.color
             fovzoom: false
             camera: Camera {
                 center: Qt.vector3d(0,0,0)
@@ -50,6 +50,8 @@ Rectangle {
 //                    property bool useSquareRootDensity: useSquareRootDensityCheckBox.checked
                     property real contrast: densityContrastSlider.expValue
                     property real quality: volumeShaderQualitySlider.value
+                    property color standardColor: standardColorPicker.color
+                    property color highlightColor: highlightColorPicker.color
 //                    onEffectChanged:
                     blending: true
                     vertexShaderSource: "scalarvolume.vert"
@@ -76,6 +78,7 @@ Rectangle {
             CheckBox {
                 id: allOrbitalsCheckBox
                 text: "All"
+                checked: true
             }
 
             Label {
@@ -87,7 +90,7 @@ Rectangle {
                 Layout.preferredWidth: parent.width
                 minimumValue: -3
                 maximumValue: 3
-                value: 1e0
+                value: 2
             }
             Label {
                 text: qsTr("Density contrast:")
@@ -104,6 +107,7 @@ Rectangle {
 //                id: useSquareRootDensityCheckBox
 //                checked: false
 //                text: "Use sqrt(densityValue)"
+
 //            }
             Label {
                 text: qsTr("Volume shader quality:")
@@ -117,6 +121,35 @@ Rectangle {
             }
             Label {
                 text: qsTr("Energy:") + " " + hartreeFock.energy.toFixed(2)
+            }
+            Label {
+                text: "Color:"
+            }
+            ColorPicker {
+                id: standardColorPicker
+                color: "#08306B"
+                Layout.preferredWidth: parent.width
+                height: 30
+            }
+
+            Label {
+                text: "Highlight:"
+            }
+            ColorPicker {
+                id: highlightColorPicker
+                color: "#44C5DAEE"
+                Layout.preferredWidth: parent.width
+                height: 30
+            }
+
+            Label {
+                text: "Background:"
+            }
+            ColorPicker {
+                id: backgroundColorPicker
+                color: "white"
+                Layout.preferredWidth: parent.width
+                height: 30
             }
 
             Item {

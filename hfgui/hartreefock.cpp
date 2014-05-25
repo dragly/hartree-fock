@@ -68,9 +68,9 @@ const cube &HartreeFock::positions() const
 
 void HartreeFock::loadPointsFromFile()
 {
-    vec x = linspace(-3, 3, 100);
-    vec y = linspace(-3, 3, 100);
-    vec z = linspace(-3, 3, 100);
+    vec x = linspace(-3, 3, 50);
+    vec y = linspace(-3, 3, 50);
+    vec z = linspace(-3, 3, 50);
     cout << "Solving system with Hartree-Fock..." << endl;
     vector<GaussianCore> cores;
     cores.push_back(GaussianCore({ 0.000, 0.000, 0.000}, "atom_8_basis_3-21G.tm"));
