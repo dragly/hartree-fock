@@ -1,14 +1,14 @@
-//#extension GL_ARB_gpu_shader5 : enable
+#version 330 core
 uniform sampler3D myTexture3D;
-uniform highp vec4 ve_eyePosition; // last column of the inverse modelViewMatrix
-uniform highp float multiplier;
-uniform highp float quality;
-uniform highp float contrast;
+uniform vec4 ve_eyePosition; // last column of the inverse modelViewMatrix
+uniform float multiplier;
+uniform float quality;
+uniform float contrast;
 uniform vec4 standardColor;
 uniform vec4 highlightColor;
-
-varying highp vec4 entryPoint; // = EntryPoint
-varying highp vec4 entryPointTexCoord; // = EntryPoint
+in vec4 entryPoint; // = EntryPoint
+in vec4 entryPointTexCoord; // = EntryPoint
+out vec4 outColor;
 
 void main(void)
 {
@@ -16,7 +16,6 @@ void main(void)
     vec3 eye = ve_eyePosition.xyz;
     vec3 exitPoint = eye;
     vec3 direction = exitPoint - entryPoint.xyz;
-//    direction *= -1;
     float directionLength = length(direction);
     vec3 deltaDir = normalize(direction) * stepSize;
     float deltaDirLength = length(deltaDir);
@@ -28,7 +27,7 @@ void main(void)
 //    vec4 highlightColor = vec4(1.0, 1.0, 1.0, 1.0);
     for(int i = 0; i < int(1.732 / stepSize); i++) { // 1.732 = cube diagonal
         voxelCoord += deltaDir;
-        float voxelValue = stepSize * texture3D(myTexture3D, voxelCoord).x;
+        float voxelValue = stepSize * texture(myTexture3D, voxelCoord).x;
         voxelValue = pow(voxelValue, contrast);
         voxelValue *= multiplier;
         colorAcummulated += voxelValue * stepSize;
@@ -47,5 +46,5 @@ void main(void)
     }
     colorAcummulated = clamp(colorAcummulated, 0.0, 1.0);
     currentColor = clamp(currentColor, 0.0, 1.0);
-    gl_FragColor = currentColor;
+    outColor = currentColor;
 }
