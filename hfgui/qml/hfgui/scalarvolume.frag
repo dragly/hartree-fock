@@ -7,24 +7,17 @@ uniform float contrast;
 uniform vec4 standardColor;
 uniform vec4 highlightColor;
 in vec4 entryPoint; // = EntryPoint
-in vec4 entryPointTexCoord; // = EntryPoint
 out vec4 outColor;
 
 void main(void)
 {
     float stepSize = 1.0 / quality;
-    vec3 eye = ve_eyePosition.xyz;
-    vec3 exitPoint = eye;
+    vec3 exitPoint = ve_eyePosition.xyz;
     vec3 direction = exitPoint - entryPoint.xyz;
-    float directionLength = length(direction);
     vec3 deltaDir = normalize(direction) * stepSize;
-    float deltaDirLength = length(deltaDir);
-    vec3 startPoint = entryPointTexCoord.xyz + vec3(0.5, 0.5, 0.5); // TODO: Remove this after implementing proper texture coordinates
-    vec3 voxelCoord = startPoint;
+    vec3 voxelCoord = entryPoint.xyz + vec3(0.5, 0.5, 0.5);
     float colorAcummulated = 0.0;
     vec4 currentColor = vec4(0.0, 0.0, 0.0, 0.0);
-//    vec4 standardColor = vec4(0.0, 0.0, 0.0, 1.0);
-//    vec4 highlightColor = vec4(1.0, 1.0, 1.0, 1.0);
     for(int i = 0; i < int(1.732 / stepSize); i++) { // 1.732 = cube diagonal
         voxelCoord += deltaDir;
         float voxelValue = stepSize * texture(myTexture3D, voxelCoord).x;
@@ -32,7 +25,7 @@ void main(void)
         voxelValue *= multiplier;
         colorAcummulated += voxelValue * stepSize;
         float voxelValueClamped = clamp(voxelValue, 0.0, 1.0);
-        float mixerValue = clamp(voxelValue * 10, 0.0, 1.0);
+        float mixerValue = clamp(voxelValue*10, 0.0, 1.0);
         vec4 color = standardColor * mixerValue + highlightColor * (1 - mixerValue);
         currentColor.a = color.a * voxelValueClamped + currentColor.a * (1 - color.a * voxelValueClamped);
         currentColor.rgb = (color.rgb * color.a * voxelValueClamped
