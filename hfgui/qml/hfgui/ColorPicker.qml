@@ -21,11 +21,11 @@ Item {
     onColorChanged: {
         if(!_internalChange) {
             colorDialog.currentColor = color
+            colorDialog.color = color
         }
     }
     ColorDialog {
         id: colorDialog
-        color: rectRoot.color
         showAlphaChannel: true
 
         onCurrentColorChanged: {
@@ -33,7 +33,6 @@ Item {
             rectRoot.color = currentColor
             _internalChange = false
         }
-
         onAccepted: {
             color = currentColor
         }
