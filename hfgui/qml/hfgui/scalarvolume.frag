@@ -15,7 +15,7 @@ void main(void)
     vec3 exitPoint = ve_eyePosition.xyz;
     vec3 direction = exitPoint - entryPoint.xyz;
     vec3 deltaDir = normalize(direction) * stepSize;
-    vec3 voxelCoord = entryPoint.xyz + vec3(0.5, 0.5, 0.5);
+    vec3 voxelCoord = entryPoint.xyz;
     float colorAcummulated = 0.0;
     vec4 currentColor = vec4(0.0, 0.0, 0.0, 0.0);
     for(int i = 0; i < int(1.732 / stepSize); i++) { // 1.732 = cube diagonal

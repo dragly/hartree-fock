@@ -41,6 +41,9 @@ Rectangle {
                 property double maxMinDifference: hartreeFock.voxelEdgeMax - hartreeFock.voxelEdgeMin
                 cullFaces: Item3D.CullFrontFaces
                 scale: maxMinDifference
+                x: -0.5 * maxMinDifference
+                y: -0.5 * maxMinDifference
+                z: -0.5 * maxMinDifference
                 mesh: Mesh {
                     source: "cube.obj"
                 }
