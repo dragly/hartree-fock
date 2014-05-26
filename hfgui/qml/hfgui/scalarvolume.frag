@@ -16,28 +16,25 @@ void main(void)
     vec3 direction = exitPoint - entryPoint.xyz;
     vec3 deltaDir = normalize(direction) * stepSize;
     vec3 voxelCoord = entryPoint.xyz;
-    float colorAcummulated = 0.0;
-    vec4 currentColor = vec4(0.0, 0.0, 0.0, 0.0);
+    vec4 accumulatedColor = vec4(0.0, 0.0, 0.0, 0.0);
     for(int i = 0; i < int(1.732 / stepSize); i++) { // 1.732 = cube diagonal
         voxelCoord += deltaDir;
         float voxelValue = stepSize * texture(myTexture3D, voxelCoord).x;
         voxelValue = pow(voxelValue, contrast);
         voxelValue *= multiplier;
-        colorAcummulated += voxelValue * stepSize;
         float voxelValueClamped = clamp(voxelValue, 0.0, 1.0);
         float mixerValue = clamp(voxelValue*10, 0.0, 1.0);
         vec4 color = standardColor * mixerValue + highlightColor * (1 - mixerValue);
-        currentColor.a = color.a * voxelValueClamped + currentColor.a * (1 - color.a * voxelValueClamped);
-        currentColor.rgb = (color.rgb * color.a * voxelValueClamped
-                + currentColor.rgb * currentColor.a * (1 - voxelValueClamped * color.a)) / currentColor.a;
-        currentColor = clamp(currentColor, 0.0, 1.0);
+        accumulatedColor.a = color.a * voxelValueClamped + accumulatedColor.a * (1 - color.a * voxelValueClamped);
+        accumulatedColor.rgb = (color.rgb * color.a * voxelValueClamped
+                + accumulatedColor.rgb * accumulatedColor.a * (1 - voxelValueClamped * color.a)) / accumulatedColor.a;
+        accumulatedColor = clamp(accumulatedColor, 0.0, 1.0);
 
         if(voxelCoord.x > 1.0 || voxelCoord.y > 1.0 || voxelCoord.z > 1.0
                 || voxelCoord.x < 0.0 || voxelCoord.y < 0.0 || voxelCoord.z < 0.0) {
             break;
         }
     }
-    colorAcummulated = clamp(colorAcummulated, 0.0, 1.0);
-    currentColor = clamp(currentColor, 0.0, 1.0);
-    outColor = currentColor;
+    accumulatedColor = clamp(accumulatedColor, 0.0, 1.0);
+    outColor = accumulatedColor;
 }
