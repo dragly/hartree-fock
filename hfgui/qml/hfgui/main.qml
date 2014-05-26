@@ -53,6 +53,7 @@ Rectangle {
 //                    property bool useSquareRootDensity: useSquareRootDensityCheckBox.checked
                     property real contrast: densityContrastSlider.expValue
                     property real quality: volumeShaderQualitySlider.value
+                    property real mixRatio: colorMixRatioSlider.value
                     property color standardColor: standardColorPicker.color
                     property color highlightColor: highlightColorPicker.color
 //                    onEffectChanged:
@@ -143,6 +144,17 @@ Rectangle {
                 color: "#44C5DAEE"
                 Layout.preferredWidth: parent.width
                 height: 30
+            }
+
+            Label {
+                text: "Color mix ratio:"
+            }
+            Slider {
+                id: colorMixRatioSlider
+                Layout.preferredWidth: parent.width
+                minimumValue: 0
+                maximumValue: 50
+                value: 10
             }
 
             Label {
