@@ -19,7 +19,7 @@ SUITE(Development) {
     }
     TEST(LinearWater) {
         vector<GaussianCore> cores;
-        string basis = "6-311++Gdsds";
+        string basis = "6-31Gdsds";
         cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_" + basis + ".tm"));
         cores.push_back(GaussianCore({1.8, 0, 0}, "atom_1_basis_" + basis + ".tm"));
         cores.push_back(GaussianCore({-0.44916, 1.743056, 0.0}, "atom_1_basis_" + basis + ".tm"));
@@ -36,18 +36,21 @@ SUITE(Development) {
         solver.setDensityMixFactor(0.95);
         solver.solve();
 
+        cout << coefficientsUp << endl;
+        cout << "Ground state energy: " << solver.energy() << endl;
+
         vector<GaussianCore> cores2;
         cores2.push_back(GaussianCore({0,0,0}, "atom_8_basis_" + basis + ".tm"));
         cores2.push_back(GaussianCore({8,0,0}, "atom_1_basis_" + basis + ".tm"));
-        cores2.push_back(GaussianCore({-8,0,0}, "atom_1_basis_" + basis + ".tm"));
+        cores2.push_back(GaussianCore({-7.999999999971834,2.122871834682184e-5,0}, "atom_1_basis_" + basis + ".tm"));
         GaussianSystem system2;
         for(const GaussianCore &core : cores2) {
             system2.addCore(core);
         }
-        UnrestrictedHartreeFockSolver solver2(&system);
+        UnrestrictedHartreeFockSolver solver2(&system2);
         solver2.setInitialCoefficientMatrices(solver.coeffcientMatrixUp(), solver.coeffcientMatrixDown());
         solver2.setConvergenceTreshold(1e-9);
-        solver2.setNIterationsMax(1e4);
+        solver2.setNIterationsMax(1e3);
         solver2.setDensityMixFactor(0.95);
         solver2.solve();
         cout << std::setprecision(20);
