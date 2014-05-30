@@ -220,6 +220,9 @@ int main(int argc, char* argv[])
         }
         if(method == "unrestricted") {
             UnrestrictedHartreeFockSolver groundStateSolver(&groundStateSystem);
+            mat coefficientsUp = randn(system.nBasisFunctions(), system.nParticlesUp());
+            mat coefficientsDown = randn(system.nBasisFunctions(), system.nParticlesDown());
+            groundStateSolver.setInitialCoefficientMatrices(coefficientsUp, coefficientsDown);
             groundStateSolver.setNIterationsMax(1e3);
             groundStateSolver.setDensityMixFactor(0.95);
             groundStateSolver.setConvergenceTreshold(1e-9);
