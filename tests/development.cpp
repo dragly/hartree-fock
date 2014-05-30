@@ -19,7 +19,7 @@ SUITE(Development) {
     }
     TEST(LinearWater) {
         vector<GaussianCore> cores;
-        string basis = "6-31Gdsds";
+        string basis = "STO-3G";
         cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_" + basis + ".tm"));
         cores.push_back(GaussianCore({1.8, 0, 0}, "atom_1_basis_" + basis + ".tm"));
         cores.push_back(GaussianCore({-0.44916, 1.743056, 0.0}, "atom_1_basis_" + basis + ".tm"));
@@ -36,7 +36,6 @@ SUITE(Development) {
         solver.setDensityMixFactor(0.95);
         solver.solve();
 
-        cout << coefficientsUp << endl;
         cout << "Ground state energy: " << solver.energy() << endl;
 
         vector<GaussianCore> cores2;
@@ -51,7 +50,7 @@ SUITE(Development) {
         solver2.setInitialCoefficientMatrices(solver.coeffcientMatrixUp(), solver.coeffcientMatrixDown());
         solver2.setConvergenceTreshold(1e-9);
         solver2.setNIterationsMax(1e3);
-        solver2.setDensityMixFactor(0.95);
+        solver2.setDensityMixFactor(0.0);
         solver2.solve();
         cout << std::setprecision(20);
         cout << "Energy: " << solver2.energy() << endl;

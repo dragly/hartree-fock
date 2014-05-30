@@ -37,6 +37,7 @@ print "Reading", len(states_files), "files..."
 for statesFile in states_files:
     f = h5py.File(statesFile, "r")
     atomsMeta = f.get("atomMeta")
+    energyOffset = atomsMeta.attrs["energyOffset"]
     states = f.get("/states")
     print "Reading", len(states), "states..."
     for stateName in states:
@@ -48,7 +49,7 @@ for statesFile in states_files:
         r13 = atoms.attrs["r13"]
         angle = atoms.attrs["angle"]
         plot_name = "%.4f" % angle
-        energy = atoms.attrs["energy"]
+        energy = atoms.attrs["energy"] - energyOffset
         if not plots.has_key(plot_name):
             plots[plot_name] = {"r12s_r13s": [], "energies": []}
         plots[plot_name]["r12s_r13s"].append([r12, r13])

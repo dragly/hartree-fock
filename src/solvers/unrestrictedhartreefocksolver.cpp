@@ -8,7 +8,8 @@ using std::fixed;
 
 UnrestrictedHartreeFockSolver::UnrestrictedHartreeFockSolver(ElectronSystem *system) :
     HartreeFockSolver(system),
-    m_initialCoefficientMatricesSetManually(false)
+    m_initialCoefficientMatricesSetManually(false),
+    m_nTermsInDIISprocedure(10)
 {
 }
 
@@ -152,6 +153,9 @@ void UnrestrictedHartreeFockSolver::solve() {
     for(int i = 0; i < nIterationsMax(); i++) {
         m_iterationsUsed = i + 1;
         vec previousFockEnergies = m_fockEnergiesUp;
+        if(i > 20) {
+            performDIIS();
+        }
         advance();
         if(i > 0) {
             double stdDeviation = sum(abs(m_fockEnergiesUp - previousFockEnergies)) / m_fockEnergiesUp.n_elem;
@@ -208,4 +212,62 @@ void UnrestrictedHartreeFockSolver::setInitialCoefficientMatrices(const mat &up,
 double UnrestrictedHartreeFockSolver::energy()
 {
     return m_energyUHF;
+}
+
+/*!
+ * \brief UnrestrictedHartreeFockSolver::performDIIS helps convergence by the DIIS procedure.
+ *
+ * This implementation is a forked version of one made by Milad Hobbi Mobarhan
+ * (source: https://github.com/miladh/HF)
+ */
+void UnrestrictedHartreeFockSolver::performDIIS()
+{
+    mat &Fu = m_fockMatrixUp;
+    mat &Fd = m_fockMatrixDown;
+    mat &Pu = m_densityMatrixUp;
+    mat &Pd = m_densityMatrixDown;
+    const mat &S = overlapMatrix();
+
+    m_errorsU.push_back(Fu*Pu*S - S*Pu*Fu);
+    m_fockMatricesU.push_back(m_fockMatrixUp);
+
+    m_errorsD.push_back(Fd*Pd*S - S*Pd*Fd);
+    m_fockMatricesD.push_back(m_fockMatrixDown);
+
+    if(signed(m_errorsU.size()) > m_nTermsInDIISprocedure){
+        m_errorsU.erase(m_errorsU.begin());
+        m_fockMatricesU.erase(m_fockMatricesU.begin());
+
+        m_errorsD.erase(m_errorsD.begin());
+        m_fockMatricesD.erase(m_fockMatricesD.begin());
+
+        mat Au = zeros(m_errorsU.size()+1, m_errorsU.size()+1);
+        mat Ad = zeros(m_errorsD.size()+1, m_errorsD.size()+1);
+
+        for(uint i = 0; i < m_errorsU.size(); i++){
+            Au(i, m_errorsU.size()) = -1;
+            Au(m_errorsU.size(), i) = -1;
+
+            Ad(i, m_errorsD.size()) = -1;
+            Ad(m_errorsD.size(), i) = -1;
+
+            for(uint j = 0; j < m_errorsU.size(); j++){
+                Au(i,j) = trace(m_errorsU.at(i) * m_errorsU.at(j));
+                Ad(i,j) = trace(m_errorsD.at(i) * m_errorsD.at(j));
+            }
+        }
+
+        vec bu = zeros(Au.n_rows);
+        vec bd = zeros(Ad.n_rows);
+
+        bu(bu.n_elem -1) = -1.0;
+        bd(bd.n_elem -1) = -1.0;
+        bu = inv(Au) * bu;
+        bd = inv(Ad) * bd;
+
+        for(uint i = 0; i < bu.n_elem - 1; i++){
+            m_fockMatrixUp += bu(i) * m_fockMatricesU.at(i);
+            m_fockMatrixDown += bd(i) * m_fockMatricesD.at(i);
+        }
+    }
 }

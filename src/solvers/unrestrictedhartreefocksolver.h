@@ -2,6 +2,7 @@
 #define UNRESTRICTEDHARTREEFOCKSOLVER_H
 
 #include "solvers/hartreefocksolver.h"
+#include <vector>
 
 class UnrestrictedHartreeFockSolver : public HartreeFockSolver
 {
@@ -27,6 +28,7 @@ private:
     void resetFockMatrices();
     void randomizeCoefficientMatrices();
     void calculateEnergy();
+    void performDIIS();
 
     mat m_fockMatrixUp;
     mat m_fockMatrixDown;
@@ -45,6 +47,11 @@ private:
 
     double m_energyUHF;
     bool m_initialCoefficientMatricesSetManually;
+
+    int m_nTermsInDIISprocedure;
+
+    std::vector<mat> m_errorsU, m_fockMatricesU;
+    std::vector<mat> m_errorsD, m_fockMatricesD;
 };
 
 #endif // UNRESTRICTEDHARTREEFOCKSOLVER_H
