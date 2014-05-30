@@ -174,6 +174,7 @@ int main(int argc, char* argv[])
         // Restricted tends to have convergence problems with high distances anyway,
         // so just use the energy offset from UHF in case we want to plot the two together with offset
         UnrestrictedHartreeFockSolver solver(&system);
+        solver.setDiisEnabled(false);
         solver.setNIterationsMax(1e3);
         solver.setDensityMixFactor(0.95);
         solver.setConvergenceTreshold(1e-9);
@@ -220,9 +221,7 @@ int main(int argc, char* argv[])
         }
         if(method == "unrestricted") {
             UnrestrictedHartreeFockSolver groundStateSolver(&groundStateSystem);
-            mat coefficientsUp = randn(system.nBasisFunctions(), system.nParticlesUp());
-            mat coefficientsDown = randn(system.nBasisFunctions(), system.nParticlesDown());
-            groundStateSolver.setInitialCoefficientMatrices(coefficientsUp, coefficientsDown);
+            groundStateSolver.setDiisEnabled(false);
             groundStateSolver.setNIterationsMax(1e3);
             groundStateSolver.setDensityMixFactor(0.95);
             groundStateSolver.setConvergenceTreshold(1e-9);
