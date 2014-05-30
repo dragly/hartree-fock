@@ -9,7 +9,9 @@ using std::fixed;
 UnrestrictedHartreeFockSolver::UnrestrictedHartreeFockSolver(ElectronSystem *system) :
     HartreeFockSolver(system),
     m_initialCoefficientMatricesSetManually(false),
-    m_nTermsInDIISprocedure(10)
+    m_diisSampleCount(10),
+    m_diisStartingIteration(20),
+    m_isDiisEnabled(true)
 {
 }
 
@@ -153,7 +155,7 @@ void UnrestrictedHartreeFockSolver::solve() {
     for(int i = 0; i < nIterationsMax(); i++) {
         m_iterationsUsed = i + 1;
         vec previousFockEnergies = m_fockEnergiesUp;
-        if(i > 20) {
+        if(m_isDiisEnabled && i > m_diisStartingIteration) {
             performDIIS();
         }
         advance();
@@ -234,7 +236,7 @@ void UnrestrictedHartreeFockSolver::performDIIS()
     m_errorsD.push_back(Fd*Pd*S - S*Pd*Fd);
     m_fockMatricesD.push_back(m_fockMatrixDown);
 
-    if(signed(m_errorsU.size()) > m_nTermsInDIISprocedure){
+    if(signed(m_errorsU.size()) > m_diisSampleCount){
         m_errorsU.erase(m_errorsU.begin());
         m_fockMatricesU.erase(m_fockMatricesU.begin());
 
@@ -271,3 +273,33 @@ void UnrestrictedHartreeFockSolver::performDIIS()
         }
     }
 }
+int UnrestrictedHartreeFockSolver::diisStartingIteration() const
+{
+    return m_diisStartingIteration;
+}
+
+void UnrestrictedHartreeFockSolver::setDiisStartingIteration(int diisStartingIteration)
+{
+    m_diisStartingIteration = diisStartingIteration;
+}
+
+int UnrestrictedHartreeFockSolver::diisSampleCount() const
+{
+    return m_diisSampleCount;
+}
+
+void UnrestrictedHartreeFockSolver::setDiisSampleCount(int diisIterationCount)
+{
+    m_diisSampleCount = diisIterationCount;
+}
+
+bool UnrestrictedHartreeFockSolver::isDiisEnabled() const
+{
+    return m_isDiisEnabled;
+}
+
+void UnrestrictedHartreeFockSolver::setDiisEnabled(bool useDIIS)
+{
+    m_isDiisEnabled = useDIIS;
+}
+

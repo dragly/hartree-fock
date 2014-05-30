@@ -19,7 +19,7 @@ SUITE(Development) {
     }
     TEST(LinearWater) {
         vector<GaussianCore> cores;
-        string basis = "STO-3G";
+        string basis = "6-311++Gdsds";
         cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_" + basis + ".tm"));
         cores.push_back(GaussianCore({1.8, 0, 0}, "atom_1_basis_" + basis + ".tm"));
         cores.push_back(GaussianCore({-0.44916, 1.743056, 0.0}, "atom_1_basis_" + basis + ".tm"));
@@ -28,6 +28,9 @@ SUITE(Development) {
             system.addCore(core);
         }
         UnrestrictedHartreeFockSolver solver(&system);
+//        solver.setDiisEnabled(true);
+//        solver.setDiisSampleCount(10);
+//        solver.setDiisStartingIteration(20);
         mat coefficientsUp = randn(system.nBasisFunctions(), system.nParticlesUp());
         mat coefficientsDown = randn(system.nBasisFunctions(), system.nParticlesDown());
         solver.setInitialCoefficientMatrices(coefficientsUp, coefficientsDown);
@@ -47,6 +50,9 @@ SUITE(Development) {
             system2.addCore(core);
         }
         UnrestrictedHartreeFockSolver solver2(&system2);
+        solver2.setDiisEnabled(true);
+        solver2.setDiisSampleCount(10);
+        solver2.setDiisStartingIteration(20);
         solver2.setInitialCoefficientMatrices(solver.coeffcientMatrixUp(), solver.coeffcientMatrixDown());
         solver2.setConvergenceTreshold(1e-9);
         solver2.setNIterationsMax(1e3);

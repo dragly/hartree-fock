@@ -21,6 +21,16 @@ public:
     const mat &densityMatrixDown() const;
 
     void setInitialCoefficientMatrices(const mat& up, const mat &down);
+
+    bool isDiisEnabled() const;
+    void setDiisEnabled(bool isDiisEnabled);
+
+    int diisSampleCount() const;
+    void setDiisSampleCount(int diisSampleCount);
+
+    int diisStartingIteration() const;
+    void setDiisStartingIteration(int diisStartingIteration);
+
 private:
     void resetCoefficientMatrices();
     void setupFockMatrices();
@@ -48,10 +58,13 @@ private:
     double m_energyUHF;
     bool m_initialCoefficientMatricesSetManually;
 
-    int m_nTermsInDIISprocedure;
+    int m_diisSampleCount;
+    int m_diisStartingIteration;
 
     std::vector<mat> m_errorsU, m_fockMatricesU;
     std::vector<mat> m_errorsD, m_fockMatricesD;
+
+    bool m_isDiisEnabled;
 };
 
 #endif // UNRESTRICTEDHARTREEFOCKSOLVER_H
