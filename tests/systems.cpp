@@ -4,6 +4,9 @@
 #include <electronsystems/gaussian/gaussiansystem.h>
 #include "solvers/restrictedhartreefocksolver.h"
 #include <solvers/unrestrictedhartreefocksolver.h>
+#include <iomanip>
+
+using namespace std;
 
 SUITE(Systems) {
     TEST(Dummy) {
@@ -41,6 +44,21 @@ SUITE(Systems) {
         solver.setDensityMixFactor(0.5);
         solver.solve();
         CHECK_CLOSE(-1.122933363617109, solver.energy(), 1e-6);
+    }
+    TEST(HydrogenMolecule631Gdsds) {
+        vector<GaussianCore> cores;
+        cores.push_back(GaussianCore({0,0,0}, "atom_1_basis_6-31Gdsds.tm"));
+        cores.push_back(GaussianCore({1.4,0.0,0}, "atom_1_basis_6-31Gdsds.tm"));
+        GaussianSystem system;
+        for(const GaussianCore &core : cores) {
+            system.addCore(core);
+        }
+        RestrictedHartreeFockSolver solver(&system);
+        solver.setConvergenceTreshold(1e-12);
+        solver.setNIterationsMax(1e3);
+        solver.setDensityMixFactor(0.5);
+        solver.solve();
+        CHECK_CLOSE(-1.13128434930047, solver.energy(), 1e-6);
     }
     TEST(Neon321) {
         vector<GaussianCore> cores;

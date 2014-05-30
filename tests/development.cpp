@@ -35,6 +35,7 @@ SUITE(Development) {
         solver.setNIterationsMax(1e3);
         solver.setDensityMixFactor(0.95);
         solver.solve();
+        cout << solver.overlapMatrix() << endl;
         cout << std::setprecision(20);
         cout << "Energy: " << solver.energy() << endl;
         cout << "Iterations: " << solver.iterationsUsed() << endl;
