@@ -11,7 +11,7 @@ UnrestrictedHartreeFockSolver::UnrestrictedHartreeFockSolver(ElectronSystem *sys
     m_initialCoefficientMatricesSetManually(false),
     m_diisSampleCount(10),
     m_diisStartingIteration(20),
-    m_isDiisEnabled(true)
+    m_isDiisEnabled(false)
 {
 }
 
