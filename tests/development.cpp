@@ -17,30 +17,68 @@ using std::endl;
 SUITE(Development) {
     TEST(Dummy) {
     }
-    TEST(LinearHydrogen) {
+    TEST(LinearWater) {
         vector<GaussianCore> cores;
-        cores.push_back(GaussianCore({0,0,0}, "atom_1_basis_6-31Gdsds.tm"));
-        cores.push_back(GaussianCore({12,0,0}, "atom_1_basis_6-31Gdsds.tm"));
-        cores.push_back(GaussianCore({24,0,0}, "atom_1_basis_6-31Gdsds.tm"));
+        string basis = "6-311++Gdsds";
+        cores.push_back(GaussianCore({0,0,0}, "atom_8_basis_" + basis + ".tm"));
+        cores.push_back(GaussianCore({1.8, 0, 0}, "atom_1_basis_" + basis + ".tm"));
+        cores.push_back(GaussianCore({-0.44916, 1.743056, 0.0}, "atom_1_basis_" + basis + ".tm"));
         GaussianSystem system;
         for(const GaussianCore &core : cores) {
             system.addCore(core);
         }
-        mat C;
         UnrestrictedHartreeFockSolver solver(&system);
         mat coefficientsUp = randn(system.nBasisFunctions(), system.nParticlesUp());
         mat coefficientsDown = randn(system.nBasisFunctions(), system.nParticlesDown());
         solver.setInitialCoefficientMatrices(coefficientsUp, coefficientsDown);
         solver.setConvergenceTreshold(1e-9);
-        solver.setNIterationsMax(1e3);
+        solver.setNIterationsMax(1e4);
         solver.setDensityMixFactor(0.95);
         solver.solve();
-        cout << solver.overlapMatrix() << endl;
+
+        vector<GaussianCore> cores2;
+        cores2.push_back(GaussianCore({0,0,0}, "atom_8_basis_" + basis + ".tm"));
+        cores2.push_back(GaussianCore({8,0,0}, "atom_1_basis_" + basis + ".tm"));
+        cores2.push_back(GaussianCore({-8,0,0}, "atom_1_basis_" + basis + ".tm"));
+        GaussianSystem system2;
+        for(const GaussianCore &core : cores2) {
+            system2.addCore(core);
+        }
+        UnrestrictedHartreeFockSolver solver2(&system);
+        solver2.setInitialCoefficientMatrices(solver.coeffcientMatrixUp(), solver.coeffcientMatrixDown());
+        solver2.setConvergenceTreshold(1e-9);
+        solver2.setNIterationsMax(1e4);
+        solver2.setDensityMixFactor(0.95);
+        solver2.solve();
         cout << std::setprecision(20);
-        cout << "Energy: " << solver.energy() << endl;
-        cout << "Iterations: " << solver.iterationsUsed() << endl;
+        cout << "Energy: " << solver2.energy() << endl;
+        cout << "Iterations: " << solver2.iterationsUsed() << endl;
         //        CHECK_CLOSE(-149.5117583638509, solver.energy(), 1e-5);
     }
+//    TEST(LinearHydrogen) {
+//        vector<GaussianCore> cores;
+//        cores.push_back(GaussianCore({0,0,0}, "atom_1_basis_6-31Gdsds.tm"));
+//        cores.push_back(GaussianCore({12,0,0}, "atom_1_basis_6-31Gdsds.tm"));
+//        cores.push_back(GaussianCore({24,0,0}, "atom_1_basis_6-31Gdsds.tm"));
+//        GaussianSystem system;
+//        for(const GaussianCore &core : cores) {
+//            system.addCore(core);
+//        }
+//        mat C;
+//        UnrestrictedHartreeFockSolver solver(&system);
+//        mat coefficientsUp = randn(system.nBasisFunctions(), system.nParticlesUp());
+//        mat coefficientsDown = randn(system.nBasisFunctions(), system.nParticlesDown());
+//        solver.setInitialCoefficientMatrices(coefficientsUp, coefficientsDown);
+//        solver.setConvergenceTreshold(1e-9);
+//        solver.setNIterationsMax(1e3);
+//        solver.setDensityMixFactor(0.95);
+//        solver.solve();
+//        cout << solver.overlapMatrix() << endl;
+//        cout << std::setprecision(20);
+//        cout << "Energy: " << solver.energy() << endl;
+//        cout << "Iterations: " << solver.iterationsUsed() << endl;
+//        //        CHECK_CLOSE(-149.5117583638509, solver.energy(), 1e-5);
+//    }
 //    TEST(OxygenSix) {
 //        vector<GaussianCore> cores;
 //        cores.push_back(GaussianCore({0,0,0}, "atom_6_basis_6-311++Gdsds.tm"));
