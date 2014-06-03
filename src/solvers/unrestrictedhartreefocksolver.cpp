@@ -98,7 +98,7 @@ void UnrestrictedHartreeFockSolver::setupDensityMatrices() {
     mat &Cd = m_coefficientMatrixDown;
     mat tempPu = Cu * Cu.t();
     mat tempPd = Cd * Cd.t();
-    double mixFactor = 0.5;
+    double mixFactor = densityMixFactor();
     if(Pu.n_elem > 0 && Pd.n_elem > 0) {
         Pu = mixFactor * Pu + (1 - mixFactor) * tempPu; // smoothing
         Pd = mixFactor * Pd + (1 - mixFactor) * tempPd; // smoothing
