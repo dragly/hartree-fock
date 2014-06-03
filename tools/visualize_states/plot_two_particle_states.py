@@ -72,10 +72,9 @@ diffs = abs(diff(energies) / diff(r12s))
 
 print "Plotting", len(r12s), "data points."
 
-#figure()
-#plot(r12s, energies)
 grid()
-plot(r12s, energies - energyOffset)
+#plot(r12s, energies - energyOffset)
+plot(r12s, energies)
 #popt,errs = curve_fit(shifted_lennard_jones, r12s, energies - energyOffset, p0=(0.01938786,  1.93348366, -0.65246251))
 #plot(r12s, shifted_lennard_jones(r12s, *popt))
 #plot(r12s[:-1], diffs)
