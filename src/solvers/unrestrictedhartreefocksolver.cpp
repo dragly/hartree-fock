@@ -15,6 +15,9 @@ UnrestrictedHartreeFockSolver::UnrestrictedHartreeFockSolver(ElectronSystem *sys
 {
 }
 
+/*!
+ * \brief UnrestrictedHartreeFockSolver::setup sets up the necessary matrices
+ */
 void UnrestrictedHartreeFockSolver::setup()
 {
     HartreeFockSolver::setup();
@@ -115,17 +118,14 @@ void UnrestrictedHartreeFockSolver::advance() {
     uint nkUp = f->nParticlesUp();
     uint nkDn = f->nParticlesDown();
 
-    vec s;
-    mat U;
-    eig_sym(s, U, overlapMatrix());
-    mat V = U*diagmat(1.0/sqrt(s));
-
     mat &Fu = m_fockMatrixUp;
     mat &Fd = m_fockMatrixDown;
     mat &Cu = m_coefficientMatrixUp;
     mat &Cd = m_coefficientMatrixDown;
     vec &fockEnergiesUp = m_fockEnergiesUp;
     vec &fockEnergiesDn = m_fockEnergiesDown;
+
+    const mat &V = transformationMatrix();
 
     mat FprimeUp = V.t() * Fu * V;
     mat FprimeDn = V.t() * Fd * V;

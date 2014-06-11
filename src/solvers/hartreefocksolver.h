@@ -35,6 +35,7 @@ public:
 
     const mat &uncoupledMatrix() const;
     const mat &overlapMatrix() const;
+    const mat &transformationMatrix() const;
     const field<mat> &coupledMatrix() const;
 
     double densityMixFactor() const;
@@ -50,12 +51,14 @@ private:
     void setupUncoupledMatrix();
     void cleanUpCoupledMatrix();
     void allocateCoupledMatrix();
+    void setupTransformationMatrix();
 
     ElectronSystem *m_electronSystem;
 
     // Matrices
     mat m_uncoupledMatrix;
     mat m_overlapMatrix;
+    mat m_transformationMatrix;
     field<mat> m_coupledMatrix;
 
     // Variables

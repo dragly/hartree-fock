@@ -68,11 +68,7 @@ void RestrictedHartreeFockSolver::advance() {
     uint nk = f->nParticles() / 2;
     setupFockMatrix();
 
-    vec s;
-    mat U;
-    eig_sym(s, U, overlapMatrix());
-
-    mat V = U*diagmat(1.0/sqrt(s));
+    const mat &V = transformationMatrix();
 
     const mat &F = m_fockMatrix;
     mat Fprime = V.t() * F * V;

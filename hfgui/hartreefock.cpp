@@ -69,28 +69,29 @@ const cube &HartreeFock::positions() const
 
 void HartreeFock::loadPointsFromFile()
 {
-    vec x = linspace(-3, 3, 50);
-    vec y = linspace(-3, 3, 50);
-    vec z = linspace(-3, 3, 50);
+    double edge = 10;
+    vec x = linspace(-edge, edge, 50);
+    vec y = linspace(-edge, edge, 50);
+    vec z = linspace(-edge, edge, 50);
     cout << "Solving system with Hartree-Fock..." << endl;
     vector<GaussianCore> cores;
-    cores.push_back(GaussianCore({0,           0.0,   0.0000}, "atom_8_basis_STO-3G.tm"));
-    cores.push_back(GaussianCore({ -3.6 / 2,   1.40,    0.0000}, "atom_1_basis_STO-3G.tm"));
-    cores.push_back(GaussianCore({ 3.6 / 2,    1.40,    0.0000}, "atom_1_basis_STO-3G.tm"));
+//    cores.push_back(GaussianCore({0,           0.0,   0.0000}, "atom_8_basis_STO-3G.tm"));
+    cores.push_back(GaussianCore({ -5,   0.0,    0.0000}, "atom_1_basis_6-311++Gdsds.tm"));
+    cores.push_back(GaussianCore({  5,    0.0,    0.0000}, "atom_1_basis_6-311++Gdsds.tm"));
     GaussianSystem system;
     for(const GaussianCore &core : cores) {
         system.addCore(core);
     }
 //    system.setNParticlesDown(9);
     mat C;
-    RestrictedHartreeFockSolver solver(&system);
-//    UnrestrictedHartreeFockSolver solver(&system);
+//    RestrictedHartreeFockSolver solver(&system);
+    UnrestrictedHartreeFockSolver solver(&system);
     solver.setNIterationsMax(1e4);
     solver.setConvergenceTreshold(1e-10);
     solver.solve();
     cout << "Energy: " << solver.energy() << endl;
-//    C = join_rows(solver.coeffcientMatrixUp(), solver.coeffcientMatrixDown());
-    C = solver.coefficientMatrix();
+    C = join_rows(solver.coeffcientMatrixUp(), solver.coeffcientMatrixDown());
+//    C = solver.coefficientMatrix();
     m_orbitalDensities.set_size(C.n_cols);
     m_totalDensity = zeros(x.n_elem, y.n_elem, z.n_elem);
     for(cube& orbitalDensity : m_orbitalDensities) {

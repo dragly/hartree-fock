@@ -48,6 +48,7 @@ void HartreeFockSolver::setupIntegralMatrices()
 {
     setupUncoupledMatrix();
     setupOverlapMatrix();
+    setupTransformationMatrix();
     setupCoupledMatrix();
 }
 
@@ -60,6 +61,14 @@ void HartreeFockSolver::allocateCoupledMatrix() {
             m_coupledMatrix(i,j) = zeros(n,n);
         }
     }
+}
+
+void HartreeFockSolver::setupTransformationMatrix()
+{
+    vec s;
+    mat U;
+    eig_sym(s, U, overlapMatrix());
+    m_transformationMatrix = U*diagmat(1.0/sqrt(s));
 }
 
 void HartreeFockSolver::cleanUpCoupledMatrix() {
@@ -167,6 +176,11 @@ ElectronSystem *HartreeFockSolver::electronSystem() {
 
 const mat &HartreeFockSolver::overlapMatrix() const {
     return m_overlapMatrix;
+}
+
+const mat &HartreeFockSolver::transformationMatrix() const
+{
+    return m_transformationMatrix;
 }
 
 const field<mat> &HartreeFockSolver::coupledMatrix() const
