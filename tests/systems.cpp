@@ -104,6 +104,7 @@ SUITE(Systems) {
         solver.setConvergenceTreshold(1e-8);
         solver.setNIterationsMax(1e4);
         solver.setDensityMixFactor(0.5);
+        solver.setDiisEnabled(false);
         solver.solve();
         CHECK_CLOSE(-149.5876095851103, solver.energy(), 1e-5);
     }
