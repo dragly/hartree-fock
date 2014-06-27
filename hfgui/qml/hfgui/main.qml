@@ -64,9 +64,27 @@ Rectangle {
                 }
             }
         }
+
+        FileDialog {
+            id: openFileDialog
+            onAccepted: {
+                hartreeFock.openFile(fileUrl.toString().replace("file://", ""))
+            }
+        }
+
         ColumnLayout {
             Layout.minimumWidth: 200
             spacing: 5
+            Label {
+                text: qsTr("File:")
+            }
+            Button {
+                text: qsTr("Browse...")
+                onClicked: {
+                    openFileDialog.open()
+                }
+            }
+
             Label {
                 text: qsTr("Orbital:") + " " + orbitalSlider.value
             }

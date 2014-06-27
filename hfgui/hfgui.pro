@@ -38,6 +38,7 @@ OTHER_FILES += \
     defaults-nonsrc.pri
 
 LIBS += -L$$PWD/src -lhartree-fock
+LIBS += -lyaml-cpp
 
 #copydata.commands = $(COPY_DIR) ../data/* $$OUT_PWD
 first.depends = $(first) copydeploymentfolders copydata

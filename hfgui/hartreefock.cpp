@@ -2,6 +2,11 @@
 
 #include <QDebug>
 #include <cmath>
+#include <yaml-cpp/yaml.h>
+#include <QString>
+#include <iomanip>
+#include <iostream>
+#include <fstream>
 
 #include <electronsystems/gaussian/gaussiancore.h>
 #include <electronsystems/gaussian/gaussiansystem.h>
@@ -19,6 +24,7 @@ HartreeFock::HartreeFock(QQuickItem *parent) :
     m_orbital(0)
 {
     loadPointsFromFile();
+    setupVoxelData();
 }
 
 HartreeFock::~HartreeFock()
@@ -48,16 +54,25 @@ void HartreeFock::generateRandomPoints() {
 
 uint HartreeFock::voxelDataWidth()
 {
+    if(m_orbitalDensities.size() <= 0) {
+        return 0;
+    }
     return m_orbitalDensities(0).n_rows;
 }
 
 uint HartreeFock::voxelDataHeight()
 {
+    if(m_orbitalDensities.size() <= 0) {
+        return 0;
+    }
     return m_orbitalDensities(0).n_cols;
 }
 
 uint HartreeFock::voxelDataDepth()
 {
+    if(m_orbitalDensities.size() <= 0) {
+        return 0;
+    }
     return m_orbitalDensities(0).n_slices;
 }
 
@@ -69,19 +84,113 @@ const cube &HartreeFock::positions() const
 
 void HartreeFock::loadPointsFromFile()
 {
+}
+
+void HartreeFock::setupVoxelData() {
+    if(m_orbitalDensities.n_elem < 1) {
+        return;
+    }
+    if(m_voxelData) {
+        delete[] m_voxelData;
+    }
+    uint nElements = m_orbitalDensities(0).n_rows * m_orbitalDensities(0).n_cols * m_orbitalDensities(0).n_slices;
+    m_voxelData = new GLuint[nElements];
+    cube *densityPointer = &m_totalDensity;
+    if(m_orbital != -1) {
+        densityPointer = &(m_orbitalDensities(m_orbital));
+    }
+    cube &density = *densityPointer;
+    uint rowCount = density.n_rows;
+    uint colCount = density.n_rows;
+    uint sliceCount = density.n_rows;
+
+    for(uint i = 0; i < (rowCount); i++) {
+        for(uint j = 0; j < (colCount); j++) {
+            for(uint k = 0; k < (sliceCount); k++) {
+                int index = i
+                        + j * rowCount
+                        + k * colCount * rowCount;
+                double value = density(i,j,k);
+//                double value = pow(value / m_contrast, m_contrast);
+                value = fmin(1.0, value);
+                m_voxelData[index] = value * 2147483647;
+            }
+        }
+    }
+    emit dataChanged();
+}
+
+GLuint *HartreeFock::voxelData() const
+{
+    return m_voxelData;
+}
+
+void HartreeFock::setOrbital(int arg)
+{
+    if (m_orbital != arg) {
+        m_orbital = arg;
+        setupVoxelData();
+        emit orbitalChanged(arg);
+    }
+}
+
+void operator >> (const YAML::Node& node, Vector3& v)
+{
+    double x;
+    double y;
+    double z;
+    node[0] >> x;
+    node[1] >> y;
+    node[2] >> z;
+    v = Vector3(x,y,z);
+}
+
+void HartreeFock::openFile(QString fileName)
+{
+    qDebug() << "Opening file" << fileName;
+    ifstream fin(fileName.toStdString());
+    if(fin.fail()) {
+        qWarning() << "Could not open" << fileName;
+        return;
+    }
+
+    YAML::Parser parser(fin);
+
+    YAML::Node rootNode;
+    parser.GetNextDocument(rootNode);
+    unsigned int nAtoms = rootNode["atoms"].size();
+    string defaultBasis = "3-21G";
+
+    GaussianSystem system;
+    for(YAML::Iterator it=rootNode.begin();it!=rootNode.end();++it) {
+        string rootKey;
+        it.first() >> rootKey;
+        if(rootKey == "atoms") {
+            const YAML::Node &atomsNode = it.second();
+            for(YAML::Iterator it2=atomsNode.begin();it2!=atomsNode.end();++it2) {
+                const YAML::Node &atomNode = *it2;
+                string typeAbbreviation;
+                atomNode["type"] >> typeAbbreviation;
+                Vector3 position;
+                atomNode["position"] >> position;
+                string basis;
+                try {
+                    atomNode["basis"] >> basis;
+                } catch( YAML::TypedKeyNotFound<std::string> ) {
+                    basis = defaultBasis;
+                }
+
+                basis = HF::escapeBasis(basis);
+                system.addCore(GaussianCore(position, typeAbbreviation, basis));
+            }
+        }
+    }
+
     double edge = 10;
     vec x = linspace(-edge, edge, 50);
     vec y = linspace(-edge, edge, 50);
     vec z = linspace(-edge, edge, 50);
     cout << "Solving system with Hartree-Fock..." << endl;
-    vector<GaussianCore> cores;
-//    cores.push_back(GaussianCore({0,           0.0,   0.0000}, "atom_8_basis_STO-3G.tm"));
-    cores.push_back(GaussianCore({ -5,   0.0,    0.0000}, "atom_1_basis_6-311++Gdsds.tm"));
-    cores.push_back(GaussianCore({  5,    0.0,    0.0000}, "atom_1_basis_6-311++Gdsds.tm"));
-    GaussianSystem system;
-    for(const GaussianCore &core : cores) {
-        system.addCore(core);
-    }
 //    system.setNParticlesDown(9);
     mat C;
 //    RestrictedHartreeFockSolver solver(&system);
@@ -134,52 +243,4 @@ void HartreeFock::loadPointsFromFile()
     emit voxelEdgeMaxChanged(m_voxelEdgeMax);
     emit nSampleStepsChanged(m_nSampleSteps);
     emit orbitalCountChanged(m_orbitalDensities.n_elem);
-}
-
-void HartreeFock::setupVoxelData() {
-    if(m_orbitalDensities.n_elem < 1) {
-        return;
-    }
-    if(m_voxelData) {
-        delete[] m_voxelData;
-    }
-    uint nElements = m_orbitalDensities(0).n_rows * m_orbitalDensities(0).n_cols * m_orbitalDensities(0).n_slices;
-    m_voxelData = new GLuint[nElements];
-    cube *densityPointer = &m_totalDensity;
-    if(m_orbital != -1) {
-        densityPointer = &(m_orbitalDensities(m_orbital));
-    }
-    cube &density = *densityPointer;
-    uint rowCount = density.n_rows;
-    uint colCount = density.n_rows;
-    uint sliceCount = density.n_rows;
-
-    for(uint i = 0; i < (rowCount); i++) {
-        for(uint j = 0; j < (colCount); j++) {
-            for(uint k = 0; k < (sliceCount); k++) {
-                int index = i
-                        + j * rowCount
-                        + k * colCount * rowCount;
-                double value = density(i,j,k);
-//                double value = pow(value / m_contrast, m_contrast);
-                value = fmin(1.0, value);
-                m_voxelData[index] = value * 2147483647;
-            }
-        }
-    }
-    emit dataChanged();
-}
-
-GLuint *HartreeFock::voxelData() const
-{
-    return m_voxelData;
-}
-
-void HartreeFock::setOrbital(int arg)
-{
-    if (m_orbital != arg) {
-        m_orbital = arg;
-        setupVoxelData();
-        emit orbitalChanged(arg);
-    }
 }

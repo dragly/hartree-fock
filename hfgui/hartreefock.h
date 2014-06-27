@@ -110,6 +110,7 @@ public slots:
             emit contrastChanged(arg);
         }
     }
+    void openFile(QString fileName);
 
 signals:
     void nSampleStepsChanged(int arg);
