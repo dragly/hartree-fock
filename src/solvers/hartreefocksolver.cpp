@@ -9,6 +9,11 @@
 using namespace arma;
 using namespace std;
 
+/*!
+ * \class HartreeFockSolver
+ * \brief Base class for the Hartree-Fock type solvers
+ */
+
 HartreeFockSolver::HartreeFockSolver(ElectronSystem *basisFunction) :
     m_electronSystem(basisFunction),
     m_convergenceTreshold(1e-8),

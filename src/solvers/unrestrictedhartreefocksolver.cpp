@@ -6,6 +6,11 @@
 using std::setprecision;
 using std::fixed;
 
+/*!
+ * \class HartreeFockSolver
+ * \brief Solver for the Pople-Nesbet equations
+ */
+
 UnrestrictedHartreeFockSolver::UnrestrictedHartreeFockSolver(ElectronSystem *system) :
     HartreeFockSolver(system),
     m_initialCoefficientMatricesSetManually(false),

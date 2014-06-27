@@ -4,6 +4,14 @@
 
 using namespace std;
 
+/*!
+ * \class BoysFunction
+ * \brief Calculates the Boys function efficiently for any argument and level
+ *
+ * The argument and the highest level is specified upon construction,
+ * while the other levels are fetched on demand.
+ */
+
 BoysFunction::BoysFunction()
 {
 

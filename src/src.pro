@@ -17,7 +17,6 @@ SOURCES += \
     basisfunctions/atomicbasisfunction.cpp \
     math/boysfunction.cpp \
     math/boysfunctionintermediate.cpp \
-    hermiteintegral.cpp \
     math/hermiteexpansioncoefficient.cpp \
     basisfunctions/gaussian/integrals/gaussiancoloumbattractionintegral.cpp \
     basisfunctions/gaussian/integrals/gaussianelectroninteractionintegral.cpp \
@@ -34,7 +33,8 @@ SOURCES += \
     solvers/unrestrictedhartreefocksolver.cpp \
     solvers/hartreefocksolver.cpp \
     solvers/hartreesolver.cpp \
-    solvers/restrictedhartreefocksolver.cpp
+    solvers/restrictedhartreefocksolver.cpp \
+    math/hermiteintegral.cpp
 
 HEADERS += \
     math/vector3.h \

@@ -8,6 +8,11 @@
 using namespace arma;
 using namespace std;
 
+/*!
+ * \class HartreeSolver
+ * \brief Solver using only a Hartree wave function
+ */
+
 HartreeSolver::HartreeSolver(ElectronSystem *basisFunction) :
     m_basisFunction(basisFunction)
 {

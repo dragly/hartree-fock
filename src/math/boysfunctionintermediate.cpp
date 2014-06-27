@@ -5,6 +5,11 @@
 
 using namespace std;
 
+/*!
+ * \class BoysFunctionIntermediate
+ * \brief Helper class for fast evaluations in BoysFunction
+ */
+
 BoysFunctionIntermediate::BoysFunctionIntermediate(int levelMax, int nValues, double limitMin, double limitMax, int nIntegralValues) :
     m_nValues(nValues),
     m_levelMax(levelMax),

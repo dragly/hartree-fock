@@ -1,5 +1,10 @@
 #include "hermiteexpansioncoefficient.h"
 
+/*!
+ * \class HermiteExpansionCoefficient
+ * \brief Sets up and solves the recurrence relations for E used in all the integrals
+ */
+
 HermiteExpansionCoefficient::HermiteExpansionCoefficient(int dimensionMax) :
     m_a(0),
     m_b(0),

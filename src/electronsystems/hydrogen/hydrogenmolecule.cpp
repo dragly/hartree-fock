@@ -2,6 +2,12 @@
 
 #include <fstream>
 
+/*!
+ * \class HydrogenMolecule
+ * \deprecated
+ * \brief Deprecated test class for Hydrogen molecule system
+ */
+
 HydrogenMolecule::HydrogenMolecule(double distance)
 {
 

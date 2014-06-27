@@ -2,6 +2,12 @@
 
 #include <fstream>
 
+/*!
+ * \class MultiHydrogen
+ * \deprecated
+ * \brief Deprecated test class for Hydrogen molecule system
+ */
+
 MultiHydrogen::MultiHydrogen(mat nucleiPositions) :
     R(nucleiPositions),
     m_nNuclei(nucleiPositions.n_rows),

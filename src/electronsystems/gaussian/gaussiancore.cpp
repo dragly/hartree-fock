@@ -6,6 +6,13 @@
 
 #include <boost/regex.hpp>
 
+/*!
+ * \class GaussianCore
+ * \brief Defines the position, charge and basis functions assigned to a nucleus
+ *
+ * The basis functions are loaded from a basis file by use of the TurboMoleParser class.
+ */
+
 GaussianCore::GaussianCore(Vector3 position, string fileName) :
     m_position(position)
 {

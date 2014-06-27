@@ -1,5 +1,10 @@
 #include "electronsystem.h"
 
+/*!
+ * \class ElectronSystem
+ * \brief Base class for any type of electronic system
+ */
+
 ElectronSystem::ElectronSystem() :
     m_nParticlesDownSet(false),
     m_nParticlesDown(0)

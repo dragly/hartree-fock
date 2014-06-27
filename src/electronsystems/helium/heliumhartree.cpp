@@ -1,5 +1,12 @@
 #include "heliumhartree.h"
 
+/*!
+ * \class Helium
+ * \deprecated
+ * \brief Deprecated test class for Helium system
+ */
+
+
 Helium::Helium()
 {
     alpha = zeros(4);

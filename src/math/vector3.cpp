@@ -2,6 +2,11 @@
 
 #include "vector3.h"
 
+/*!
+ * \class Vector3
+ * \brief Simple 3D vector class with focus on performance and readability
+ */
+
 std::ostream& operator<< (std::ostream &out, const Vector3 &vector)
 {
     out << vector.mem_local[0] << ", " << vector.mem_local[1] << ", " << vector.mem_local[2];

@@ -13,6 +13,11 @@
 
 using namespace std;
 
+/*!
+ * \class GaussianSystem
+ * \brief Electron system based on Gaussian type orbitals
+ */
+
 GaussianSystem::GaussianSystem() :
     m_nParticles(0),
     m_nBasisFunctions(0),

@@ -2,6 +2,11 @@
 
 #include <electronsystems/electronsystem.h>
 
+/*!
+ * \class RestrictedHartreeFockSolver
+ * \brief Solver for the Roothan equation
+ */
+
 RestrictedHartreeFockSolver::RestrictedHartreeFockSolver(ElectronSystem *electronSystem) :
     HartreeFockSolver(electronSystem),
     m_initialCoefficientMatrixSetManually(false)
