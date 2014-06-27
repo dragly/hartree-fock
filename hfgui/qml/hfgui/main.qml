@@ -5,10 +5,15 @@ import Dragly 1.0
 import QtQuick.Controls 1.0
 import QtQuick.Dialogs 1.0
 import QtQuick.Layouts 1.0
+import Settings 1.0
 
 Rectangle {
     width: 1280
     height: 800
+
+    Settings {
+        id: settings
+    }
 
     RowLayout {
         anchors.fill: parent
@@ -67,8 +72,11 @@ Rectangle {
 
         FileDialog {
             id: openFileDialog
+            folder: settings.value("previousFolder", "")
             onAccepted: {
                 hartreeFock.openFile(fileUrl.toString().replace("file://", ""))
+                settings.setValue("previousFolder", folder)
+                folder = settings.value("previousFolder", "")
             }
         }
 
@@ -91,8 +99,9 @@ Rectangle {
             Slider {
                 id: orbitalSlider
                 Layout.preferredWidth: parent.width
+                value: 1
                 minimumValue: 1
-                maximumValue: hartreeFock.orbitalCount
+                maximumValue: hartreeFock.orbitalCount > 0 ? hartreeFock.orbitalCount : 1
                 stepSize: 1
                 enabled: !allOrbitalsCheckBox.checked
                 opacity: allOrbitalsCheckBox.checked ? 0.3 : 1.0

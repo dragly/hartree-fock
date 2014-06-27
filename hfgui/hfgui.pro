@@ -19,7 +19,8 @@ QML_IMPORT_PATH =
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += main.cpp \
     volumeeffect.cpp \
-    hartreefock.cpp
+    hartreefock.cpp \
+    settings.cpp
 
 # Installation path
 # target.path =
@@ -31,7 +32,8 @@ qtcAddDeployment()
 HEADERS += \
     volumeeffect.h \
     volumeeffect_p.h \
-    hartreefock.h
+    hartreefock.h \
+    settings.h
 
 OTHER_FILES += \
     qml/hfgui/scalarvolume.frag \
