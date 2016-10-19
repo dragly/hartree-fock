@@ -4,6 +4,7 @@
 #include <map>
 #include <unordered_map>
 #include <string>
+#include <iostream>
 #include <boost/functional/hash.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/regex.hpp>

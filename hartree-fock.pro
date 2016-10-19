@@ -6,10 +6,10 @@ SUBDIRS += src
     SUBDIRS += app
     app.depends = src
 }
-!nogui {
-    SUBDIRS += hfgui
-    hfgui.depends = src
-}
+#!nogui {
+#    SUBDIRS += hfgui
+#    hfgui.depends = src
+#}
 !notools {
     SUBDIRS += tools
     tools.depends = src

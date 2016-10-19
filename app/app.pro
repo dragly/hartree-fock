@@ -11,7 +11,8 @@ CONFIG -= qt
 SOURCES += main.cpp
 
 LIBS += -lyaml-cpp
-LIBS += -lhdf5_cpp -lhdf5
+LIBS += -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5_cpp -lhdf5
+INCLUDEPATH += /usr/include/hdf5/serial
 
 OTHER_FILES += \
     configs/H2O.yaml \

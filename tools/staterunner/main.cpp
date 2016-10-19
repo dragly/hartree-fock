@@ -11,22 +11,11 @@
 #include <boost/mpi.hpp>
 #include <yaml-cpp/yaml.h>
 
-#include <H5Cpp.h>
+#include <hdf5/serial/H5Cpp.h>
 
 using namespace std;
 using namespace H5;
 namespace mpi = boost::mpi;
-
-void operator >> (const YAML::Node& node, Vector3& v)
-{
-    double x;
-    double y;
-    double z;
-    node[0] >> x;
-    node[1] >> y;
-    node[2] >> z;
-    v = Vector3(x,y,z);
-}
 
 int blockLow(int id, int np, int n) {
     return (id * n) / np;

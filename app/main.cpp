@@ -15,13 +15,7 @@ using namespace std;
 
 void operator >> (const YAML::Node& node, Vector3& v)
 {
-    double x;
-    double y;
-    double z;
-    node[0] >> x;
-    node[1] >> y;
-    node[2] >> z;
-    v = Vector3(x,y,z);
+    v = Vector3(node[0].as<double>(), node[1].as<double>(), node[2].as<double>());
 }
 
 class Method {
@@ -57,19 +51,12 @@ int main(int argc, char* argv[])
         outputPath += "/";
         cout << "Output will be written to " << outputPath << endl;
     }
-    ifstream fin(argv[1]);
-    if(fin.fail()) {
-        cerr << "Could not open the configuration file " << argv[1] << endl;
-        return 1;
-    }
-    YAML::Parser parser(fin);
 
-    YAML::Node rootNode;
-    parser.GetNextDocument(rootNode);
+    YAML::Node rootNode = YAML::LoadFile(argv[1]);
     unsigned int nAtoms = rootNode["atoms"].size();
     string defaultBasis = "3-21G";
     try {
-        rootNode["basis"] >> defaultBasis;
+        defaultBasis = rootNode["basis"].as<string>();
         cout << "Using basis " << defaultBasis << endl;
     } catch( YAML::TypedKeyNotFound<std::string> ) {
         cout << "Default basis not found, expecting atom to have basis name or assuming " << defaultBasis << endl;
@@ -107,22 +94,23 @@ int main(int argc, char* argv[])
     GaussianSystem system;
     Method::MethodName method = Method::Unknown;
     vector<Output::OutputName> outputs;
-    for(YAML::Iterator it=rootNode.begin();it!=rootNode.end();++it) {
-        string rootKey;
-        it.first() >> rootKey;
+    for(YAML::const_iterator it=rootNode.begin();it!=rootNode.end();++it) {
+        string rootKey = it->first.as<string>();
         if(rootKey == "atoms") {
             int atomCounter = 0;
-            const YAML::Node &atomsNode = it.second();
-            for(YAML::Iterator it2=atomsNode.begin();it2!=atomsNode.end();++it2) {
+            const YAML::Node &atomsNode = it->second;
+            for(YAML::const_iterator it2=atomsNode.begin();it2!=atomsNode.end();++it2) {
                 const YAML::Node &atomNode = *it2;
-                string typeAbbreviation;
-                atomNode["type"] >> typeAbbreviation;
+                string typeAbbreviation = atomNode["type"].as<string>();
                 Vector3 position;
-                atomNode["position"] >> position;
+                auto &positionVector = atomNode["position"].as<vector<double>>();
+                position[0] = positionVector[0];
+                position[1] = positionVector[1];
+                position[2] = positionVector[2];
                 string basis;
                 try {
-                    atomNode["basis"] >> basis;
-                } catch( YAML::TypedKeyNotFound<std::string> ) {
+                    basis = atomNode["basis"].as<string>();
+                } catch(YAML::TypedKeyNotFound<std::string>) {
                     basis = defaultBasis;
                 }
 
@@ -137,8 +125,7 @@ int main(int argc, char* argv[])
                 atomCounter++;
             }
         } else if(rootKey == "method") {
-            string methodName;
-            it.second() >> methodName;
+            string methodName = it->second.as<string>();
             if(methodName == "unrestricted") {
                 method = Method::Unrestricted;
             } else if(methodName == "restricted") {
@@ -148,14 +135,12 @@ int main(int argc, char* argv[])
                 return 1;
             }
         } else if(rootKey == "electronsDown" || rootKey == "electronsUp") {
-            int electronsDown;
-            it.second() >> electronsDown;
+            int electronsDown = it->second.as<int>();
             system.setNParticlesDown(electronsDown);
         } else if(rootKey == "output") {
-            const YAML::Node &outputNode = it.second();
-            for(YAML::Iterator it2=outputNode.begin();it2!=outputNode.end();++it2) {
-                string outputName;
-                *it2 >> outputName;
+            const YAML::Node &outputNode = it->second;
+            for(YAML::const_iterator it2=outputNode.begin();it2!=outputNode.end();++it2) {
+                string outputName = it2->second.as<string>();;
                 if(outputName == "energy") {
                     outputs.push_back(Output::Energy);
                 } else if(outputName == "density") {
